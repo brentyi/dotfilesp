@@ -7,7 +7,8 @@ sudo apt-get install neovim tmux htop build-essential -y
 
 # set up zsh
 sudo apt-get install zsh
-sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+chsh -s /bin/zsh
 
 # python stuff
 sudo apt-get install python-dev python-pip python3-dev python3-pip -y
