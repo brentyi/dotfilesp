@@ -49,10 +49,6 @@ if [[ $valid = 0 ]]; then
     exit 2
 fi
 
-echo -ne "\nUpdating time... "
-sudo ntpdate -su time.nist.gov
-echo "DONE"
-
 if [[ $install_basic = 1 ]]; then
     echo -e "\n---------"
     echo "Installing basic utilities"

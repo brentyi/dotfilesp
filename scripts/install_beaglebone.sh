@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # beaglebone setup script for embedded linux development
 #
@@ -13,6 +14,8 @@ if [ $EUID != 0 ]; then
     echo "Beaglebone install must be run as root"
     exit 2
 fi
+
+ntpdate -su time.nist.gov
 
 apt-get update
 apt-get install linux-image-3.8.13-bone79
