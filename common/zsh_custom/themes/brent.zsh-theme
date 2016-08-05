@@ -1,10 +1,11 @@
 # partially plagiarized from sunaku
 
-# set color to cyan by default
-local user_color='cyan'
-# green if ssh
+# set color based on hash of machine hostname
+
+if [ -z "$user_color" ]; then
+    user_color=$(( 0x${$(md5sum <<< $HOST):0:10} % 6 + 1 ))
+fi
 if [ -n "$SSH_CONNECTION" ]; then
-    user_color='green'
     if [[ ! $RPROMPT =~ '$(ssh_indicator)' ]]; then
         RPROMPT=$RPROMPT'$(ssh_indicator)'
     fi
@@ -13,14 +14,14 @@ fi
 test $UID -eq 0 && user_color='red'
 
 function ssh_indicator() {
-    test -n "$SSH_CONNECTION" && echo "%K{cyan} $USER@$HOST %k"
+    test -n "$SSH_CONNECTION" && echo "%K{$user_color} $USER@$HOST %k"
 }
 
 PROMPT='%(?..%{$fg_bold[red]%}exit %?
 %{$reset_color%})'\
 '%{$bold_color%}$(git_prompt_status)%{$reset_color%}'\
 '$(git_prompt_info)'\
-'%{$fg[$user_color]%}%~%{$reset_color%}'\
+'%F{$user_color}%~%f'\
 '%(!.#.>) '
 PROMPT2='%{$fg[red]%}\ m %{$reset_color%}'
 
