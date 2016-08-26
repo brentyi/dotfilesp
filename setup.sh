@@ -49,6 +49,8 @@ if [[ $valid = 0 ]]; then
     exit 2
 fi
 
+sudo -v
+
 if [[ $install_basic = 1 ]]; then
     echo -e "\n---------"
     echo "Installing basic utilities"
