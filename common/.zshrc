@@ -23,13 +23,13 @@ export ZSH_CUSTOM=$HOME/dotfilesp/common/zsh_custom
 export UPDATE_ZSH_DAYS=30
 
 ZSH_THEME="brent"
-plugins=(ros git vi-mode vundle history-substring-search)
+plugins=(git vi-mode history-substring-search ros)
 
 HYPHEN_INSENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="false"
 HIST_STAMPS="yyyy-mm-dd"
-MODE_INDICATOR="%F{black}%K{white} VI %k%f"
+MODE_INDICATOR="%F{black}%K{white} <<< %k%f"
 
 unset RPROMPT
 
@@ -43,5 +43,10 @@ alias s="source ~/.zshrc"
 alias v="vim ~/.vimrc"
 alias t="vim ~/.tmux.conf"
 alias z="vim ~/.zshrc"
+
+bindkey -M viins '[[' vi-cmd-mode
+bindkey -M viins ';;' vi-cmd-mode
+
+setopt transientrprompt
 
 source $ZSH/oh-my-zsh.sh

@@ -32,7 +32,11 @@ function getip() {
     fi
 }
 
-# indicator for current master
+# indicator for current ros master
+if [ -n "$RPS1" ]; then
+    # decoupling workaround
+    RPROMPT=$RPS1
+fi
 if [[ ! $RPROMPT =~ '$(ros_info)' ]]; then
     RPROMPT=$RPROMPT'$(ros_info)'
 fi

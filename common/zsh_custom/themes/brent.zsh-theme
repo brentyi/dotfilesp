@@ -6,6 +6,10 @@ if [ -z "$user_color" ]; then
     user_color=$(( 0x${$(md5sum <<< $HOST):0:10} % 6 + 1 ))
 fi
 if [ -n "$SSH_CONNECTION" ]; then
+    if [ -n "$RPS1" ]; then
+        # decoupling workaround
+        RPROMPT=$RPS1
+    fi
     if [[ ! $RPROMPT =~ '$(ssh_indicator)' ]]; then
         RPROMPT=$RPROMPT'$(ssh_indicator)'
     fi
