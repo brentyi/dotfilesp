@@ -139,6 +139,8 @@ set modeline
 set laststatus=2
 set autochdir
 autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window vim:" . expand("%:t"))
+" forgot to sudo!
+cmap W! w !sudo tee >/dev/null %
 "" this screws with line-hopping via relative numbering
 " nnoremap j gj
 " nnoremap k gk
