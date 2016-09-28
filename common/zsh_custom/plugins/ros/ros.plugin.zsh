@@ -1,7 +1,9 @@
 # useful ros macros
 
 function ros_info() {
-    if [ -n "$ROS_MASTER_URI" ] && [ "$ROS_MASTER_URI" != "http://$ROS_IP:11311" ]; then
+    if [ -n "$ROS_MASTER_URI" ] \
+        && [ "$ROS_MASTER_URI" != "http://$ROS_IP:11311" ] \
+        && [ "$ROS_MASTER_URI" != "http://localhost:11311" ]; then
         echo "%K{red} $ROS_MASTER_URI %k"
     fi
 }
