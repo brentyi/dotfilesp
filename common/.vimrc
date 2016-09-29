@@ -40,6 +40,7 @@ Plugin 'sjl/badwolf'
 Plugin 'itchyny/lightline.vim'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'chreekat/vim-paren-crosshairs'
+Plugin 'lervag/vimtex'
 "
 "
 if fresh_install == 1
