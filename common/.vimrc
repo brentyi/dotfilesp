@@ -139,6 +139,7 @@ set history=35
 set modeline
 set laststatus=2
 set autochdir
+set pastetoggle=<Leader>p
 autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window vim:" . expand("%:t"))
 " forgot to sudo!
 cmap W! w !sudo tee >/dev/null %
