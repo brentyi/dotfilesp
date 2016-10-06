@@ -44,11 +44,11 @@ alias v="vim ~/.vimrc"
 alias t="vim ~/.tmux.conf"
 alias z="vim ~/.zshrc"
 function u() {
-    echo "Updating dotfiles..."
+    echo "Updating dotfiles"
     echo '----------'
     cd ~/dotfilesp
     git pull
-    cd -
+    cd - > /dev/null
 }
 
 bindkey -M viins '[[' vi-cmd-mode
