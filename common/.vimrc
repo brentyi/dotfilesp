@@ -123,7 +123,7 @@ nnoremap <Bslash> za
 
 """" search
 set hlsearch
-nnoremap <Esc> :noh<Return><Esc>
+nnoremap <Esc> :noh<Return>:set nopaste<Return><Esc>
 nnoremap <Esc>^[ <Esc>^[
 
 """" general usability
@@ -139,7 +139,7 @@ set history=35
 set modeline
 set laststatus=2
 set autochdir
-set pastetoggle=<Leader>p
+nnoremap <Leader>p :set invpaste<Return>
 autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window vim:" . expand("%:t"))
 " forgot to sudo!
 cmap W! w !sudo tee >/dev/null %
