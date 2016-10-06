@@ -115,6 +115,11 @@ map <silent> <Up> :exe "resize +5"<CR>
 map <silent> <Down> :exe "resize -5"<CR>
 map <silent> <Right> :exe "vert resize +5"<CR>
 map <silent> <Left> :exe "vert resize -5"<CR>
+set splitbelow
+set splitright
+" strange tmux-style window splitting shortcuts
+nmap <C-w>" :Sex<Return>
+nmap <C-w>% :Vex<Return>
 
 """" fold utils
 set foldmethod=indent
@@ -143,9 +148,6 @@ nnoremap <Leader>p :set invpaste<Return>
 autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window vim:" . expand("%:t"))
 " forgot to sudo!
 cmap W! w !sudo tee >/dev/null %
-"" this screws with line-hopping via relative numbering
-" nnoremap j gj
-" nnoremap k gk
 
 """" c++
 function! s:insert_gates()
