@@ -159,6 +159,12 @@ function! s:insert_gates()
 endfunction
 autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 
+"""" navigation in insert mode
+inoremap <c-h> <Esc>ha
+inoremap <c-j> <Esc>ja
+inoremap <c-k> <Esc>ka
+inoremap <c-l> <Esc>la
+
 """" meta
 augroup AutoReloadVimRC
     au!
