@@ -42,6 +42,7 @@ Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'chreekat/vim-paren-crosshairs'
 Plugin 'lervag/vimtex'
 Plugin 'itchyny/vim-cursorword'
+Plugin 'tpope/vim-sleuth'
 "
 "
 if fresh_install == 1
@@ -101,7 +102,8 @@ set autoindent
 set smartindent
 set shiftwidth=4
 set softtabstop=4
-
+set list
+set listchars=tab:>\ ,trail:\ 
 
 """" split utils
 set winheight=20
