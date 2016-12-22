@@ -10,7 +10,8 @@ elif [ "${TMUX+set}" ]; then
 else
     # open tmux by default
     tmux -2
-    exit
+    echo "Exiting... (ENTER to cancel)"
+    read -t 0.1 || exit
 fi
 
 #
