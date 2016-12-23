@@ -1,20 +1,9 @@
 #
 # brent yi
 #
+#
 
 echo '>>>>>>>>>>'
-if [ -n "$SSH_CONNECTION" ]; then
-    echo 'SSH CONNECTION'
-elif [ "${TMUX+set}" ]; then
-    echo '----------'
-else
-    # open tmux by default
-    tmux -2
-    echo "Exiting... (ENTER to cancel)"
-    read -t 0.2 || exit
-fi
-
-#
 
 export LANG=en_US.UTF-8
 
@@ -58,3 +47,15 @@ bindkey -M viins ';;' vi-cmd-mode
 setopt transientrprompt
 
 source $ZSH/oh-my-zsh.sh
+
+if [ -n "$SSH_CONNECTION" ]; then
+    echo 'SSH CONNECTION'
+elif [ "${TMUX+set}" ]; then
+    echo '----------'
+else
+    # open tmux by default
+    tmux -2
+    echo "Exiting... (ENTER to cancel)"
+    read -t 0.2 || exit
+fi
+
