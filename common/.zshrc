@@ -11,7 +11,7 @@ else
     # open tmux by default
     tmux -2
     echo "Exiting... (ENTER to cancel)"
-    read -t 0.1 || exit
+    read -t 0.2 || exit
 fi
 
 #
