@@ -1,7 +1,6 @@
 #
 # brent yi
 #
-#
 
 echo '>>>>>>>>>>'
 
@@ -47,6 +46,8 @@ bindkey -M viins ';;' vi-cmd-mode
 setopt transientrprompt
 
 source $ZSH/oh-my-zsh.sh
+
+#
 
 if [ -n "$SSH_CONNECTION" ]; then
     echo 'SSH CONNECTION'
