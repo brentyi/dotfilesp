@@ -43,6 +43,7 @@ Plugin 'chreekat/vim-paren-crosshairs'
 Plugin 'lervag/vimtex'
 Plugin 'itchyny/vim-cursorword'
 Plugin 'tpope/vim-sleuth'
+Plugin 'mustache/vim-mustache-handlebars'
 "
 "
 if fresh_install == 1
