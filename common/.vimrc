@@ -44,6 +44,10 @@ Plugin 'lervag/vimtex'
 Plugin 'itchyny/vim-cursorword'
 Plugin 'tpope/vim-sleuth'
 Plugin 'mustache/vim-mustache-handlebars'
+Plugin 'scrooloose/nerdtree'
+" Plugin 'ryanoasis/vim-devicons'
+Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
+" Plugin 'Xuyuanp/nerdtree-git-plugin'
 "
 "
 if fresh_install == 1
@@ -54,9 +58,13 @@ call vundle#end()
 filetype plugin indent on
 
 """" plugin specific
-let g:ctrlp_map = '<c-o>'
 let g:netrw_ftp_cmd = 'ftp -p'
 let g:lightline = { 'colorscheme': 'seoul256' }
+nnoremap <c-o> :NERDTreeToggle<Return>
+let g:NERDTreeShowHidden=1
+let g:NERDTreeFileExtensionHighlightFullName = 1
+let g:NERDTreeExactMatchHighlightFullName = 1
+let g:NERDTreePatternMatchHighlightFullName = 1
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
@@ -122,8 +130,8 @@ map <silent> <Left> :exe "vert resize -5"<CR>
 set splitbelow
 set splitright
 " strange tmux-style window splitting shortcuts
-nmap <C-w>" :Sex<Return>
-nmap <C-w>% :Vex<Return>
+nmap <C-w>" :sp<Return>:e .<Return>
+nmap <C-w>% :vsp<Return>:e .<Return>
 
 """" fold utils
 set foldmethod=indent
