@@ -60,7 +60,7 @@ filetype plugin indent on
 """" plugin specific
 let g:netrw_ftp_cmd = 'ftp -p'
 let g:lightline = { 'colorscheme': 'seoul256' }
-nnoremap <c-o> :NERDTreeToggle<Return>
+nnoremap <c-o> :NERDTree<Return>
 let g:NERDTreeShowHidden=1
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
