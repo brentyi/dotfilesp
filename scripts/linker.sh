@@ -22,3 +22,9 @@ echo -n "Linking nvim config... "
 mkdir -p ~/.config/nvim
 ln -sf ~/.vimrc ~/.config/nvim/init.vim
 echo "DONE"
+
+# install vundle + vim plugins
+# this is mostly handled in our vim config
+echo -n "Setting up Vundle... "
+vim +qall
+echo "DONE"

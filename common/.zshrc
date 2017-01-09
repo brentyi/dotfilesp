@@ -38,6 +38,7 @@ function u() {
     cd ~/dotfilesp
     git pull
     cd - > /dev/null
+    vim +PluginInstall +qall
 }
 
 bindkey -M viins '[[' vi-cmd-mode
