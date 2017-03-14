@@ -8,7 +8,7 @@ sudo apt-get update
 sudo apt-get install python-dev python-pip python3-dev python3-pip -y
 
 # install common utilities
-sudo apt-get install neovim tmux htop build-essential -y
+sudo apt-get install neovim tmux htop build-essential xclip -y
 sudo pip2 install neovim
 sudo pip3 install neovim
 
