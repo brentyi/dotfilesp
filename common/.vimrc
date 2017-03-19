@@ -161,6 +161,7 @@ nnoremap <Leader>p :set invpaste<Return>
 autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window vim:" . expand("%:t"))
 " forgot to sudo!
 cmap W! w !sudo tee >/dev/null %
+set mouse=
 
 """" c++
 function! s:insert_gates()
