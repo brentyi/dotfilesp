@@ -6,7 +6,9 @@ echo '>>>>>>>>>>'
 
 export LANG=en_US.UTF-8
 
-export HOME=/home/brent
+if [ -z "$HOME" ]; then
+    export HOME=/home/brent
+fi
 export ZSH=$HOME/.oh-my-zsh
 export ZSH_CUSTOM=$HOME/dotfilesp/common/zsh_custom
 export UPDATE_ZSH_DAYS=30
