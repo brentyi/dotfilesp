@@ -2,7 +2,7 @@
         email = yibrenth@gmail.com
         name = Brent Yi
 [core]
-	editor = /usr/bin/nvim
+	editor = vim
 [color]
         ui = true
 [color "branch"]
