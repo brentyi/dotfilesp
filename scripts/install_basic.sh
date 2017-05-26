@@ -13,6 +13,6 @@ sudo pip2 install neovim
 sudo pip3 install neovim
 
 # set up zsh
-sudo apt-get install zsh
+sudo apt-get install zsh -y
 git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 chsh -s /bin/zsh
