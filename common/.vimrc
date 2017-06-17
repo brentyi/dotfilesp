@@ -107,9 +107,9 @@ hi VertSplit ctermfg=0 ctermbg=0
 match TrailingWhitespace /\s\+$/
 
 """" indent
+filetype indent on
 set expandtab
 set autoindent
-set smartindent
 set shiftwidth=4
 set softtabstop=4
 set list

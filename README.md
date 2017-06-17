@@ -2,7 +2,7 @@
 My collection of config files & setup scripts.
 
 ## Setup
-Clone this repo to your home directory & run `./setup.sh`:
+Clone this repo to `$HOME` & run `./setup.sh`:
 ```
 Usage: ./setup.sh [-d | -s | -r | -b]
         -d      dotfiles only: config files for zsh, bash, vim, tmux, & git
@@ -24,5 +24,7 @@ Linking goes something like this:
 
 Explicitly local changes (usually workspace+environment stuff) can then be made in `~/dotfilesp/local`, while global ones are tracked in `~/dotfilesp/common`.
 
+
 --
+
 ROS macros for zsh ~~inspired by~~ stolen & repackaged from [Mike Chung's bash setup](http://github.com/mjyc/dotfiles).
