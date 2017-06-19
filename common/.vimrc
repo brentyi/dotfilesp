@@ -114,25 +114,6 @@ set softtabstop=4
 set list
 set listchars=tab:>\ ,trail:\ 
 
-"""" split utils
-set winheight=20
-set winwidth=50
-" set winminheight=3
-set winminwidth=10
-" nnoremap <C-J> <C-W><C-J>
-" nnoremap <C-K> <C-W><C-K>
-" nnoremap <C-L> <C-W><C-L>
-" nnoremap <C-H> <C-W><C-H>
-map <silent> <Up> :exe "resize +5"<CR>
-map <silent> <Down> :exe "resize -5"<CR>
-map <silent> <Right> :exe "vert resize +5"<CR>
-map <silent> <Left> :exe "vert resize -5"<CR>
-set splitbelow
-set splitright
-" strange tmux-style window splitting shortcuts
-nmap <C-w>" :sp<Return>:e .<Return>
-nmap <C-w>% :vsp<Return>:e .<Return>
-
 """" fold utils
 set foldmethod=indent
 set foldlevel=99
@@ -161,6 +142,42 @@ autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window vi
 " forgot to sudo!
 cmap W! w !sudo tee >/dev/null %
 set mouse=
+
+"""" split utils
+set winheight=20
+set winwidth=50
+" set winminheight=3
+set winminwidth=10
+" nnoremap <C-J> <C-W><C-J>
+" nnoremap <C-K> <C-W><C-K>
+" nnoremap <C-L> <C-W><C-L>
+" nnoremap <C-H> <C-W><C-H>
+
+let s:arrowkey_mode = 0
+function! s:switch_arrowkey_mode()
+  if s:arrowkey_mode
+    unmap <silent> <Up>
+    unmap <silent> <Down>
+    unmap <silent> <Right>
+    unmap <silent> <Left>
+    let s:arrowkey_mode = 0
+  else
+    map <silent> <Up> :exe "resize +5"<CR>
+    map <silent> <Down> :exe "resize -5"<CR>
+    map <silent> <Right> :exe "vert resize +5"<CR>
+    map <silent> <Left> :exe "vert resize -5"<CR>
+    let s:arrowkey_mode = 1
+  endif
+endfunction
+
+call <SID>switch_arrowkey_mode()
+nmap <Leader>n :call <SID>switch_arrowkey_mode()<CR>
+
+set splitbelow
+set splitright
+" strange tmux-style window splitting shortcuts
+nmap <C-w>" :sp<Return>:e .<Return>
+nmap <C-w>% :vsp<Return>:e .<Return>
 
 """" c++
 function! s:insert_gates()
