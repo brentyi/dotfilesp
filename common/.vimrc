@@ -26,7 +26,6 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Plugin 'easymotion/vim-easymotion'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'tpope/vim-surround'
 " Plugin 'valloric/MatchTagAlways'
 Plugin 'gregsexton/MatchTag'
 Plugin 'vim-scripts/indentpython.vim'
@@ -49,6 +48,7 @@ Plugin 'scrooloose/nerdtree'
 " Plugin 'ryanoasis/vim-devicons'
 Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
 " Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'tpope/vim-surround'
 "
 "
 if fresh_install == 1
