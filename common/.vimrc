@@ -49,6 +49,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
 " Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-repeat'
 "
 "
 if fresh_install == 1
