@@ -50,6 +50,7 @@ Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
 " Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
+Plugin 'vim-scripts/restore_view.vim'
 "
 "
 if fresh_install == 1
@@ -67,6 +68,7 @@ let g:NERDTreeShowHidden=1
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
+set viewoptions=cursor,folds,slash,unix
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
