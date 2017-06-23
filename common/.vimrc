@@ -144,7 +144,6 @@ nnoremap <Leader>p :set invpaste<Return>
 autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window vim:" . expand("%:t"))
 " forgot to sudo!
 cmap W! w !sudo tee >/dev/null %
-set mouse=
 
 """" split utils
 set winheight=20
@@ -156,25 +155,27 @@ set winminwidth=10
 " nnoremap <C-L> <C-W><C-L>
 " nnoremap <C-H> <C-W><C-H>
 
-let s:arrowkey_mode = 0
-function! s:switch_arrowkey_mode()
-  if s:arrowkey_mode
+let s:friendly_mode = 0
+function! s:toggle_friendly_mode()
+  if s:friendly_mode
     unmap <silent> <Up>
     unmap <silent> <Down>
     unmap <silent> <Right>
     unmap <silent> <Left>
-    let s:arrowkey_mode = 0
+    set mouse=a
+    let s:friendly_mode = 0
+    echo "enabled friendly mode!"
   else
     map <silent> <Up> :exe "resize +5"<CR>
     map <silent> <Down> :exe "resize -5"<CR>
     map <silent> <Right> :exe "vert resize +5"<CR>
     map <silent> <Left> :exe "vert resize -5"<CR>
-    let s:arrowkey_mode = 1
+    set mouse=
+    let s:friendly_mode = 1
   endif
 endfunction
-
-call <SID>switch_arrowkey_mode()
-nmap <Leader>n :call <SID>switch_arrowkey_mode()<CR>
+call <SID>toggle_friendly_mode()
+nmap <Leader>f :call <SID>toggle_friendly_mode()<CR>
 
 set splitbelow
 set splitright
