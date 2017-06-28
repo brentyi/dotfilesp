@@ -52,6 +52,7 @@ Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
 Plugin 'vim-scripts/restore_view.vim'
 Plugin 'scrooloose/nerdcommenter'
+Plugin 'Yggdroot/indentLine'
 "
 "
 if fresh_install == 1
@@ -73,6 +74,7 @@ let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
+let g:indentLine_char = '·'
 set viewoptions=cursor,folds,slash,unix
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
@@ -99,6 +101,7 @@ if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gno
     hi CursorLineNr cterm=bold ctermfg=232 ctermbg=250
     hi Visual cterm=bold ctermbg=238
     hi TrailingWhitespace ctermbg=52
+    let g:indentLine_color_term=237
 else
     set t_Co=16
     set foldcolumn=1
