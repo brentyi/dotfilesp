@@ -6,7 +6,7 @@ if !has('nvim')
     set encoding=utf-8
 endif
 
-"""" vundle 
+"""" vundle
 let fresh_install=0
 let vundle_readme=expand('~/.vim/bundle/Vundle.vim/README.md')
 if !filereadable(vundle_readme)
@@ -51,6 +51,7 @@ Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
 Plugin 'vim-scripts/restore_view.vim'
+Plugin 'scrooloose/nerdcommenter'
 "
 "
 if fresh_install == 1
@@ -68,6 +69,10 @@ let g:NERDTreeShowHidden=1
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
+let g:NERDSpaceDelims = 1
+let g:NERDCompactSexyComs = 1
+let g:NERDCommentEmptyLines = 1
+let g:NERDTrimTrailingWhitespace = 1
 set viewoptions=cursor,folds,slash,unix
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
