@@ -162,22 +162,22 @@ set winminwidth=10
 
 let s:friendly_mode = 0
 function! s:toggle_friendly_mode()
-  if s:friendly_mode
-    unmap <silent> <Up>
-    unmap <silent> <Down>
-    unmap <silent> <Right>
-    unmap <silent> <Left>
-    set mouse=a
-    let s:friendly_mode = 0
-    echo "enabled friendly mode!"
-  else
-    map <silent> <Up> :exe "resize +5"<CR>
-    map <silent> <Down> :exe "resize -5"<CR>
-    map <silent> <Right> :exe "vert resize +5"<CR>
-    map <silent> <Left> :exe "vert resize -5"<CR>
-    set mouse=
-    let s:friendly_mode = 1
-  endif
+    if s:friendly_mode
+        unmap <silent> <Up>
+        unmap <silent> <Down>
+        unmap <silent> <Right>
+        unmap <silent> <Left>
+        set mouse=a
+        let s:friendly_mode = 0
+        echo "enabled friendly mode!"
+    else
+        map <silent> <Up> :exe "resize +5"<CR>
+        map <silent> <Down> :exe "resize -5"<CR>
+        map <silent> <Right> :exe "vert resize +5"<CR>
+        map <silent> <Left> :exe "vert resize -5"<CR>
+        set mouse=
+        let s:friendly_mode = 1
+    endif
 endfunction
 call <SID>toggle_friendly_mode()
 nmap <Leader>f :call <SID>toggle_friendly_mode()<CR>
@@ -190,11 +190,11 @@ nmap <C-w>% :vsp<Return>:e .<Return>
 
 """" c++
 function! s:insert_gates()
-  let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
-  execute "normal! i#ifndef " . gatename
-  execute "normal! o#define " . gatename . " "
-  execute "normal! Go#endif /* " . gatename . " */"
-  normal! kk
+    let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
+    execute "normal! i#ifndef " . gatename
+    execute "normal! o#define " . gatename . " "
+    execute "normal! Go#endif /* " . gatename . " */"
+    normal! kk
 endfunction
 autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 
