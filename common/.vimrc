@@ -74,6 +74,10 @@ let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
+let g:NERDDefaultAlign = 'left'
+let g:NERDAltDelims_python = 1
+let g:NERDAltDelims_cython = 1
+let g:NERDAltDelims_pyrex = 1
 let g:indentLine_char = '·'
 set viewoptions=cursor,folds,slash,unix
 
