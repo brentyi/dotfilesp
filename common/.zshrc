@@ -27,8 +27,10 @@ unset RPROMPT
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
 export EDITOR='vim'
 
+if [ -x "$(command -v nvim)" ]; then
+    alias vim="nvim"
+fi
 alias tmux="tmux -2"
-alias vim="nvim"
 alias rosmaster="rosmasteruri"
 alias s="source ~/.zshrc"
 alias v="vim ~/.vimrc"
