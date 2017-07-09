@@ -64,7 +64,7 @@ filetype plugin indent on
 
 """" plugin specific
 let g:netrw_ftp_cmd = 'ftp -p'
-let g:lightline = { 'colorscheme': 'seoul256' }
+let g:lightline = { 'colorscheme': 'wombat' }
 nnoremap <c-o> :NERDTree<Return>
 let g:NERDTreeShowHidden=1
 let g:NERDTreeFileExtensionHighlightFullName = 1
@@ -80,6 +80,7 @@ let g:NERDAltDelims_cython = 1
 let g:NERDAltDelims_pyrex = 1
 let g:indentLine_char = '·'
 set viewoptions=cursor,folds,slash,unix
+set noshowmode
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
