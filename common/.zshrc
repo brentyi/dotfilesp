@@ -36,6 +36,7 @@ alias s="source ~/.zshrc"
 alias v="vim ~/.vimrc"
 alias t="vim ~/.tmux.conf"
 alias z="vim ~/.zshrc"
+alias sudo="sudo "
 function u() {
     echo "Updating dotfiles"
     echo '----------'
