@@ -33,6 +33,7 @@ function getip() {
         echo `ifconfig "$1" | awk '/inet/ { print $2 } ' | sed -e s/addr://`
     fi
 }
+compdef "_arguments '2:Network Interface:_net_interfaces'" rosmasteruri
 
 # indicator for current ros master
 if [ -n "$RPS1" ]; then
