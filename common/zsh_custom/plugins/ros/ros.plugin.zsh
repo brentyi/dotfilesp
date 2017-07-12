@@ -21,6 +21,8 @@ function rosmasteruri() {
     echo ROS_MASTER_URI=$ROS_MASTER_URI
     echo ROS_IP=$ROS_IP
 }
+compdef "_arguments '2:Network Interface:_net_interfaces'" rosmasteruri
+
 function getip() {
     if [ "$#" -ne 1 ]; then
         echo "Usage: $0 [interface]";
@@ -33,7 +35,7 @@ function getip() {
         echo `ifconfig "$1" | awk '/inet/ { print $2 } ' | sed -e s/addr://`
     fi
 }
-compdef "_arguments '2:Network Interface:_net_interfaces'" rosmasteruri
+compdef "_arguments '1:Network Interface:_net_interfaces'" getip
 
 # indicator for current ros master
 if [ -n "$RPS1" ]; then
