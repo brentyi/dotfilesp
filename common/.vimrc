@@ -121,7 +121,7 @@ endif
 hi VertSplit ctermfg=0 ctermbg=0
 " au InsertEnter * set norelativenumber
 " au InsertLeave * set relativenumber
-match TrailingWhitespace /\s\+$/
+autocmd VimEnter,WinEnter * match TrailingWhitespace /\s\+$/
 
 """" indent
 set expandtab
