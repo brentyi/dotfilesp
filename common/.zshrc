@@ -42,6 +42,7 @@ function u() {
     echo '----------'
     cd ~/dotfilesp
     git pull
+    git submodule update --init --recursive
     cd - > /dev/null
     vim +PluginInstall +qall
 }
