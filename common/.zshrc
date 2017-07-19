@@ -14,7 +14,7 @@ export ZSH_CUSTOM=$HOME/dotfilesp/common/zsh_custom
 export UPDATE_ZSH_DAYS=30
 
 ZSH_THEME="brent"
-plugins=(git vi-mode history-substring-search ros)
+plugins=(git vi-mode zsh-autosuggestions history-substring-search ros)
 
 HYPHEN_INSENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
