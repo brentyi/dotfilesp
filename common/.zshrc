@@ -38,13 +38,17 @@ alias t="vim ~/.tmux.conf"
 alias z="vim ~/.zshrc"
 alias sudo="sudo "
 function u() {
-    echo "Updating dotfiles"
-    echo '----------'
     cd ~/dotfilesp
-    git pull
-    git submodule update --init --recursive
+    if [[ -z $(git status -s) ]]; then
+        echo "Updating dotfiles"
+        echo "----------"
+        git pull
+        git submodule update --init --recursive
+        vim +PluginInstall +qall
+    else
+        echo "Unstaged changes in dotfiles directory; please commit or stash them"
+    fi
     cd - > /dev/null
-    vim +PluginInstall +qall
 }
 
 bindkey -M viins '[[' vi-cmd-mode
@@ -57,9 +61,9 @@ source $ZSH/oh-my-zsh.sh
 #
 
 if [ -n "$SSH_CONNECTION" ]; then
-    echo 'SSH CONNECTION'
+    echo "SSH CONNECTION"
 elif [ "${TMUX+set}" ]; then
-    echo '----------'
+    echo "----------"
 else
     # open tmux by default
     tmux -2
