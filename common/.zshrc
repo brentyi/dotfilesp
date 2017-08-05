@@ -5,24 +5,25 @@
 echo '>>>>>>>>>>'
 
 export LANG=en_US.UTF-8
-
 if [ -z "$HOME" ]; then
     export HOME=/home/brent
 fi
-export ZSH=$HOME/.oh-my-zsh
-export ZSH_CUSTOM=$HOME/dotfilesp/common/zsh_custom
-export UPDATE_ZSH_DAYS=30
 
-ZSH_THEME="brent"
-plugins=(git vi-mode zsh-autosuggestions history-substring-search ros)
+source $HOME/dotfilesp/thirdparty/antigen.zsh
+antigen use oh-my-zsh
+antigen bundle git
+antigen bundle vi-mode
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle history-substring-search
+antigen theme brentyi/brent-zsh-theme brent
+antigen bundle brentyi/zsh-ros
+antigen apply
 
 HYPHEN_INSENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="false"
 HIST_STAMPS="yyyy-mm-dd"
 MODE_INDICATOR="%F{black}%K{white} <<< %k%f"
-
-unset RPROMPT
 
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
 export EDITOR='vim'
@@ -45,6 +46,12 @@ function u() {
         git pull
         git submodule update --init --recursive
         vim +PluginInstall +qall
+        rm -rf ~/.antigen
+        # cleanup
+        if [ -d "~/.oh-my-zsh" ]; then
+          rm -rf ~/.oh-my-zsh
+        fi
+        source ~/.zshrc
     else
         echo "Unstaged changes in dotfiles directory; please commit or stash them"
     fi
@@ -55,10 +62,6 @@ bindkey -M viins '[[' vi-cmd-mode
 bindkey -M viins ';;' vi-cmd-mode
 
 setopt transientrprompt
-
-source $ZSH/oh-my-zsh.sh
-
-#
 
 if [ -n "$SSH_CONNECTION" ]; then
     echo "SSH CONNECTION"
