@@ -48,8 +48,8 @@ function u() {
         vim +PluginInstall +qall
         rm -rf ~/.antigen
         # cleanup
-        if [ -d "~/.oh-my-zsh" ]; then
-          rm -rf ~/.oh-my-zsh
+        if [ -d "$HOME/.oh-my-zsh" ]; then
+          rm -rf $HOME/.oh-my-zsh
         fi
         source ~/.zshrc
     else
