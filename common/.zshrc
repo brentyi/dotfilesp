@@ -51,11 +51,12 @@ function u() {
         if [ -d "$HOME/.oh-my-zsh" ]; then
           rm -rf $HOME/.oh-my-zsh
         fi
+        cd - > /dev/null
         source ~/.zshrc
     else
         echo "Unstaged changes in dotfiles directory; please commit or stash them"
+        cd - > /dev/null
     fi
-    cd - > /dev/null
 }
 
 bindkey -M viins '[[' vi-cmd-mode
