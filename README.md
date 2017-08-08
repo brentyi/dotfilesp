@@ -7,7 +7,7 @@ Clone this repo to `$HOME` & run `./setup.sh`:
 Usage: ./setup.sh [-d | -s | -r | -b]
         -d      dotfiles only: config files for zsh, bash, vim, tmux, & git
         -s      standard install: dotfiles + common tools
-        -r      standard install + ros (indigo only)
+        -r      standard install + ros (indigo, kinetic)
         -b      embedded install (currently optimized for beaglebone, run as root)
 ```
 
@@ -23,8 +23,3 @@ Linking goes something like this:
 4. Symlinks are made to `~/dotfilesp/local/*` from the home directory
 
 Explicitly local changes (usually workspace+environment stuff) can then be made in `~/dotfilesp/local`, while global ones are tracked in `~/dotfilesp/common`.
-
-
---
-
-ROS macros for zsh ~~inspired by~~ stolen & repackaged from [Mike Chung's bash setup](http://github.com/mjyc/dotfiles).
