@@ -44,7 +44,7 @@ function u() {
         echo "Updating dotfiles"
         echo "----------"
         git pull
-        git submodule update --init --recursive
+        # git submodule update --init --recursive
         vim +PluginInstall +qall
         rm -rf ~/.antigen
         # cleanup
