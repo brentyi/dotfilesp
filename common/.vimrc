@@ -156,7 +156,13 @@ set modeline
 set laststatus=2
 set autochdir
 nnoremap <Leader>p :set invpaste<Return>
-autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window vim:" . expand("%:t"))
+
+"""" automatic tmux pane renaming
+if exists('$TMUX')
+    autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter * call system("tmux rename-window vim:" . expand("%:t"))
+    autocmd VimLeave * call system("tmux setw automatic-rename")
+endif
+
 " forgot to sudo!
 cmap W! w !sudo tee >/dev/null %
 
