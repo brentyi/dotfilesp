@@ -81,7 +81,7 @@ let g:NERDAltDelims_pyrex = 1
 let g:indentLine_char = '·'
 set viewoptions=cursor,folds,slash,unix
 set noshowmode
-runtime! plugin/sleuth.vim " load vim-sleuth early so we user-defined autocmd override it
+runtime! plugin/sleuth.vim " load vim-sleuth early so user-defined autocmds override it
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
@@ -124,10 +124,6 @@ hi VertSplit ctermfg=0 ctermbg=0
 autocmd VimEnter,WinEnter * match TrailingWhitespace /\s\+$/
 
 """" indent
-set expandtab
-set autoindent
-set shiftwidth=4
-set softtabstop=4
 set list
 set listchars=tab:>\ ,trail:\ 
 autocmd FileType make setlocal noexpandtab
