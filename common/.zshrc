@@ -38,6 +38,9 @@ alias v="vim ~/.vimrc"
 alias t="vim ~/.tmux.conf"
 alias z="vim ~/.zshrc"
 alias sudo="sudo "
+alias :q="exit"
+alias :e="vim"
+
 function u() {
     cd ~/dotfilesp
     if [[ -z $(git status -s) ]]; then
