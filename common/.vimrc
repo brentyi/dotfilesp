@@ -153,6 +153,9 @@ set laststatus=2
 set autochdir
 nnoremap <Leader>p :set invpaste<Return>
 
+"""" ros stuff
+au BufNewFile,BufRead *.launch set filetype=xml
+
 """" automatic tmux pane renaming
 if exists('$TMUX')
     autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter * call system("tmux rename-window vim:" . expand("%:t"))
@@ -165,13 +168,14 @@ cmap W! w !sudo tee >/dev/null %
 """" split utils
 set winheight=20
 set winwidth=50
-" set winminheight=3
 set winminwidth=10
-" nnoremap <C-J> <C-W><C-J>
-" nnoremap <C-K> <C-W><C-K>
-" nnoremap <C-L> <C-W><C-L>
-" nnoremap <C-H> <C-W><C-H>
+set splitbelow
+set splitright
+" strange tmux-style window splitting shortcuts
+nmap <C-w>" :sp<Return>:e .<Return>
+nmap <C-w>% :vsp<Return>:e .<Return>
 
+"""" map <Leader>F to toggle mouse + arrow keys
 let s:friendly_mode = 0
 function! s:toggle_friendly_mode()
     if s:friendly_mode
@@ -193,12 +197,6 @@ function! s:toggle_friendly_mode()
 endfunction
 call <SID>toggle_friendly_mode()
 nmap <Leader>f :call <SID>toggle_friendly_mode()<CR>
-
-set splitbelow
-set splitright
-" strange tmux-style window splitting shortcuts
-nmap <C-w>" :sp<Return>:e .<Return>
-nmap <C-w>% :vsp<Return>:e .<Return>
 
 """" c++
 function! s:insert_gates()
