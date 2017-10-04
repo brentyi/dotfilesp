@@ -67,6 +67,7 @@ let g:netrw_ftp_cmd = 'ftp -p'
 let g:lightline = { 'colorscheme': 'wombat' }
 nnoremap <c-o> :NERDTree<Return>
 let g:NERDTreeShowHidden=1
+let g:NERDTreeShowLineNumbers=1
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
