@@ -140,7 +140,6 @@ nnoremap <Esc> :noh<Return>:set nopaste<Return><Esc>
 nnoremap <Esc>^[ <Esc>^[
 
 """" general usability
-nmap ; :
 vmap [[ <Esc>
 vmap ;; <Esc>
 imap [[ <Esc>
