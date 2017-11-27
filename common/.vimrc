@@ -53,6 +53,7 @@ Plugin 'tpope/vim-repeat'
 Plugin 'vim-scripts/restore_view.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'Yggdroot/indentLine'
+Plugin 'octol/vim-cpp-enhanced-highlight'
 "
 "
 if fresh_install == 1
