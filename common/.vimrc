@@ -37,7 +37,6 @@ Plugin 'sjl/badwolf'
 " Plugin 'tmhedberg/SimpylFold'
 " Plugin 'Shougo/vimproc.vim'
 " Plugin 'Shougo/vimshell.vim'
-Plugin 'itchyny/lightline.vim'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'chreekat/vim-paren-crosshairs'
 Plugin 'lervag/vimtex'
@@ -54,6 +53,8 @@ Plugin 'vim-scripts/restore_view.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'Yggdroot/indentLine'
 Plugin 'octol/vim-cpp-enhanced-highlight'
+Plugin 'itchyny/lightline.vim'
+" Plugin 'mgee/lightline-bufferline'
 "
 "
 if fresh_install == 1
@@ -65,7 +66,6 @@ filetype plugin indent on
 
 """" plugin specific
 let g:netrw_ftp_cmd = 'ftp -p'
-let g:lightline = { 'colorscheme': 'wombat' }
 nnoremap <c-o> :NERDTree<Return>
 let g:NERDTreeShowHidden=1
 let g:NERDTreeShowLineNumbers=1
@@ -84,6 +84,13 @@ let g:indentLine_char = '·'
 set viewoptions=cursor,folds,slash,unix
 set noshowmode
 runtime! plugin/sleuth.vim " load vim-sleuth early so user-defined autocmds override it
+
+" set showtabline=2
+" let g:lightline = {}
+" " let g:lightline.colorscheme = 'wombat'
+" let g:lightline.tabline = {'left': [['buffers']], 'right': [['close']]}
+" let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
+" let g:lightline.component_type = {'buffers': 'tabsel'}
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
@@ -154,6 +161,13 @@ set laststatus=2
 set autochdir
 nnoremap <Leader>p :set invpaste<Return>
 
+"""" buffers
+set hidden
+nnoremap <silent> <Leader>bn :bn<Return>
+nnoremap <silent> <Leader>bd :bd<Return>
+nnoremap <silent> <Leader>bl :ls<Return>
+nnoremap <silent> <Leader>bp :CtrlPBuffer<Return>
+
 """" ros stuff
 au BufNewFile,BufRead *.launch set filetype=xml
 
@@ -210,10 +224,10 @@ endfunction
 autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 
 """" navigation in insert mode
-inoremap <c-h> <Esc>ha
-inoremap <c-j> <Esc>ja
-inoremap <c-k> <Esc>ka
-inoremap <c-l> <Esc>la
+inoremap <C-H> <Esc>ha
+inoremap <C-J> <Esc>ja
+inoremap <C-K> <Esc>ka
+inoremap <C-L> <Esc>la
 
 """" meta
 augroup AutoReloadVimRC
