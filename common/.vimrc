@@ -159,14 +159,19 @@ set history=35
 set modeline
 set laststatus=2
 set autochdir
-nnoremap <Leader>p :set invpaste<Return>
+nnoremap <Leader>tp :set invpaste<Return>
 
 """" buffers
 set hidden
 nnoremap <silent> <Leader>bn :bn<Return>
 nnoremap <silent> <Leader>bd :bd<Return>
 nnoremap <silent> <Leader>bl :ls<Return>
-nnoremap <silent> <Leader>bp :CtrlPBuffer<Return>
+nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
+
+"""" tabs
+nnoremap <silent> <Leader>tt :tabnew<Return>
+nnoremap <silent> <Leader>tn :tabn<Return>
+nnoremap <silent> <Leader>tp :tabp<Return>
 
 """" ros stuff
 au BufNewFile,BufRead *.launch set filetype=xml
@@ -202,10 +207,10 @@ function! s:toggle_friendly_mode()
         let s:friendly_mode = 0
         echo "enabled friendly mode!"
     else
-        map <silent> <Up> :exe "resize +5"<CR>
-        map <silent> <Down> :exe "resize -5"<CR>
-        map <silent> <Right> :exe "vert resize +5"<CR>
-        map <silent> <Left> :exe "vert resize -5"<CR>
+        nmap <silent> <Up> :exe "resize +5"<CR>
+        nmap <silent> <Down> :exe "resize -5"<CR>
+        nmap <silent> <Right> :exe "vert resize +5"<CR>
+        nmap <silent> <Left> :exe "vert resize -5"<CR>
         set mouse=
         let s:friendly_mode = 1
     endif
