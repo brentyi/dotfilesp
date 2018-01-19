@@ -159,7 +159,7 @@ set history=35
 set modeline
 set laststatus=2
 set autochdir
-nnoremap <Leader>tp :set invpaste<Return>
+nnoremap <Leader>ip :set invpaste<Return>
 
 """" buffers
 set hidden
