@@ -81,6 +81,7 @@ let g:NERDAltDelims_python = 1
 let g:NERDAltDelims_cython = 1
 let g:NERDAltDelims_pyrex = 1
 let g:indentLine_char = '·'
+let g:indentLine_fileTypeExclude = ['json']
 set viewoptions=cursor,folds,slash,unix
 set noshowmode
 runtime! plugin/sleuth.vim " load vim-sleuth early so user-defined autocmds override it
@@ -133,8 +134,7 @@ hi VertSplit ctermfg=0 ctermbg=0
 autocmd VimEnter,WinEnter * match TrailingWhitespace /\s\+$/
 
 """" indent
-set list
-set listchars=tab:>\ ,trail:\ 
+set list listchars=tab:❘-,trail:\ ,extends:»,precedes:«,nbsp:×
 autocmd FileType make setlocal noexpandtab
 
 """" fold utils
