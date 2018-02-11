@@ -171,6 +171,8 @@ set modeline
 set laststatus=2
 set autochdir
 nnoremap <Leader>ip :set invpaste<Return>
+nnoremap ' `
+nnoremap ` '
 
 """" buffers
 set hidden
