@@ -26,5 +26,5 @@ echo "DONE"
 # install vundle + vim plugins
 # this is mostly handled in our vim config
 echo -n "Setting up Vundle... "
-nvim +qall
+vim +PluginInstall +qall
 echo "DONE"
