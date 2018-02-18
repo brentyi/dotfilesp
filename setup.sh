@@ -1,40 +1,41 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 [-d | -s | -r | -b]"
-    echo -e "\t-d\tdotfiles only"
-    echo -e "\t-s\tstandard install: common utilities + dotfiles"
-    echo -e "\t-r\tstandard install w/ ros"
-    echo -e "\t-b\tbeaglebone-specific install (run as root)"
+    echo "Usage: $0 [-c] [-z] [-d] [-r] [-b]"
+    echo -e "\t-c\tcommon utilities: vim, tmux, htop, python"
+    echo -e "\t-z\tzsh"
+    echo -e "\t-d\tdotfiles"
+    echo -e "\t-r\tROS"
+    echo -e "\t-b\tBeaglebone libraries"
 }
 
 valid=0
 install_dotfiles=0
-install_basic=0
+install_common=0
 install_ros=0
 install_beaglebone=0
+install_zsh=0
 
-while getopts dsrb flag; do
+while getopts czdrb flag; do
   case $flag in
+    c)
+      valid=1
+      install_common=1
+      ;;
+    z)
+      valid=1
+      install_zsh=1
+    ;;
     d)
       valid=1
       install_dotfiles=1
       ;;
-    s)
-      valid=1
-      install_dotfiles=1
-      install_basic=1
-      ;;
     r)
       valid=1
-      install_dotfiles=1
-      install_basic=1
       install_ros=1
       ;;
     b)
       valid=1
-      install_dotfiles=1
-      install_basic=1
       install_beaglebone=1
       ;;
     ?)
@@ -51,11 +52,18 @@ fi
 
 sudo -v
 
-if [[ $install_basic = 1 ]]; then
+if [[ $install_common = 1 ]]; then
     echo -e "\n---------"
-    echo "Installing basic utilities"
+    echo "Installing common utilities"
     echo "---------"
-    bash scripts/install_basic.sh
+    bash scripts/install_common.sh
+fi
+
+if [[ $install_zsh = 1 ]]; then
+    echo -e "\n---------"
+    echo "Installing ZSH"
+    echo "---------"
+    bash scripts/install_zsh.sh
 fi
 
 if [[ $install_dotfiles = 1 ]]; then
@@ -71,7 +79,6 @@ if [[ $install_ros = 1 ]]; then
     echo "---------"
     bash scripts/install_ros_desktop.sh
 fi
-
 if [[ $install_beaglebone = 1 ]]; then
     echo -e "\n---------"
     echo "Beaglebone-specific installations"

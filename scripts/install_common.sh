@@ -9,8 +9,4 @@ sudo pip2 install --upgrade pip
 sudo pip3 install --upgrade pip
 
 # install common utilities
-sudo apt-get install tmux htop build-essential xclip -y
-
-# set up zsh
-sudo apt-get install zsh -y
-chsh -s /bin/zsh
+sudo apt-get install vim tmux htop build-essential xclip -y
