@@ -140,8 +140,6 @@ else
     hi Search ctermfg=4 ctermbg=7
 endif
 hi VertSplit ctermfg=0 ctermbg=0
-" au InsertEnter * set norelativenumber
-" au InsertLeave * set relativenumber
 autocmd VimEnter,WinEnter * match TrailingWhitespace /\s\+$/
 
 """" indent
@@ -159,18 +157,19 @@ nnoremap <Esc> :noh<Return>:set nopaste<Return><Esc>
 nnoremap <Esc>^[ <Esc>^[
 
 """" general usability
+let mapleader = "\<Space>"
 vmap [[ <Esc>
 vmap ;; <Esc>
 imap [[ <Esc>
 imap ;; <Esc>
 set timeoutlen=300 ttimeoutlen=10
-let mapleader = "\<Space>"
 set backspace=2
 set history=35
 set modeline
 set laststatus=2
 set autochdir
 nnoremap <Leader>ip :set invpaste<Return>
+nnoremap <Leader>rtws :%s/\s\+$//e<Return>
 nnoremap ' `
 nnoremap ` '
 
