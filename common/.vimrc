@@ -241,10 +241,10 @@ endfunction
 autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 
 """" navigation in insert mode
-inoremap <C-H> <Esc>ha
-inoremap <C-J> <Esc>ja
-inoremap <C-K> <Esc>ka
-inoremap <C-L> <Esc>la
+inoremap <C-H> <Left>
+inoremap <C-J> <Down>
+inoremap <C-K> <Up>
+inoremap <C-L> <Right>
 
 """" meta
 augroup AutoReloadVimRC
