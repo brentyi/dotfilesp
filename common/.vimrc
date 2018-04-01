@@ -170,6 +170,7 @@ set laststatus=2
 set autochdir
 nnoremap <Leader>ip :set invpaste<Return>
 nnoremap <Leader>rtws :%s/\s\+$//e<Return>
+nnoremap <Leader>tln :set number!<Return>:set relativenumber!<Return>
 nnoremap ' `
 nnoremap ` '
 
