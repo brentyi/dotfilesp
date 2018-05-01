@@ -54,6 +54,7 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'Yggdroot/indentLine'
 Plugin 'octol/vim-cpp-enhanced-highlight'
 Plugin 'itchyny/lightline.vim'
+Plugin 'henrik/vim-indexed-search'
 " Plugin 'mgee/lightline-bufferline'
 "
 "
