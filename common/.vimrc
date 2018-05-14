@@ -177,7 +177,7 @@ nnoremap ' `
 nnoremap ` '
 
 """" buffers
-set hidden
+" set hidden
 nnoremap <silent> <Leader>bn :bn<Return>
 nnoremap <silent> <Leader>bd :bd<Return>
 nnoremap <silent> <Leader>bl :ls<Return>
