@@ -85,6 +85,11 @@ let g:NERDAltDelims_cython = 1
 let g:NERDAltDelims_pyrex = 1
 let g:indentLine_char = '·'
 let g:indentLine_fileTypeExclude = ['json', 'markdown']
+let g:ctrlp_show_hidden = 1
+let g:ctrlp_custom_ignore = {
+    \ 'file': '\v(\.pyc|\.swp|\.o)@<!$'
+    \ }
+
 set viewoptions=cursor,folds,slash,unix
 set noshowmode
 runtime! plugin/sleuth.vim " load vim-sleuth early so user-defined autocmds override it
@@ -96,16 +101,16 @@ runtime! plugin/sleuth.vim " load vim-sleuth early so user-defined autocmds over
 " let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
 " let g:lightline.component_type = {'buffers': 'tabsel'}
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'active': {
-      \   'right': [ [ 'lineinfo' ],
-      \              [ 'charvaluehex' ],
-      \              [ 'filetype' ] ]
-      \ },
-      \ 'component': {
-      \   'charvaluehex': '0x%B'
-      \ },
-      \ }
+    \ 'colorscheme': 'wombat',
+    \ 'active': {
+    \   'right': [ [ 'lineinfo' ],
+    \              [ 'charvaluehex' ],
+    \              [ 'filetype' ] ]
+    \ },
+    \ 'component': {
+    \   'charvaluehex': '0x%B'
+    \ },
+    \ }
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
