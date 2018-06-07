@@ -71,6 +71,7 @@ let g:netrw_ftp_cmd = 'ftp -p'
 nnoremap <c-o> :NERDTree<Return>
 let g:NERDTreeShowHidden=1
 let g:NERDTreeShowLineNumbers=1
+autocmd FileType nerdtree setlocal relativenumber
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
@@ -112,7 +113,9 @@ let g:lightline = {
 
 """" visuals
 syntax on
-set number
+if v:version > 703
+    set number
+endif
 set relativenumber
 set scrolloff=7
 au InsertEnter * set cursorline
@@ -172,7 +175,11 @@ set laststatus=2
 set autochdir
 nnoremap <Leader>ip :set invpaste<Return>
 nnoremap <Leader>rtws :%s/\s\+$//e<Return>
-nnoremap <Leader>tln :set number!<Return>:set relativenumber!<Return>
+if v:version > 703
+    nnoremap <Leader>tln :set number!<Return>:set relativenumber!<Return>
+else
+    nnoremap <Leader>tln :set relativenumber!<Return>
+endif
 nnoremap ' `
 nnoremap ` '
 
