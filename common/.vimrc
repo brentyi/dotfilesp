@@ -89,6 +89,8 @@ let g:ctrlp_show_hidden = 1
 let g:ctrlp_custom_ignore = {
     \ 'file': '\v(\.pyc|\.swp|\.o)@<!$'
     \ }
+let g:ctrlp_switch_buffer = '0'
+let g:ctrlp_reuse_window = 1
 
 set viewoptions=cursor,folds,slash,unix
 set noshowmode
