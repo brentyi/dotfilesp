@@ -25,6 +25,7 @@ call vundle#begin()
 "
 Plugin 'gmarik/Vundle.vim'
 Plugin 'easymotion/vim-easymotion'
+Plugin 'justinmk/vim-sneak'
 Plugin 'ctrlpvim/ctrlp.vim'
 " Plugin 'valloric/MatchTagAlways'
 Plugin 'gregsexton/MatchTag'
