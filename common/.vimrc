@@ -86,7 +86,7 @@ let g:NERDAltDelims_python = 1
 let g:NERDAltDelims_cython = 1
 let g:NERDAltDelims_pyrex = 1
 let g:indentLine_char = '·'
-let g:indentLine_fileTypeExclude = ['json', 'markdown']
+let g:indentLine_fileTypeExclude = ['json', 'markdown', 'tex']
 let g:ctrlp_show_hidden = 1
 let g:ctrlp_custom_ignore = {
     \ 'file': '\v(\.pyc|\.swp|\.o)@<!$'
