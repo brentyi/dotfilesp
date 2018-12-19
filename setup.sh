@@ -1,11 +1,12 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 [-c] [-z] [-d] [-r] [-b]"
+    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b]"
     echo -e "\t-c\tcommon utilities: vim, tmux, htop, python"
     echo -e "\t-z\tzsh"
     echo -e "\t-d\tdotfiles"
     echo -e "\t-r\tROS"
+    echo -e "\t-g\tGoogle Chrome"
     echo -e "\t-b\tBeaglebone libraries"
 }
 
@@ -13,10 +14,11 @@ valid=0
 install_dotfiles=0
 install_common=0
 install_ros=0
+install_chrome=0
 install_beaglebone=0
 install_zsh=0
 
-while getopts czdrb flag; do
+while getopts czdrgb flag; do
   case $flag in
     c)
       valid=1
@@ -33,6 +35,10 @@ while getopts czdrb flag; do
     r)
       valid=1
       install_ros=1
+      ;;
+    g)
+      valid=1
+      install_chrome=1
       ;;
     b)
       valid=1
@@ -79,6 +85,14 @@ if [[ $install_ros = 1 ]]; then
     echo "---------"
     bash scripts/install_ros_desktop.sh
 fi
+
+if [[ $install_chrome = 1 ]]; then
+    echo -e "\n---------"
+    echo "Installing Chrome"
+    echo "---------"
+    bash scripts/install_chrome.sh
+fi
+
 if [[ $install_beaglebone = 1 ]]; then
     echo -e "\n---------"
     echo "Beaglebone-specific installations"
