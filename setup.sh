@@ -1,13 +1,14 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b]"
+    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m]"
     echo -e "\t-c\tcommon utilities: vim, tmux, htop, python"
     echo -e "\t-z\tzsh"
     echo -e "\t-d\tdotfiles"
     echo -e "\t-r\tROS"
     echo -e "\t-g\tGoogle Chrome"
     echo -e "\t-b\tBeaglebone libraries"
+    echo -e "\t-m\tMiniconda"
 }
 
 valid=0
@@ -17,8 +18,9 @@ install_ros=0
 install_chrome=0
 install_beaglebone=0
 install_zsh=0
+install_miniconda=0
 
-while getopts czdrgb flag; do
+while getopts czdrgbm flag; do
   case $flag in
     c)
       valid=1
@@ -43,6 +45,10 @@ while getopts czdrgb flag; do
     b)
       valid=1
       install_beaglebone=1
+      ;;
+    m)
+      valid=1
+      install_miniconda=1
       ;;
     ?)
       valid=0
@@ -98,6 +104,13 @@ if [[ $install_beaglebone = 1 ]]; then
     echo "Beaglebone-specific installations"
     echo "---------"
     bash scripts/install_beaglebone.sh
+fi
+
+if [[ $install_miniconda = 1 ]]; then
+    echo -e "\n---------"
+    echo "Miniconda"
+    echo "---------"
+    bash scripts/install_miniconda.sh
 fi
 
 echo ""
