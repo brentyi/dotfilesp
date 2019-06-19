@@ -223,6 +223,19 @@ if exists('$TMUX')
     autocmd VimLeave * call system("tmux setw automatic-rename")
 endif
 
+"""" set path to repository root when we open a file
+function! s:add_repo_to_path()
+    let s:git_path=system("git rev-parse --show-toplevel | tr -d '\\n'")
+    if strlen(s:git_path) > 0 && s:git_path !~ "\^fatal" && &path !~ s:git_path
+        let &path .= "," . s:git_path . "/**7"
+    endif
+    let s:hg_path=system("hg root | tr -d '\\n'")
+    if strlen(s:hg_path) > 0 && s:hg_path !~ "\^abort" && &path !~ s:hg_path
+        let &path .= "," . s:hg_path . "/**7"
+    endif
+endfunction
+autocmd BufEnter * call <SID>add_repo_to_path()
+
 " forgot to sudo!
 cmap W! w !sudo tee >/dev/null %
 
