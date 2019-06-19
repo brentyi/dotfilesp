@@ -9,4 +9,4 @@ sudo pip2 install --upgrade pip
 sudo pip3 install --upgrade pip
 
 # install common utilities
-sudo apt-get install vim tmux htop build-essential xclip -y
+sudo apt-get install vim ctags tmux htop build-essential xclip -y

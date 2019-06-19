@@ -59,6 +59,8 @@ Plugin 'itchyny/lightline.vim'
 Plugin 'henrik/vim-indexed-search'
 " Plugin 'plasticboy/vim-markdown'
 " Plugin 'mgee/lightline-bufferline'
+Plugin 'brentyi/vim-gutentags'
+Plugin 'ajh17/VimCompletesMe'
 "
 "
 if fresh_install == 1
@@ -70,7 +72,6 @@ filetype plugin indent on
 
 """" plugin specific
 let g:netrw_ftp_cmd = 'ftp -p'
-nnoremap <c-o> :NERDTree<Return>
 let g:NERDTreeShowHidden=1
 let g:NERDTreeShowLineNumbers=1
 autocmd FileType nerdtree setlocal relativenumber
@@ -87,13 +88,16 @@ let g:NERDAltDelims_cython = 1
 let g:NERDAltDelims_pyrex = 1
 let g:indentLine_char = '·'
 let g:indentLine_fileTypeExclude = ['json', 'markdown', 'tex']
+let g:ctrlp_extensions = ['tag']
 let g:ctrlp_show_hidden = 1
-let g:ctrlp_custom_ignore = {
-    \ 'file': '\v(\.pyc|\.swp|\.o)@<!$'
-    \ }
+let g:ctrlp_follow_symlinks=1
+let g:ctrlp_max_files=300000
 let g:ctrlp_switch_buffer = '0'
 let g:ctrlp_reuse_window = 1
-
+set shell=/bin/bash
+set wildignore=*.swp,*.o,*.pyc
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*,        " Linux/MacOSX
+set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\  " Windows ('noshellslash')
 set viewoptions=cursor,folds,slash,unix
 set noshowmode
 runtime! plugin/sleuth.vim " load vim-sleuth early so user-defined autocmds override it
@@ -184,6 +188,7 @@ set laststatus=2
 set autochdir
 nnoremap <Leader>ip :set invpaste<Return>
 nnoremap <Leader>rtws :%s/\s\+$//e<Return>
+nnoremap <Leader>o :NERDTree<Return>
 if v:version > 703
     nnoremap <Leader>tln :set number!<Return>:set relativenumber!<Return>
 else
@@ -204,8 +209,13 @@ nnoremap <silent> <Leader>tt :tabnew<Return>
 nnoremap <silent> <Leader>tn :tabn<Return>
 nnoremap <silent> <Leader>tp :tabp<Return>
 
-"""" ros stuff
+"""" tags
+nnoremap <silent> <Leader><Leader>p :CtrlPTag<Return>
+nnoremap <silent> <Leader>ts :tselect<Return>
+
+"""" syntax highlighting special cases
 au BufNewFile,BufRead *.launch set filetype=xml
+au BufNewFile,BufRead BUCK set filetype=python
 
 """" automatic tmux pane renaming
 if exists('$TMUX')
