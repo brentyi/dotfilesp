@@ -224,6 +224,7 @@ if exists('$TMUX')
 endif
 
 """" set path to repository root when we open a file
+"""" this is mostly to make gf actually work for #includes
 function! s:add_repo_to_path()
     let s:git_path=system("git rev-parse --show-toplevel | tr -d '\\n'")
     if strlen(s:git_path) > 0 && s:git_path !~ "\^fatal" && s:git_path !~ "command not found" && &path !~ s:git_path
