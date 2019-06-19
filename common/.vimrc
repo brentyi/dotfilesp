@@ -303,3 +303,9 @@ augroup AutoReloadVimRC
     au BufWritePost $MYVIMRC source $MYVIMRC
     au BufWritePost .vimrc source $MYVIMRC " for init.vim->.vimrc symlinks in neovim
 augroup END
+
+"""" spelling utilities
+:map <F5> :setlocal spell! spelllang=en_us<CR>
+inoremap <F5> <C-\><C-O>:setlocal spelllang=en_us spell! spell?<CR>
+hi clear SpellBad
+hi SpellBad cterm=bold,italic ctermfg=red
