@@ -94,31 +94,39 @@ let g:ctrlp_follow_symlinks=1
 let g:ctrlp_max_files=300000
 let g:ctrlp_switch_buffer = '0'
 let g:ctrlp_reuse_window = 1
+let g:gutentags_cache_dir = '~/.cache/tags'
 set shell=/bin/bash
-set wildignore=*.swp,*.o,*.pyc
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*,        " Linux/MacOSX
+set wildignore=*.swp,*.o,*.pyc,*.pb
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*        " Linux/MacOSX
 set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\  " Windows ('noshellslash')
 set viewoptions=cursor,folds,slash,unix
 set noshowmode
 runtime! plugin/sleuth.vim " load vim-sleuth early so user-defined autocmds override it
-
-" set showtabline=2
-" let g:lightline = {}
-" " let g:lightline.colorscheme = 'wombat'
-" let g:lightline.tabline = {'left': [['buffers']], 'right': [['close']]}
-" let g:lightline.component_expand = {'buffers': 'lightline#bufferline#buffers'}
-" let g:lightline.component_type = {'buffers': 'tabsel'}
 let g:lightline = {
     \ 'colorscheme': 'wombat',
     \ 'active': {
     \   'right': [ [ 'lineinfo' ],
-    \              [ 'charvaluehex' ],
-    \              [ 'filetype' ] ]
+    \              [ 'filetype', 'charvaluehex' ],
+    \              [ 'gutentags' ]]
     \ },
     \ 'component': {
-    \   'charvaluehex': '0x%B'
+    \   'charvaluehex': '0x%B',
+    \   'gutentags': '%{GutentagsPrefix()}%{gutentags#statusline("", "", ", indexing...")}'
     \ },
     \ }
+augroup GutentagsStatusLineRefresher
+    autocmd!
+    autocmd User GutentagsUpdating call lightline#update()
+    autocmd User GutentagsUpdated call lightline#update()
+augroup END
+function! GutentagsPrefix()
+    if g:gutentags_enabled
+        return 'ctags on'
+    else
+        return 'ctags off'
+    endif
+    return ''
+endfunction
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
