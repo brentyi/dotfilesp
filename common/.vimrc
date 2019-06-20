@@ -305,7 +305,7 @@ augroup AutoReloadVimRC
 augroup END
 
 """" spelling utilities
-:map <F5> :setlocal spell! spelllang=en_us<CR>
+map <F5> :setlocal spell! spelllang=en_us<CR>
 inoremap <F5> <C-\><C-O>:setlocal spelllang=en_us spell! spell?<CR>
 hi clear SpellBad
 hi SpellBad cterm=bold,italic ctermfg=red
