@@ -109,6 +109,9 @@ let g:lightline = {
     \              [ 'filetype', 'charvaluehex' ],
     \              [ 'gutentags' ]]
     \ },
+    \ 'inactive': {
+    \   'right': [ [], [], [ 'lineinfo' ] ]
+    \ },
     \ 'component': {
     \   'charvaluehex': '0x%B',
     \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "ctags indexing...")}'
