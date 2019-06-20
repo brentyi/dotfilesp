@@ -115,7 +115,7 @@ let g:lightline = {
     \ },
     \ }
 function! GutentagsStatus()
-    if executable(expand(g:gutentags_ctags_executable, 1)) == 0
+    if exists('g:gutentags_ctags_executable') && executable(expand(g:gutentags_ctags_executable, 1)) == 0
         return 'missing ctags'
     elseif !g:gutentags_enabled
         return 'ctags off'
