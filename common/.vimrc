@@ -111,22 +111,22 @@ let g:lightline = {
     \ },
     \ 'component': {
     \   'charvaluehex': '0x%B',
-    \   'gutentags': '%{GutentagsPrefix()}%{gutentags#statusline("", "", ", indexing...")}'
+    \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "ctags indexing...")}'
     \ },
     \ }
+function! GutentagsStatus()
+    if executable(expand(g:gutentags_ctags_executable, 1)) == 0
+        return 'missing ctags'
+    elseif !g:gutentags_enabled
+        return 'ctags off'
+    endif
+    return ''
+endfunction
 augroup GutentagsStatusLineRefresher
     autocmd!
     autocmd User GutentagsUpdating call lightline#update()
     autocmd User GutentagsUpdated call lightline#update()
 augroup END
-function! GutentagsPrefix()
-    if g:gutentags_enabled
-        return 'ctags on'
-    else
-        return 'ctags off'
-    endif
-    return ''
-endfunction
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
