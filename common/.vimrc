@@ -142,10 +142,10 @@ if v:version > 703
 endif
 set relativenumber
 set scrolloff=7
-au InsertEnter * set cursorline
-au InsertLeave * set nocursorline
-au InsertEnter * set cursorcolumn
-au InsertLeave * set nocursorcolumn
+autocmd InsertEnter * set cursorline
+autocmd InsertLeave * set nocursorline
+autocmd InsertEnter * set cursorcolumn
+autocmd InsertLeave * set nocursorcolumn
 " set foldcolumn=1
 " set clipboard=unnamed
 set background=dark
@@ -225,9 +225,9 @@ nnoremap <silent> <Leader><Leader>p :CtrlPTag<Return>
 nnoremap <silent> <Leader>ts :tselect<Return>
 
 """" syntax highlighting special cases
-au BufNewFile,BufRead *.launch set filetype=xml
-au BufNewFile,BufRead BUCK* set filetype=python
-au BufNewFile,BufRead TARGETS set filetype=python
+autocmd BufNewFile,BufRead *.launch set filetype=xml
+autocmd BufNewFile,BufRead BUCK* set filetype=python
+autocmd BufNewFile,BufRead TARGETS set filetype=python
 
 """" automatic tmux pane renaming
 if exists('$TMUX')
@@ -303,9 +303,9 @@ inoremap <C-L> <Right>
 
 """" meta
 augroup AutoReloadVimRC
-    au!
-    au BufWritePost $MYVIMRC source $MYVIMRC
-    au BufWritePost .vimrc source $MYVIMRC " for init.vim->.vimrc symlinks in neovim
+    autocmd!
+    autocmd BufWritePost $MYVIMRC source $MYVIMRC
+    autocmd BufWritePost .vimrc source $MYVIMRC " for init.vim->.vimrc symlinks in neovim
 augroup END
 
 """" spelling utilities
