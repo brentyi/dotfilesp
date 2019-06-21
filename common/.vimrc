@@ -226,7 +226,8 @@ nnoremap <silent> <Leader>ts :tselect<Return>
 
 """" syntax highlighting special cases
 au BufNewFile,BufRead *.launch set filetype=xml
-au BufNewFile,BufRead BUCK set filetype=python
+au BufNewFile,BufRead BUCK* set filetype=python
+au BufNewFile,BufRead TARGETS set filetype=python
 
 """" automatic tmux pane renaming
 if exists('$TMUX')
