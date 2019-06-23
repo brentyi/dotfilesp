@@ -182,7 +182,7 @@ nnoremap <Bslash> za
 
 """" search
 set hlsearch
-nnoremap <Esc> :noh<Return>:set nopaste<Return><Esc>
+nnoremap <Esc> :noh<Return><Esc>
 nnoremap <Esc>^[ <Esc>^[
 
 """" general usability
