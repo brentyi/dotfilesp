@@ -61,6 +61,7 @@ Plugin 'henrik/vim-indexed-search'
 " Plugin 'mgee/lightline-bufferline'
 Plugin 'brentyi/vim-gutentags'
 Plugin 'ajh17/VimCompletesMe'
+Plugin 'rhysd/vim-clang-format'
 "
 "
 if fresh_install == 1
@@ -130,6 +131,8 @@ augroup GutentagsStatusLineRefresher
     autocmd User GutentagsUpdating call lightline#update()
     autocmd User GutentagsUpdated call lightline#update()
 augroup END
+autocmd FileType c,cpp,objc,h,hpp nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
+autocmd FileType c,cpp,objc,h,hpp vnoremap <buffer><Leader>cf :ClangFormat<CR>
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
