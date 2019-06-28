@@ -147,6 +147,7 @@ if v:version > 703
 endif
 set relativenumber
 set scrolloff=7
+inoremap <C-C> <Esc>
 autocmd InsertEnter * set cursorline
 autocmd InsertLeave * set nocursorline
 autocmd InsertEnter * set cursorcolumn
