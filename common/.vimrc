@@ -73,9 +73,11 @@ filetype plugin indent on
 
 """" plugin specific
 let g:netrw_ftp_cmd = 'ftp -p'
-let g:NERDTreeShowHidden=1
-let g:NERDTreeShowLineNumbers=1
+let g:NERDTreeShowHidden = 1
+let g:NERDTreeShowLineNumbers = 1
 autocmd FileType nerdtree setlocal relativenumber
+autocmd VimEnter * if !argc() | NERDTree | endif
+let g:NERDTreeMinimalUI = 1
 let g:NERDTreeFileExtensionHighlightFullName = 1
 let g:NERDTreeExactMatchHighlightFullName = 1
 let g:NERDTreePatternMatchHighlightFullName = 1
