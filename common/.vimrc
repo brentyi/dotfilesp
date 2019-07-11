@@ -6,6 +6,9 @@ if !has('nvim')
     set encoding=utf-8
 endif
 
+"""" set leader to spacebar
+let mapleader = "\<Space>"
+
 """" vundle
 let fresh_install=0
 let vundle_readme=expand('~/.vim/bundle/Vundle.vim/README.md')
@@ -62,13 +65,19 @@ Plugin 'henrik/vim-indexed-search'
 " Plugin 'mgee/lightline-bufferline'
 Plugin 'brentyi/vim-gutentags'
 Plugin 'ajh17/VimCompletesMe'
-Plugin 'rhysd/vim-clang-format'
+Plugin 'google/vim-maktaba'
+Plugin 'google/vim-codefmt'
+Plugin 'google/vim-glaive'
 "
 "
 if fresh_install == 1
     PluginInstall
 endif
 call vundle#end()
+call glaive#Install()
+
+Glaive codefmt plugin[mappings]
+
 
 filetype plugin indent on
 
@@ -134,8 +143,8 @@ augroup GutentagsStatusLineRefresher
     autocmd User GutentagsUpdating call lightline#update()
     autocmd User GutentagsUpdated call lightline#update()
 augroup END
-autocmd FileType c,cpp,objc,h,hpp nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
-autocmd FileType c,cpp,objc,h,hpp vnoremap <buffer><Leader>cf :ClangFormat<CR>
+nnoremap <buffer><Leader>cf :FormatCode<CR>
+vnoremap <buffer><Leader>cf :FormatLines<CR>
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
@@ -193,7 +202,6 @@ nnoremap <Esc> :noh<Return><Esc>
 nnoremap <Esc>^[ <Esc>^[
 
 """" general usability
-let mapleader = "\<Space>"
 vmap [[ <Esc>
 vmap ;; <Esc>
 imap [[ <Esc>
