@@ -145,8 +145,8 @@ augroup GutentagsStatusLineRefresher
     autocmd User GutentagsUpdating call lightline#update()
     autocmd User GutentagsUpdated call lightline#update()
 augroup END
-nnoremap <buffer><Leader>cf :FormatCode<CR>
-vnoremap <buffer><Leader>cf :FormatLines<CR>
+nnoremap <Leader>cf :FormatCode<CR>
+vnoremap <Leader>cf :FormatLines<CR>
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
