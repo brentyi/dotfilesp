@@ -63,11 +63,14 @@ Plugin 'itchyny/lightline.vim'
 Plugin 'henrik/vim-indexed-search'
 " Plugin 'plasticboy/vim-markdown'
 " Plugin 'mgee/lightline-bufferline'
-Plugin 'brentyi/vim-gutentags'
 Plugin 'ajh17/VimCompletesMe'
 Plugin 'google/vim-maktaba'
-Plugin 'google/vim-codefmt'
 Plugin 'google/vim-glaive'
+
+""" hacked version of codefmt, with --aggressive flag for autopep8
+Plugin 'brentyi/vim-codefmt'
+""" error-suppressed version of gutentags
+Plugin 'brentyi/vim-gutentags'
 "
 "
 if fresh_install == 1
@@ -75,9 +78,6 @@ if fresh_install == 1
 endif
 call vundle#end()
 call glaive#Install()
-
-Glaive codefmt plugin[mappings]
-
 
 filetype plugin indent on
 
@@ -145,6 +145,7 @@ augroup GutentagsStatusLineRefresher
     autocmd User GutentagsUpdating call lightline#update()
     autocmd User GutentagsUpdated call lightline#update()
 augroup END
+Glaive codefmt plugin[mappings]
 nnoremap <Leader>cf :FormatCode<CR>
 vnoremap <Leader>cf :FormatLines<CR>
 
