@@ -224,6 +224,7 @@ nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
 """" tabs
 nnoremap <silent> <Leader>tt :tabnew<Return>
 nnoremap <silent> <Leader>tn :tabn<Return>
+nnoremap <silent> <Leader>n :tabn<Return>
 nnoremap <silent> <Leader>tp :tabp<Return>
 
 """" tags
