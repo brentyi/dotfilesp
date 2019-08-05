@@ -6,6 +6,9 @@ if !has('nvim')
     set encoding=utf-8
 endif
 
+"""" set leader to spacebar
+let mapleader = "\<Space>"
+
 """" vundle
 let fresh_install=0
 let vundle_readme=expand('~/.vim/bundle/Vundle.vim/README.md')
@@ -33,6 +36,7 @@ Plugin 'vim-scripts/indentpython.vim'
 " Plugin 'scrooloose/syntastic'
 Plugin 'neomake/neomake'
 Plugin 'nvie/vim-flake8'
+Plugin 'vim-scripts/xoria256.vim'
 Plugin 'tomasr/molokai'
 Plugin 'sjl/badwolf'
 Plugin 'sheerun/vim-polyglot'
@@ -59,15 +63,21 @@ Plugin 'itchyny/lightline.vim'
 Plugin 'henrik/vim-indexed-search'
 " Plugin 'plasticboy/vim-markdown'
 " Plugin 'mgee/lightline-bufferline'
-Plugin 'brentyi/vim-gutentags'
 Plugin 'ajh17/VimCompletesMe'
-Plugin 'rhysd/vim-clang-format'
+Plugin 'google/vim-maktaba'
+Plugin 'google/vim-glaive'
+
+""" hacked version of codefmt, with --aggressive flag for autopep8
+Plugin 'brentyi/vim-codefmt'
+""" error-suppressed version of gutentags
+Plugin 'brentyi/vim-gutentags'
 "
 "
 if fresh_install == 1
     PluginInstall
 endif
 call vundle#end()
+call glaive#Install()
 
 filetype plugin indent on
 
@@ -89,6 +99,8 @@ let g:NERDDefaultAlign = 'left'
 let g:NERDAltDelims_python = 1
 let g:NERDAltDelims_cython = 1
 let g:NERDAltDelims_pyrex = 1
+let g:NERDTreeMapJumpNextSibling = '<Nop>'
+let g:NERDTreeMapJumpPrevSibling = '<Nop>'
 let g:indentLine_char = '·'
 let g:indentLine_fileTypeExclude = ['json', 'markdown', 'tex']
 let g:ctrlp_extensions = ['tag']
@@ -133,8 +145,9 @@ augroup GutentagsStatusLineRefresher
     autocmd User GutentagsUpdating call lightline#update()
     autocmd User GutentagsUpdated call lightline#update()
 augroup END
-autocmd FileType c,cpp,objc,h,hpp nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
-autocmd FileType c,cpp,objc,h,hpp vnoremap <buffer><Leader>cf :ClangFormat<CR>
+Glaive codefmt plugin[mappings]
+nnoremap <Leader>cf :FormatCode<CR>
+vnoremap <Leader>cf :FormatLines<CR>
 
 " autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
 " autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
@@ -192,7 +205,6 @@ nnoremap <Esc> :noh<Return><Esc>
 nnoremap <Esc>^[ <Esc>^[
 
 """" general usability
-let mapleader = "\<Space>"
 vmap [[ <Esc>
 vmap ;; <Esc>
 imap [[ <Esc>
