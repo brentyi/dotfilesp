@@ -44,7 +44,7 @@ Plugin 'sheerun/vim-polyglot'
 " Plugin 'Shougo/vimproc.vim'
 " Plugin 'Shougo/vimshell.vim'
 Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'chreekat/vim-paren-crosshairs'
+" Plugin 'chreekat/vim-paren-crosshairs'
 " Plugin 'lervag/vimtex'
 Plugin 'itchyny/vim-cursorword'
 Plugin 'tpope/vim-sleuth'
@@ -187,6 +187,7 @@ else
     hi TrailingWhitespace ctermbg=1
     hi Search ctermfg=4 ctermbg=7
 endif
+hi MatchParen cterm=bold,underline ctermbg=none ctermfg=7
 hi VertSplit ctermfg=0 ctermbg=0
 autocmd VimEnter,WinEnter * match TrailingWhitespace /\s\+$/
 
