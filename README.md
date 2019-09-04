@@ -11,6 +11,7 @@ Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b]
         -r      ROS (Indigo/Kinetic)
         -g      Google Chrome
         -b      Beaglebone libraries
+        -m      Miniconda
 ```
 
 ## Structure
