@@ -2,8 +2,6 @@
 # brent yi
 #
 
-echo '>>>>>>>>>>'
-
 export LANG=en_US.UTF-8
 if [ -z "$HOME" ]; then
     export HOME=/home/brent
@@ -60,6 +58,10 @@ function u() {
         echo "Unstaged changes in dotfiles directory; please commit or stash them"
         cd - > /dev/null
     fi
+}
+verbose_source(){
+    echo "+ source $@"
+    source $@
 }
 
 bindkey -M viins '[[' vi-cmd-mode
