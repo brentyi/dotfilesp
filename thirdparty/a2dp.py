@@ -1,4 +1,4 @@
-#! /usr/bin/env python3.5
+#!/usr/bin/env python3
 """
 ####################################################################
         DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
@@ -29,7 +29,7 @@ Shorthands:
 
     $ alias speakers="a2dp.py 10:08:C1:44:AE:BC"
     $ alias headphones="a2dp.py 00:22:37:3D:DA:50"
-    
+
     $ speakers
 
 
