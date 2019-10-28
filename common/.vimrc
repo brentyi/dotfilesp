@@ -67,6 +67,7 @@ Plugin 'henrik/vim-indexed-search'
 Plugin 'ajh17/VimCompletesMe'
 Plugin 'google/vim-maktaba'
 Plugin 'google/vim-glaive'
+Plugin 'kana/vim-fakeclip'
 
 """ hacked version of codefmt, with --aggressive flag for autopep8
 Plugin 'brentyi/vim-codefmt'
