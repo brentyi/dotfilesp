@@ -39,7 +39,7 @@ alias sudo="sudo "
 alias :q="exit"
 alias :e="vim"
 
-function u() {
+u() {
     cd ~/dotfilesp
     if [[ -z $(git status -s) ]]; then
         echo "Updating dotfiles"
@@ -59,7 +59,19 @@ function u() {
         cd - > /dev/null
     fi
 }
-verbose_source(){
+
+tmux_renumber() {
+    sessions=$(tmux ls | grep '^[0-9]\+:' | cut -f1 -d':' | sort)
+
+    new=0
+    while read -r old
+    do
+        tmux rename -t $old $new
+        ((new++))
+    done <<< "$sessions"
+}
+
+verbose_source() {
     echo "+ source $@"
     source $@
 }
