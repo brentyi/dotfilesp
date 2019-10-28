@@ -85,6 +85,7 @@ if [ -n "$SSH_CONNECTION" ]; then
     echo "SSH CONNECTION"
 elif [ "${TMUX+set}" ]; then
     echo "----------"
+    tmux_renumber
 else
     # open tmux by default
     tmux -2
