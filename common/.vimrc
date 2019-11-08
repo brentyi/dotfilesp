@@ -9,76 +9,70 @@ endif
 """" set leader to spacebar
 let mapleader = "\<Space>"
 
-"""" vundle
-let fresh_install=0
-let vundle_readme=expand('~/.vim/bundle/Vundle.vim/README.md')
-if !filereadable(vundle_readme)
-    echo "Installing Vundle.."
-    echo ""
-    silent !mkdir -p ~/.vim/bundle
-    silent !git clone https://github.com/VundleVim/Vundle.vim ~/.vim/bundle/Vundle.vim
-    let fresh_install=1
+"""" vim-plug
+" auto-install
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 set nocompatible
 filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+
+call plug#begin('~/.vim/bundle')
 "
 "
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'easymotion/vim-easymotion'
-Plugin 'justinmk/vim-sneak'
-Plugin 'ctrlpvim/ctrlp.vim'
-" Plugin 'valloric/MatchTagAlways'
-Plugin 'gregsexton/MatchTag'
-Plugin 'vim-scripts/indentpython.vim'
-" Plugin 'scrooloose/syntastic'
-Plugin 'neomake/neomake'
-Plugin 'nvie/vim-flake8'
-Plugin 'vim-scripts/xoria256.vim'
-Plugin 'tomasr/molokai'
-Plugin 'sjl/badwolf'
-Plugin 'sheerun/vim-polyglot'
-" Plugin 'tmhedberg/SimpylFold'
-" Plugin 'Shougo/vimproc.vim'
-" Plugin 'Shougo/vimshell.vim'
-Plugin 'christoomey/vim-tmux-navigator'
-" Plugin 'chreekat/vim-paren-crosshairs'
-" Plugin 'lervag/vimtex'
-Plugin 'itchyny/vim-cursorword'
-Plugin 'tpope/vim-sleuth'
-Plugin 'mustache/vim-mustache-handlebars'
-Plugin 'scrooloose/nerdtree'
-" Plugin 'ryanoasis/vim-devicons'
-Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
-" Plugin 'Xuyuanp/nerdtree-git-plugin'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-repeat'
-Plugin 'vim-scripts/restore_view.vim'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'Yggdroot/indentLine'
-Plugin 'apuignav/vim-gf-python'
-" Plugin 'octol/vim-cpp-enhanced-highlight'
-Plugin 'itchyny/lightline.vim'
-Plugin 'henrik/vim-indexed-search'
-" Plugin 'plasticboy/vim-markdown'
-" Plugin 'mgee/lightline-bufferline'
-Plugin 'ajh17/VimCompletesMe'
-Plugin 'google/vim-maktaba'
-Plugin 'google/vim-glaive'
-Plugin 'kana/vim-fakeclip'
+Plug 'VundleVim/Vundle.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'justinmk/vim-sneak'
+Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'valloric/MatchTagAlways'
+Plug 'gregsexton/MatchTag'
+Plug 'vim-scripts/indentpython.vim'
+" Plug 'scrooloose/syntastic'
+Plug 'neomake/neomake'
+Plug 'nvie/vim-flake8'
+Plug 'vim-scripts/xoria256.vim'
+Plug 'tomasr/molokai'
+Plug 'sjl/badwolf'
+Plug 'sheerun/vim-polyglot'
+" Plug 'tmhedberg/SimpylFold'
+" Plug 'Shougo/vimproc.vim'
+" Plug 'Shougo/vimshell.vim'
+Plug 'christoomey/vim-tmux-navigator'
+" Plug 'chreekat/vim-paren-crosshairs'
+" Plug 'lervag/vimtex'
+Plug 'itchyny/vim-cursorword'
+Plug 'tpope/vim-sleuth'
+Plug 'mustache/vim-mustache-handlebars'
+Plug 'scrooloose/nerdtree'
+" Plug 'ryanoasis/vim-devicons'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+" Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'vim-scripts/restore_view.vim'
+Plug 'scrooloose/nerdcommenter'
+Plug 'Yggdroot/indentLine'
+Plug 'apuignav/vim-gf-python'
+" Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'itchyny/lightline.vim'
+Plug 'henrik/vim-indexed-search'
+" Plug 'plasticboy/vim-markdown'
+" Plug 'mgee/lightline-bufferline'
+Plug 'ajh17/VimCompletesMe'
+Plug 'google/vim-maktaba'
+Plug 'google/vim-glaive'
+Plug 'kana/vim-fakeclip'
 
 """ hacked version of codefmt, with --aggressive flag for autopep8
-Plugin 'brentyi/vim-codefmt'
+Plug 'brentyi/vim-codefmt'
 """ error-suppressed version of gutentags
-Plugin 'brentyi/vim-gutentags'
+Plug 'brentyi/vim-gutentags'
 "
 "
-if fresh_install == 1
-    PluginInstall
-endif
-call vundle#end()
+call plug#end()
 call glaive#Install()
 
 filetype plugin indent on
