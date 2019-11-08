@@ -1,3 +1,6 @@
+*.swp
+*.zwc
+*.pyc
 *.bak
 local/
 tags
