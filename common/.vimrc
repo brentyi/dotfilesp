@@ -273,7 +273,11 @@ nnoremap <Leader>ip :set invpaste<Return>
 nnoremap <Leader>rtws :%s/\s\+$//e<Return>
 
 " Switch ' and ` for jumps: ' is much more intuitive and easier to access
+onoremap ' `
+vnoremap ' `
 nnoremap ' `
+onoremap ` '
+vnoremap ` '
 nnoremap ` '
 
 " Bindings for switching between buffers
