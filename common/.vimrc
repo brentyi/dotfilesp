@@ -19,65 +19,100 @@ endif
 " This needs to be done before any leader-related bindings happen
 let mapleader = "\<Space>"
 
-
-" #############################################
-" > Plugins <
-" #############################################
-"
-" Automatically install vim-plug
+" Automatically install vim-plug plugin manager
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-" Plugins!
+
+" #############################################
+" > Plugins <
+" #############################################
+
 call plug#begin('~/.vim/bundle')
+
+" Navigation inside files
 Plug 'easymotion/vim-easymotion'
 Plug 'justinmk/vim-sneak'
+
+" Navigation between files
 Plug 'ctrlpvim/ctrlp.vim'
-" Plug 'valloric/MatchTagAlways'
+Plug 'scrooloose/nerdtree'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+" Tag matching for HTML
 Plug 'gregsexton/MatchTag'
+
+" Better Python indentation 
 Plug 'vim-scripts/indentpython.vim'
-" Plug 'scrooloose/syntastic'
-Plug 'neomake/neomake'
+
+" Code formatting with flake8 for Python
 Plug 'nvie/vim-flake8'
+
+" ~~ Color schemes ~~
 Plug 'vim-scripts/xoria256.vim'
 Plug 'tomasr/molokai'
 Plug 'sjl/badwolf'
+
+" Massive language pack for syntax highlighting, etc
 Plug 'sheerun/vim-polyglot'
-" Plug 'tmhedberg/SimpylFold'
-" Plug 'Shougo/vimproc.vim'
-" Plug 'Shougo/vimshell.vim'
+
+" Vim + tmux integration
 Plug 'christoomey/vim-tmux-navigator'
-" Plug 'chreekat/vim-paren-crosshairs'
-" Plug 'lervag/vimtex'
+
+" Underline all instances of current word
 Plug 'itchyny/vim-cursorword'
+
+" Super intelligent indentation level detection
 Plug 'tpope/vim-sleuth'
+
+" Syntax highlighting for mustache+handlebars templates
 Plug 'mustache/vim-mustache-handlebars'
-Plug 'scrooloose/nerdtree'
-" Plug 'ryanoasis/vim-devicons'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-" Plug 'Xuyuanp/nerdtree-git-plugin'
+
+" Shortcuts for adding comments (<Leader>cc, <Leader>ci, etc)
+Plug 'scrooloose/nerdcommenter'
+
+" Shortcuts for manipulating quotes, brackets, parentheses, HTML tags
+" + vim-repeat for make '.' work for vim-surround
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+
+" Persistent cursor position + folds
 Plug 'vim-scripts/restore_view.vim'
-Plug 'scrooloose/nerdcommenter'
+
+" Display markers to signify different indentation levels
 Plug 'Yggdroot/indentLine'
+
+" Make gf work better for Python imports
 Plug 'apuignav/vim-gf-python'
-" Plug 'octol/vim-cpp-enhanced-highlight'
+
+" Status line plugin
 Plug 'itchyny/lightline.vim'
+
+" Show instance # in statusline when we search
 Plug 'henrik/vim-indexed-search'
-" Plug 'plasticboy/vim-markdown'
-" Plug 'mgee/lightline-bufferline'
+
+" Lightweight autocompletion!
 Plug 'ajh17/VimCompletesMe'
-Plug 'google/vim-maktaba'
-Plug 'google/vim-glaive'
+
+" Add pseudo-registers for copying to system clipboard (example usage: "+Y)
+" This basically emulates the +clipboard vim feature flag
 Plug 'kana/vim-fakeclip'
 
-""" hacked version of codefmt, with --aggressive flag for autopep8
+
+" Plugin development libraries from Google
+" At the moment, these are only used as codefmt dependencies
+Plug 'google/vim-maktaba'
+Plug 'google/vim-glaive'
+
+" Code formatting plugin
+" (this fork adds the --aggressive flag for autopep8)
 Plug 'brentyi/vim-codefmt'
-""" error-suppressed version of gutentags
+
+" Gutentags, for generating tag files
+" (this fork suppresses some errors from machines without ctags installed)
 Plug 'brentyi/vim-gutentags'
 "
 "
@@ -85,7 +120,6 @@ call plug#end()
 call glaive#Install()
 
 " Plugin-specific settings
-let g:netrw_ftp_cmd = 'ftp -p'
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeShowLineNumbers = 1
 autocmd FileType nerdtree setlocal relativenumber
@@ -241,6 +275,9 @@ set autochdir
 " Fold behavior tweaks
 set foldmethod=indent
 set foldlevel=99
+
+" Passive FTP mode for remote netrw
+let g:netrw_ftp_cmd = 'ftp -p'
 
 " #############################################
 " > Key mappings for usability <
