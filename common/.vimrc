@@ -48,9 +48,6 @@ Plug 'gregsexton/MatchTag'
 " Better Python indentation 
 Plug 'vim-scripts/indentpython.vim'
 
-" Code formatting with flake8 for Python
-Plug 'nvie/vim-flake8'
-
 " ~~ Color schemes ~~
 Plug 'vim-scripts/xoria256.vim'
 Plug 'tomasr/molokai'
@@ -67,9 +64,6 @@ Plug 'itchyny/vim-cursorword'
 
 " Super intelligent indentation level detection
 Plug 'tpope/vim-sleuth'
-
-" Syntax highlighting for mustache+handlebars templates
-Plug 'mustache/vim-mustache-handlebars'
 
 " Shortcuts for adding comments (<Leader>cc, <Leader>ci, etc)
 Plug 'scrooloose/nerdcommenter'
@@ -101,21 +95,16 @@ Plug 'ajh17/VimCompletesMe'
 " This basically emulates the +clipboard vim feature flag
 Plug 'kana/vim-fakeclip'
 
-
-" Plugin development libraries from Google
-" At the moment, these are only used as codefmt dependencies
+" Google's code format plugin + dependencies
+" (this vim-codefmt fork adds the --aggressive flag for autopep8)
 Plug 'google/vim-maktaba'
 Plug 'google/vim-glaive'
-
-" Code formatting plugin
-" (this fork adds the --aggressive flag for autopep8)
 Plug 'brentyi/vim-codefmt'
 
 " Gutentags, for generating tag files
 " (this fork suppresses some errors from machines without ctags installed)
 Plug 'brentyi/vim-gutentags'
-"
-"
+
 call plug#end()
 call glaive#Install()
 
