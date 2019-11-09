@@ -26,6 +26,8 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" Run shell commands using bash
+set shell=/bin/bash
 
 " #############################################
 " > Plugins <
@@ -37,9 +39,32 @@ call plug#begin('~/.vim/bundle')
 Plug 'easymotion/vim-easymotion'
 Plug 'justinmk/vim-sneak'
 
-" Navigation between files
+" Quick navigation between files, buffers, tags!
 Plug 'ctrlpvim/ctrlp.vim'
+" {{
+    let g:ctrlp_extensions = ['tag']
+    let g:ctrlp_show_hidden = 1
+    let g:ctrlp_follow_symlinks=1
+    let g:ctrlp_max_files=300000
+    let g:ctrlp_switch_buffer = '0'
+    let g:ctrlp_reuse_window = 1
+" }}
+
+" Nerd tree for filesystem navigation/manipulation
 Plug 'scrooloose/nerdtree'
+" {{
+    let g:NERDTreeShowHidden = 1
+    let g:NERDTreeShowLineNumbers = 1
+    autocmd FileType nerdtree setlocal relativenumber
+    autocmd VimEnter * if !argc() | NERDTree | endif
+    let g:NERDTreeMinimalUI = 1
+    let g:NERDTreeFileExtensionHighlightFullName = 1
+    let g:NERDTreeExactMatchHighlightFullName = 1
+    let g:NERDTreePatternMatchHighlightFullName = 1
+    let g:NERDTreeMapJumpNextSibling = '<Nop>'
+    let g:NERDTreeMapJumpPrevSibling = '<Nop>'
+    nnoremap <Leader>o :NERDTree<Return>
+" }}
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " Tag matching for HTML
@@ -63,10 +88,23 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'itchyny/vim-cursorword'
 
 " Super intelligent indentation level detection
+" We load this early so user-defined autocmds override it
 Plug 'tpope/vim-sleuth'
+    runtime! plugin/sleuth.vim
+" }}
 
 " Shortcuts for adding comments (<Leader>cc, <Leader>ci, etc)
 Plug 'scrooloose/nerdcommenter'
+" {{
+    let g:NERDSpaceDelims = 1
+    let g:NERDCompactSexyComs = 1
+    let g:NERDCommentEmptyLines = 1
+    let g:NERDTrimTrailingWhitespace = 1
+    let g:NERDDefaultAlign = 'left'
+    let g:NERDAltDelims_python = 1
+    let g:NERDAltDelims_cython = 1
+    let g:NERDAltDelims_pyrex = 1
+" }}
 
 " Shortcuts for manipulating quotes, brackets, parentheses, HTML tags
 " + vim-repeat for make '.' work for vim-surround
@@ -75,15 +113,39 @@ Plug 'tpope/vim-repeat'
 
 " Persistent cursor position + folds
 Plug 'vim-scripts/restore_view.vim'
+""" {{
+    set viewoptions=cursor,folds,slash,unix
+""" }}
 
 " Display markers to signify different indentation levels
 Plug 'Yggdroot/indentLine'
+" {{
+    let g:indentLine_char = '·'
+    let g:indentLine_fileTypeExclude = ['json', 'markdown', 'tex']
+" }}
 
 " Make gf work better for Python imports
 Plug 'apuignav/vim-gf-python'
 
-" Status line plugin
+" Status line plugin + configuration
 Plug 'itchyny/lightline.vim'
+" {{
+    let g:lightline = {
+        \ 'colorscheme': 'wombat',
+        \ 'active': {
+        \   'right': [ [ 'lineinfo' ],
+        \              [ 'filetype', 'charvaluehex' ],
+        \              [ 'gutentags' ]]
+        \ },
+        \ 'inactive': {
+        \   'right': [ [], [], [ 'lineinfo' ] ]
+        \ },
+        \ 'component': {
+        \   'charvaluehex': '0x%B',
+        \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "ctags indexing...")}'
+        \ },
+        \ }
+" }}
 
 " Show instance # in statusline when we search
 Plug 'henrik/vim-indexed-search'
@@ -100,81 +162,45 @@ Plug 'kana/vim-fakeclip'
 Plug 'google/vim-maktaba'
 Plug 'google/vim-glaive'
 Plug 'brentyi/vim-codefmt'
+" {{
+    nnoremap <Leader>cf :FormatCode<CR>
+    vnoremap <Leader>cf :FormatLines<CR>
+" }}
 
 " Gutentags, for generating tag files
 " (this fork suppresses some errors from machines without ctags installed)
 Plug 'brentyi/vim-gutentags'
+" {{
+    " Set cache location
+    let g:gutentags_cache_dir = '~/.cache/tags'
+
+    " Lightline integration
+    function! GutentagsStatus()
+        if exists('g:gutentags_ctags_executable') && executable(expand(g:gutentags_ctags_executable, 1)) == 0
+            return 'missing ctags'
+        elseif !g:gutentags_enabled
+            return 'ctags off'
+        endif
+        return ''
+    endfunction
+    augroup GutentagsStatusLineRefresher
+        autocmd!
+        autocmd User GutentagsUpdating call lightline#update()
+        autocmd User GutentagsUpdated call lightline#update()
+    augroup END
+" }}
 
 call plug#end()
-call glaive#Install()
 
-" Plugin-specific settings
-let g:NERDTreeShowHidden = 1
-let g:NERDTreeShowLineNumbers = 1
-autocmd FileType nerdtree setlocal relativenumber
-autocmd VimEnter * if !argc() | NERDTree | endif
-let g:NERDTreeMinimalUI = 1
-let g:NERDTreeFileExtensionHighlightFullName = 1
-let g:NERDTreeExactMatchHighlightFullName = 1
-let g:NERDTreePatternMatchHighlightFullName = 1
-let g:NERDSpaceDelims = 1
-let g:NERDCompactSexyComs = 1
-let g:NERDCommentEmptyLines = 1
-let g:NERDTrimTrailingWhitespace = 1
-let g:NERDDefaultAlign = 'left'
-let g:NERDAltDelims_python = 1
-let g:NERDAltDelims_cython = 1
-let g:NERDAltDelims_pyrex = 1
-let g:NERDTreeMapJumpNextSibling = '<Nop>'
-let g:NERDTreeMapJumpPrevSibling = '<Nop>'
-nnoremap <Leader>o :NERDTree<Return>
-let g:indentLine_char = '·'
-let g:indentLine_fileTypeExclude = ['json', 'markdown', 'tex']
-let g:ctrlp_extensions = ['tag']
-let g:ctrlp_show_hidden = 1
-let g:ctrlp_follow_symlinks=1
-let g:ctrlp_max_files=300000
-let g:ctrlp_switch_buffer = '0'
-let g:ctrlp_reuse_window = 1
-let g:gutentags_cache_dir = '~/.cache/tags'
-set shell=/bin/bash
+" Initialize Glaive + codefmt
+    call glaive#Install()
+    Glaive codefmt plugin[mappings]
+" }}
+
+" Files for ctrlp + gutentags to ignore!
 set wildignore=*.swp,*.o,*.pyc,*.pb
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*        " Linux/MacOSX
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*           " Linux/MacOSX
 set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\  " Windows ('noshellslash')
-set viewoptions=cursor,folds,slash,unix
-set noshowmode
-runtime! plugin/sleuth.vim " load vim-sleuth early so user-defined autocmds override it
-let g:lightline = {
-    \ 'colorscheme': 'wombat',
-    \ 'active': {
-    \   'right': [ [ 'lineinfo' ],
-    \              [ 'filetype', 'charvaluehex' ],
-    \              [ 'gutentags' ]]
-    \ },
-    \ 'inactive': {
-    \   'right': [ [], [], [ 'lineinfo' ] ]
-    \ },
-    \ 'component': {
-    \   'charvaluehex': '0x%B',
-    \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "ctags indexing...")}'
-    \ },
-    \ }
-function! GutentagsStatus()
-    if exists('g:gutentags_ctags_executable') && executable(expand(g:gutentags_ctags_executable, 1)) == 0
-        return 'missing ctags'
-    elseif !g:gutentags_enabled
-        return 'ctags off'
-    endif
-    return ''
-endfunction
-augroup GutentagsStatusLineRefresher
-    autocmd!
-    autocmd User GutentagsUpdating call lightline#update()
-    autocmd User GutentagsUpdated call lightline#update()
-augroup END
-Glaive codefmt plugin[mappings]
-nnoremap <Leader>cf :FormatCode<CR>
-vnoremap <Leader>cf :FormatLines<CR>
 
 
 " #############################################
@@ -191,6 +217,7 @@ if v:version > 703
 endif
 set relativenumber
 
+" Show at least 7 lines above/below the cursor when we scroll
 set scrolloff=7
 
 " Cursor crosshair when we enter insert mode
@@ -235,8 +262,12 @@ set list listchars=tab:❘-,trail:\ ,extends:»,precedes:«,nbsp:×
 " Show the statusline, always!
 set laststatus=2
 
+" Hide redundant mode indicator underneath statusline
+set noshowmode
+
 " Highlight searches
 set hlsearch
+
 
 " #############################################
 " > General behavior stuff <
@@ -430,6 +461,7 @@ nmap <Leader>f :call <SID>toggle_friendly_mode()<CR>
 " #############################################
 " > Navigation in insert mode <
 " #############################################
+
 inoremap <C-H> <Left>
 inoremap <C-J> <Down>
 inoremap <C-K> <Up>
@@ -439,6 +471,7 @@ inoremap <C-L> <Right>
 " #############################################
 " > Spellcheck <
 " #############################################
+
 map <F5> :setlocal spell! spelllang=en_us<CR>
 inoremap <F5> <C-\><C-O>:setlocal spelllang=en_us spell! spell?<CR>
 hi clear SpellBad
@@ -448,6 +481,7 @@ hi SpellBad cterm=bold,italic ctermfg=red
 " #############################################
 " > Meta <
 " #############################################
+"
 augroup AutoReloadVimRC
     autocmd!
     autocmd BufWritePost $MYVIMRC source $MYVIMRC
