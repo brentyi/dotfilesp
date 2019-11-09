@@ -2,28 +2,37 @@
 " brent yi
 "
 
+
+" #############################################
+" > Initial setup <
+" #############################################
+
+" Disable vi compatability
+set nocompatible
+
+" Default to utf-8
 if !has('nvim')
     set encoding=utf-8
 endif
 
-"""" set leader to spacebar
+" Remap <Leader> to <Space>
+" This needs to be done before any leader-related bindings happen
 let mapleader = "\<Space>"
 
-"""" vim-plug
-" auto-install
+
+" #############################################
+" > Plugins <
+" #############################################
+"
+" Automatically install vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-set nocompatible
-filetype off
-
+" Plugins!
 call plug#begin('~/.vim/bundle')
-"
-"
-Plug 'VundleVim/Vundle.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'justinmk/vim-sneak'
 Plug 'ctrlpvim/ctrlp.vim'
@@ -75,9 +84,7 @@ Plug 'brentyi/vim-gutentags'
 call plug#end()
 call glaive#Install()
 
-filetype plugin indent on
-
-"""" plugin specific
+" Plugin-specific settings
 let g:netrw_ftp_cmd = 'ftp -p'
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeShowLineNumbers = 1
@@ -97,6 +104,7 @@ let g:NERDAltDelims_cython = 1
 let g:NERDAltDelims_pyrex = 1
 let g:NERDTreeMapJumpNextSibling = '<Nop>'
 let g:NERDTreeMapJumpPrevSibling = '<Nop>'
+nnoremap <Leader>o :NERDTree<Return>
 let g:indentLine_char = '·'
 let g:indentLine_fileTypeExclude = ['json', 'markdown', 'tex']
 let g:ctrlp_extensions = ['tag']
@@ -145,27 +153,36 @@ Glaive codefmt plugin[mappings]
 nnoremap <Leader>cf :FormatCode<CR>
 vnoremap <Leader>cf :FormatLines<CR>
 
-" autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
-" autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
-" let g:SimpylFold_docstring_preview=1
 
-"""" visuals
+" #############################################
+" > Visuals <
+" #############################################
+
 syntax on
+
+" Line numbering
 if v:version > 703
+    " Vim versions after 703 support enabling both number and relativenumber
+    " (To display relative numbers for all but the current line)
     set number
 endif
 set relativenumber
+
 set scrolloff=7
-inoremap <C-C> <Esc>
+
+" Cursor crosshair when we enter insert mode
+" Note we re-bind Ctrl+C in order for InsertLeave to be called
 autocmd InsertEnter * set cursorline
 autocmd InsertLeave * set nocursorline
 autocmd InsertEnter * set cursorcolumn
 autocmd InsertLeave * set nocursorcolumn
-" set foldcolumn=1
-" set clipboard=unnamed
+inoremap <C-C> <Esc>
+
+" Configuring colors
 set background=dark
-" hi FoldColumn ctermfg=0 ctermbg=0
 if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+    " When we have 256 colors available
+    " (This is usually true)
     set t_Co=256
     colorscheme molokai
     hi LineNr ctermfg=241 ctermbg=234
@@ -174,6 +191,7 @@ if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gno
     hi TrailingWhitespace ctermbg=52
     let g:indentLine_color_term=237
 else
+    " Fallback colors for some legacy terminals
     set t_Co=16
     set foldcolumn=1
     hi FoldColumn ctermbg=7
@@ -187,72 +205,139 @@ hi MatchParen cterm=bold,underline ctermbg=none ctermfg=7
 hi VertSplit ctermfg=0 ctermbg=0
 autocmd VimEnter,WinEnter * match TrailingWhitespace /\s\+$/
 
-"""" indent
+" Visually different markers for various types of whitespace
+" (for distinguishing tabs vs spaces)
 set list listchars=tab:❘-,trail:\ ,extends:»,precedes:«,nbsp:×
-autocmd FileType make setlocal noexpandtab
 
-"""" fold utils
+" Show the statusline, always!
+set laststatus=2
+
+" Highlight searches
+set hlsearch
+
+" #############################################
+" > General behavior stuff <
+" #############################################
+
+" Set plugin, indentation settings automatically based on the filetype
+filetype plugin indent on
+
+" Make escape insert mode zippier
+set timeoutlen=300 ttimeoutlen=10
+
+" Allow backspacing over everything (eg line breaks)
+set backspace=2
+
+" Expand history of saved commands
+set history=35
+
+" Enable modeline for file-specific vim settings
+" This is insecure on some vim versions and should maybe be removed?
+set modeline
+
+" Automatically change working directory to current file location
+set autochdir
+
+" Fold behavior tweaks
 set foldmethod=indent
 set foldlevel=99
-nnoremap <Bslash> za
 
-"""" search
-set hlsearch
-nnoremap <Esc> :noh<Return><Esc>
-nnoremap <Esc>^[ <Esc>^[
+" #############################################
+" > Key mappings for usability <
+" #############################################
 
-"""" general usability
+" Alternate escape key bindings
 vmap [[ <Esc>
 vmap ;; <Esc>
 imap [[ <Esc>
 imap ;; <Esc>
-set timeoutlen=300 ttimeoutlen=10
-set backspace=2
-set history=35
-set modeline
-set laststatus=2
-set autochdir
-nnoremap <Leader>ip :set invpaste<Return>
-nnoremap <Leader>rtws :%s/\s\+$//e<Return>
-nnoremap <Leader>o :NERDTree<Return>
+
+" Search utilities -- highlight matches, clear highlighting with <Esc>
+nnoremap <Esc> :noh<Return><Esc>
+nnoremap <Esc>^[ <Esc>^[
+
+" Use backslash to toggle folds
+nnoremap <Bslash> za
+
+" Binding to disable line numbering -- useful for copy & paste, etc
 if v:version > 703
     nnoremap <Leader>tln :set number!<Return>:set relativenumber!<Return>
 else
     nnoremap <Leader>tln :set relativenumber!<Return>
 endif
+
+" Binding to switch into/out of PASTE mode
+nnoremap <Leader>ip :set invpaste<Return>
+
+" Binding to remove trailing whitespaces in current files
+nnoremap <Leader>rtws :%s/\s\+$//e<Return>
+
+" Switch ' and ` for jumps: ' is much more intuitive and easier to access
 nnoremap ' `
 nnoremap ` '
 
-"""" buffers
-" set hidden
+" Bindings for switching between buffers
+nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
 nnoremap <silent> <Leader>bn :bn<Return>
 nnoremap <silent> <Leader>bd :bd<Return>
 nnoremap <silent> <Leader>bl :ls<Return>
-nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
 
-"""" tabs
+" Bindings for switching between tabs
 nnoremap <silent> <Leader>tt :tabnew<Return>
 nnoremap <silent> <Leader>tn :tabn<Return>
 nnoremap <silent> <Leader>n :tabn<Return>
 nnoremap <silent> <Leader>tp :tabp<Return>
 
-"""" tags
+" Bindings for jumping between tags
 nnoremap <silent> <Leader><Leader>p :CtrlPTag<Return>
 nnoremap <silent> <Leader>ts :tselect<Return>
 
-"""" syntax highlighting special cases
+" 'Force write' binding for writing with sudo
+" Helpful if we don't have permissions for a specific file
+cmap W! w !sudo tee >/dev/null %
+
+
+" #############################################
+" > Filetype-specific configurations <
+" #############################################
+
+" (ROS) Launch files should be highlighted as xml
 autocmd BufNewFile,BufRead *.launch set filetype=xml
+
+" Make files need to be indented with tabs
+autocmd FileType make setlocal noexpandtab
+
+" Buck files should be highlighted as python
 autocmd BufNewFile,BufRead BUCK* set filetype=python
 autocmd BufNewFile,BufRead TARGETS set filetype=python
 
-"""" automatic tmux pane renaming
+" Automatically insert header gates for h/hpp files
+function! s:insert_gates()
+    let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
+    execute "normal! i#ifndef " . gatename
+    execute "normal! o#define " . gatename . " "
+    execute "normal! Go#endif /* " . gatename . " */"
+    normal! kk
+endfunction
+autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
+
+
+" #############################################
+" > Automatic window renaming for tmux <
+" #############################################
+
 if exists('$TMUX')
     autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter * call system("tmux rename-window vim:" . expand("%:t"))
     autocmd VimLeave * call system("tmux setw automatic-rename")
 endif
 
-"""" set path to repository root when we open a file
-"""" this is mostly to make gf actually work for #includes
+
+" #############################################
+" > Repository root to path <
+" #############################################
+
+" Magically add the git/hg repo root to &path when we open a file inside it.
+" Mostly just makes `gf` work better for #includes, etc.
 function! s:add_repo_to_path()
     let s:git_path=system("git rev-parse --show-toplevel | tr -d '\\n'")
     if strlen(s:git_path) > 0 && s:git_path !~ "\^fatal" && s:git_path !~ "command not found" && &path !~ s:git_path
@@ -265,20 +350,30 @@ function! s:add_repo_to_path()
 endfunction
 autocmd BufEnter * call <SID>add_repo_to_path()
 
-" forgot to sudo!
-cmap W! w !sudo tee >/dev/null %
 
-"""" split utils
+" #############################################
+" > Configuring splits <
+" #############################################
+
+" Minor behavior changes
 set winheight=20
 set winwidth=50
 set winminwidth=10
+
+" Match tmux behavior + bindings (with <C-w> instead of <C-b>)
 set splitbelow
 set splitright
-" strange tmux-style window splitting shortcuts
 nmap <C-w>" :sp<Return>:e .<Return>
 nmap <C-w>% :vsp<Return>:e .<Return>
 
-"""" map <Leader>F to toggle mouse + arrow keys
+
+" #############################################
+" > Friendly mode <
+" ##############################################
+
+" This maps <Leader>f to toggle between:
+"  - 'Default mode': arrow keys resize splits, mouse disabled
+"  - 'Friendly mode': arrow keys, mouse behave as usual
 let s:friendly_mode = 0
 function! s:toggle_friendly_mode()
     if s:friendly_mode
@@ -301,31 +396,31 @@ endfunction
 call <SID>toggle_friendly_mode()
 nmap <Leader>f :call <SID>toggle_friendly_mode()<CR>
 
-"""" c++
-function! s:insert_gates()
-    let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
-    execute "normal! i#ifndef " . gatename
-    execute "normal! o#define " . gatename . " "
-    execute "normal! Go#endif /* " . gatename . " */"
-    normal! kk
-endfunction
-autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 
-"""" navigation in insert mode
+" #############################################
+" > Navigation in insert mode <
+" #############################################
 inoremap <C-H> <Left>
 inoremap <C-J> <Down>
 inoremap <C-K> <Up>
 inoremap <C-L> <Right>
 
-"""" meta
+
+" #############################################
+" > Spellcheck <
+" #############################################
+map <F5> :setlocal spell! spelllang=en_us<CR>
+inoremap <F5> <C-\><C-O>:setlocal spelllang=en_us spell! spell?<CR>
+hi clear SpellBad
+hi SpellBad cterm=bold,italic ctermfg=red
+
+
+" #############################################
+" > Meta <
+" #############################################
 augroup AutoReloadVimRC
     autocmd!
     autocmd BufWritePost $MYVIMRC source $MYVIMRC
     autocmd BufWritePost .vimrc source $MYVIMRC " for init.vim->.vimrc symlinks in neovim
 augroup END
 
-"""" spelling utilities
-map <F5> :setlocal spell! spelllang=en_us<CR>
-inoremap <F5> <C-\><C-O>:setlocal spelllang=en_us spell! spell?<CR>
-hi clear SpellBad
-hi SpellBad cterm=bold,italic ctermfg=red
