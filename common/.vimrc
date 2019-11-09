@@ -83,6 +83,7 @@ Plug 'sheerun/vim-polyglot'
 
 " Vim + tmux integration
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'tmux-plugins/vim-tmux-focus-events'
 
 " Underline all instances of current word
 Plug 'itchyny/vim-cursorword'
@@ -388,7 +389,7 @@ autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 " #############################################
 
 if exists('$TMUX')
-    autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter * call system("tmux rename-window vim:" . expand("%:t"))
+    autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system("tmux rename-window vim:" . expand("%:t"))
     autocmd VimLeave * call system("tmux setw automatic-rename")
 endif
 
