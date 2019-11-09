@@ -115,9 +115,9 @@ Plug 'scrooloose/nerdcommenter'
 
 " Persistent cursor position + folds
 Plug 'vim-scripts/restore_view.vim'
-""" {{
+" {{
     set viewoptions=cursor,folds,slash,unix
-""" }}
+" }}
 
 " Display markers to signify different indentation levels
 Plug 'Yggdroot/indentLine'
@@ -456,7 +456,7 @@ augroup END
 if exists('$TMUX')
     augroup TmuxHelpers
         autocmd!
-        autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system("tmux rename-window vim:" . expand("%:t"))
+        autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system("tmux rename-window 'vim " . expand("%:t") . "'")
         autocmd VimLeave * call system("tmux setw automatic-rename")
     augroup END
 endif
