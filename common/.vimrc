@@ -10,14 +10,17 @@
 " Disable vi compatability
 set nocompatible
 
-" Default to utf-8
+" Default to utf-8 (not needed/creates error for Neovim)
 if !has('nvim')
     set encoding=utf-8
 endif
 
 " Remap <Leader> to <Space>
-" This needs to be done before any leader-related bindings happen
+" This needs to be done before any leader-containing bindings happen
 let mapleader = "\<Space>"
+
+" Run shell commands using bash
+set shell=/bin/bash
 
 " Automatically install vim-plug plugin manager
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -26,8 +29,6 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-" Run shell commands using bash
-set shell=/bin/bash
 
 " #############################################
 " > Plugins <
@@ -38,6 +39,11 @@ call plug#begin('~/.vim/bundle')
 " Navigation inside files
 Plug 'easymotion/vim-easymotion'
 Plug 'justinmk/vim-sneak'
+
+" Shortcuts for manipulating quotes, brackets, parentheses, HTML tags
+" + vim-repeat for make '.' work for vim-surround
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 
 " Quick navigation between files, buffers, tags!
 Plug 'ctrlpvim/ctrlp.vim'
@@ -67,19 +73,19 @@ Plug 'scrooloose/nerdtree'
 " }}
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
+" Massive language pack for syntax highlighting, etc
+Plug 'sheerun/vim-polyglot'
+
 " Tag matching for HTML
 Plug 'gregsexton/MatchTag'
 
-" Better Python indentation 
+" Better Python indentation
 Plug 'vim-scripts/indentpython.vim'
 
 " ~~ Color schemes ~~
 Plug 'vim-scripts/xoria256.vim'
 Plug 'tomasr/molokai'
 Plug 'sjl/badwolf'
-
-" Massive language pack for syntax highlighting, etc
-Plug 'sheerun/vim-polyglot'
 
 " Vim + tmux integration
 Plug 'christoomey/vim-tmux-navigator'
@@ -107,11 +113,6 @@ Plug 'scrooloose/nerdcommenter'
     let g:NERDAltDelims_pyrex = 1
 " }}
 
-" Shortcuts for manipulating quotes, brackets, parentheses, HTML tags
-" + vim-repeat for make '.' work for vim-surround
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-
 " Persistent cursor position + folds
 Plug 'vim-scripts/restore_view.vim'
 """ {{
@@ -128,24 +129,25 @@ Plug 'Yggdroot/indentLine'
 " Make gf work better for Python imports
 Plug 'apuignav/vim-gf-python'
 
-" Status line plugin + configuration
+" Status line
 Plug 'itchyny/lightline.vim'
 " {{
+    let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', "wombat")
     let g:lightline = {
-        \ 'colorscheme': 'wombat',
-        \ 'active': {
-        \   'right': [ [ 'lineinfo' ],
-        \              [ 'filetype', 'charvaluehex' ],
-        \              [ 'gutentags' ]]
-        \ },
-        \ 'inactive': {
-        \   'right': [ [], [], [ 'lineinfo' ] ]
-        \ },
-        \ 'component': {
-        \   'charvaluehex': '0x%B',
-        \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "ctags indexing...")}'
-        \ },
-        \ }
+    \ 'colorscheme': g:brent_lightline_colorscheme,
+    \ 'active': {
+    \   'right': [ [ 'lineinfo' ],
+    \              [ 'filetype', 'charvaluehex' ],
+    \              [ 'gutentags' ]]
+    \ },
+    \ 'inactive': {
+    \   'right': [ [], [], [ 'lineinfo' ] ]
+    \ },
+    \ 'component': {
+    \   'charvaluehex': '0x%B',
+    \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "ctags indexing...")}'
+    \ },
+    \ }
 " }}
 
 " Show instance # in statusline when we search
@@ -194,14 +196,15 @@ Plug 'brentyi/vim-gutentags'
 call plug#end()
 
 " Initialize Glaive + codefmt
-    call glaive#Install()
-    Glaive codefmt plugin[mappings]
-" }}
+call glaive#Install()
+Glaive codefmt plugin[mappings]
 
 " Files for ctrlp + gutentags to ignore!
 set wildignore=*.swp,*.o,*.pyc,*.pb
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*           " Linux/MacOSX
-set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\  " Windows ('noshellslash')
+" Linux/MacOSX
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*
+" Windows ('noshellslash')
+set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\
 
 
 " #############################################
@@ -223,10 +226,13 @@ set scrolloff=7
 
 " Cursor crosshair when we enter insert mode
 " Note we re-bind Ctrl+C in order for InsertLeave to be called
-autocmd InsertEnter * set cursorline
-autocmd InsertLeave * set nocursorline
-autocmd InsertEnter * set cursorcolumn
-autocmd InsertLeave * set nocursorcolumn
+augroup InsertModeCrossHairs
+    autocmd!
+    autocmd InsertEnter * set cursorline
+    autocmd InsertLeave * set nocursorline
+    autocmd InsertEnter * set cursorcolumn
+    autocmd InsertLeave * set nocursorcolumn
+augroup END
 inoremap <C-C> <Esc>
 
 " Configuring colors
@@ -235,7 +241,8 @@ if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gno
     " When we have 256 colors available
     " (This is usually true)
     set t_Co=256
-    colorscheme molokai
+    let g:brent_colorscheme = get(g:, 'brent_colorscheme', "xoria256")
+    execute "colorscheme " . g:brent_colorscheme
     hi LineNr ctermfg=241 ctermbg=234
     hi CursorLineNr cterm=bold ctermfg=232 ctermbg=250
     hi Visual cterm=bold ctermbg=238
@@ -300,6 +307,7 @@ set foldlevel=99
 " Passive FTP mode for remote netrw
 let g:netrw_ftp_cmd = 'ftp -p'
 
+
 " #############################################
 " > Key mappings for usability <
 " #############################################
@@ -354,70 +362,22 @@ nnoremap <silent> <Leader>tp :tabp<Return>
 nnoremap <silent> <Leader><Leader>p :CtrlPTag<Return>
 nnoremap <silent> <Leader>ts :tselect<Return>
 
+" Bindings to navigate using Ctrl+hjkl in insert mode
+inoremap <C-H> <Left>
+inoremap <C-J> <Down>
+inoremap <C-K> <Up>
+inoremap <C-L> <Right>
+
 " 'Force write' binding for writing with sudo
 " Helpful if we don't have permissions for a specific file
 cmap W! w !sudo tee >/dev/null %
 
 
 " #############################################
-" > Filetype-specific configurations <
-" #############################################
-
-" (ROS) Launch files should be highlighted as xml
-autocmd BufNewFile,BufRead *.launch set filetype=xml
-
-" Make files need to be indented with tabs
-autocmd FileType make setlocal noexpandtab
-
-" Buck files should be highlighted as python
-autocmd BufNewFile,BufRead BUCK* set filetype=python
-autocmd BufNewFile,BufRead TARGETS set filetype=python
-
-" Automatically insert header gates for h/hpp files
-function! s:insert_gates()
-    let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
-    execute "normal! i#ifndef " . gatename
-    execute "normal! o#define " . gatename . " "
-    execute "normal! Go#endif /* " . gatename . " */"
-    normal! kk
-endfunction
-autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
-
-
-" #############################################
-" > Automatic window renaming for tmux <
-" #############################################
-
-if exists('$TMUX')
-    autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system("tmux rename-window vim:" . expand("%:t"))
-    autocmd VimLeave * call system("tmux setw automatic-rename")
-endif
-
-
-" #############################################
-" > Repository root to path <
-" #############################################
-
-" Magically add the git/hg repo root to &path when we open a file inside it.
-" Mostly just makes `gf` work better for #includes, etc.
-function! s:add_repo_to_path()
-    let s:git_path=system("git rev-parse --show-toplevel | tr -d '\\n'")
-    if strlen(s:git_path) > 0 && s:git_path !~ "\^fatal" && s:git_path !~ "command not found" && &path !~ s:git_path
-        let &path .= "," . s:git_path . "/**9"
-    endif
-    let s:hg_path=system("hg root | tr -d '\\n'")
-    if strlen(s:hg_path) > 0 && s:hg_path !~ "\^abort" && s:hg_path !~ "command not found" && &path !~ s:hg_path
-        let &path .= "," . s:hg_path . "/**9"
-    endif
-endfunction
-autocmd BufEnter * call <SID>add_repo_to_path()
-
-
-" #############################################
 " > Configuring splits <
 " #############################################
 
-" Minor behavior changes
+" Sizing defaults + minimum
 set winheight=20
 set winwidth=50
 set winminwidth=10
@@ -436,6 +396,7 @@ nmap <C-w>% :vsp<Return>:e .<Return>
 " This maps <Leader>f to toggle between:
 "  - 'Default mode': arrow keys resize splits, mouse disabled
 "  - 'Friendly mode': arrow keys, mouse behave as usual
+
 let s:friendly_mode = 0
 function! s:toggle_friendly_mode()
     if s:friendly_mode
@@ -460,13 +421,68 @@ nmap <Leader>f :call <SID>toggle_friendly_mode()<CR>
 
 
 " #############################################
-" > Navigation in insert mode <
+" > Filetype-specific configurations <
 " #############################################
 
-inoremap <C-H> <Left>
-inoremap <C-J> <Down>
-inoremap <C-K> <Up>
-inoremap <C-L> <Right>
+augroup FiletypeHelpers
+    autocmd!
+
+    " (ROS) Launch files should be highlighted as xml
+    autocmd BufNewFile,BufRead *.launch set filetype=xml
+
+    " Make files need to be indented with tabs
+    autocmd FileType make setlocal noexpandtab
+
+    " Buck files should be highlighted as python
+    autocmd BufNewFile,BufRead BUCK* set filetype=python
+    autocmd BufNewFile,BufRead TARGETS set filetype=python
+
+    " Automatically insert header gates for h/hpp files
+    function! s:insert_gates()
+        let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
+        execute "normal! i#ifndef " . gatename
+        execute "normal! o#define " . gatename . " "
+        execute "normal! Go#endif /* " . gatename . " */"
+        normal! kk
+    endfunction
+    autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
+augroup END
+
+
+" #############################################
+" > Automatic window renaming for tmux <
+" #############################################
+
+if exists('$TMUX')
+    augroup TmuxHelpers
+        autocmd!
+        autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system("tmux rename-window vim:" . expand("%:t"))
+        autocmd VimLeave * call system("tmux setw automatic-rename")
+    augroup END
+endif
+
+
+" #############################################
+" > Repository root to path <
+" #############################################
+
+" Magically add the git/hg repo root to &path when we open a file inside it.
+" Mostly just makes `gf` work better for #includes, etc.
+function! s:add_repo_to_path()
+    let s:git_path=system("git rev-parse --show-toplevel | tr -d '\\n'")
+    if strlen(s:git_path) > 0 && s:git_path !~ "\^fatal" && s:git_path !~ "command not found" && &path !~ s:git_path
+        let &path .= "," . s:git_path . "/**9"
+    endif
+    let s:hg_path=system("hg root | tr -d '\\n'")
+    if strlen(s:hg_path) > 0 && s:hg_path !~ "\^abort" && s:hg_path !~ "command not found" && &path !~ s:hg_path
+        let &path .= "," . s:hg_path . "/**9"
+    endif
+endfunction
+
+augroup AddRepoToPath
+    autocmd!
+    autocmd BufEnter * call <SID>add_repo_to_path()
+augroup END
 
 
 " #############################################
@@ -482,10 +498,12 @@ hi SpellBad cterm=bold,italic ctermfg=red
 " #############################################
 " > Meta <
 " #############################################
-"
+
 augroup AutoReloadVimRC
     autocmd!
     autocmd BufWritePost $MYVIMRC source $MYVIMRC
-    autocmd BufWritePost .vimrc source $MYVIMRC " for init.vim->.vimrc symlinks in neovim
+
+    " For init.vim->.vimrc symlinks in Neovim
+    autocmd BufWritePost .vimrc source $MYVIMRC
 augroup END
 
