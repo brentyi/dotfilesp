@@ -23,9 +23,10 @@ let mapleader = "\<Space>"
 set shell=/bin/bash
 
 " Automatically install vim-plug plugin manager
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+let g:vim_plug_path = (has('nvim') ? '~/.config/nvim' : '~/.vim') . '/autoload/plug.vim'
+if empty(glob(g:vim_plug_path))
+    execute "silent !curl -fLo " . g:vim_plug_path . " --create-dirs "
+        \ . "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
@@ -34,7 +35,9 @@ endif
 " > Plugins <
 " #############################################
 
-call plug#begin('~/.vim/bundle')
+" Use Vundle-style path for vim-plug
+let s:bundle_path = (has('nvim') ? '~/.config/nvim' : '~/.vim') . '/bundle'
+execute "call plug#begin('" . s:bundle_path . "')"
 
 " Navigation inside files
 Plug 'easymotion/vim-easymotion'
