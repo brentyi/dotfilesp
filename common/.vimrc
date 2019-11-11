@@ -132,6 +132,9 @@ Plug 'Yggdroot/indentLine'
 " Make gf work better for Python imports
 Plug 'apuignav/vim-gf-python'
 
+" Make gf, sfind, etc work better in repositories
+Plug 'brentyi/vim-repo-file-search'
+
 " Status line
 Plug 'itchyny/lightline.vim'
 " {{
@@ -463,29 +466,6 @@ if exists('$TMUX')
         autocmd VimLeave * call system("tmux setw automatic-rename")
     augroup END
 endif
-
-
-" #############################################
-" > Repository root to path <
-" #############################################
-
-" Magically add the git/hg repo root to &path when we open a file inside it.
-" Mostly just makes `gf` work better for #includes, etc.
-function! s:add_repo_to_path()
-    let s:git_path=system("git rev-parse --show-toplevel | tr -d '\\n'")
-    if strlen(s:git_path) > 0 && s:git_path !~ "\^fatal" && s:git_path !~ "command not found" && &path !~ s:git_path
-        let &path .= "," . s:git_path . "/**9"
-    endif
-    let s:hg_path=system("hg root | tr -d '\\n'")
-    if strlen(s:hg_path) > 0 && s:hg_path !~ "\^abort" && s:hg_path !~ "command not found" && &path !~ s:hg_path
-        let &path .= "," . s:hg_path . "/**9"
-    endif
-endfunction
-
-augroup AddRepoToPath
-    autocmd!
-    autocmd BufEnter * call <SID>add_repo_to_path()
-augroup END
 
 
 " #############################################
