@@ -44,7 +44,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'justinmk/vim-sneak'
 
 " Shortcuts for manipulating quotes, brackets, parentheses, HTML tags
-" + vim-repeat for make '.' work for vim-surround
+" + vim-repeat for making '.' work for vim-surround
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
