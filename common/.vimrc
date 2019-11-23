@@ -208,9 +208,9 @@ Glaive codefmt plugin[mappings]
 " Files for ctrlp + gutentags to ignore!
 set wildignore=*.swp,*.o,*.pyc,*.pb
 " Linux/MacOSX
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*,*/.venv/*,*/site-packages/*
 " Windows ('noshellslash')
-set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\
+set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\*,*\\.venv\\*,*\\site-packages\\*
 
 
 " #############################################
