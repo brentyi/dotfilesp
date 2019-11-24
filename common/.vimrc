@@ -129,9 +129,6 @@ Plug 'Yggdroot/indentLine'
     let g:indentLine_fileTypeExclude = ['json', 'markdown', 'tex']
 " }}
 
-" Make gf work better for Python imports
-Plug 'apuignav/vim-gf-python'
-
 " Make gf, sfind, etc work better in repositories
 Plug 'brentyi/vim-repo-file-search'
 
