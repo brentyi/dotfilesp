@@ -52,9 +52,10 @@ Plug 'tpope/vim-repeat'
 Plug 'brentyi/vim-repo-file-search'
 
 " Fuzzy-find for files, buffers, tags!
-" > note: there are a ton of faster options (fzf, LeaderF, command-T, etc),
-" > but ctrlp feels way easier in terms of dependencies, portability, etc...
+" + cpsm for speed
+" > consider: switching cpsm for ctrlp-py-matcher to support more systems
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'nixprime/cpsm', { 'do': './install.sh' }
 " {{
     let g:ctrlp_extensions = ['tag']
     let g:ctrlp_show_hidden = 1
@@ -62,6 +63,7 @@ Plug 'ctrlpvim/ctrlp.vim'
     let g:ctrlp_max_files=300000
     let g:ctrlp_switch_buffer = '0'
     let g:ctrlp_reuse_window = 1
+    let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
     nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
     nnoremap <silent> <Leader><Leader>p :CtrlPTag<Return>
 " }}
