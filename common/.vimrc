@@ -59,7 +59,7 @@ Plug 'ctrlpvim/ctrlp.vim'
     let g:ctrlp_reuse_window = 1
 " }}
 
-" Nerd tree for filesystem navigation/manipulation
+" NERDTree for filesystem navigation/manipulation
 Plug 'scrooloose/nerdtree'
 " {{
     let g:NERDTreeShowHidden = 1
@@ -74,7 +74,26 @@ Plug 'scrooloose/nerdtree'
     let g:NERDTreeMapJumpPrevSibling = '<Nop>'
     nnoremap <Leader>o :NERDTree<Return>
 " }}
+
+" NERDTree extensions: syntax highlighting, version control indicators
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'f4t-t0ny/nerdtree-hg-plugin'
+" {{
+let g:NERDTreeIndicatorMapCustom = {
+    \ 'Modified'  : "M",
+    \ 'Staged'    : "+",
+    \ 'Untracked' : "?",
+    \ 'Renamed'   : "renamed",
+    \ 'Unmerged'  : "unmerged",
+    \ 'Deleted'   : "X",
+    \ 'Dirty'     : "d",
+    \ 'Clean'     : "c",
+    \ 'Ignored'   : "-",
+    \ 'Unknown'   : "??"
+    \ }
+" }}
+
 
 " Massive language pack for syntax highlighting, etc
 Plug 'sheerun/vim-polyglot'
