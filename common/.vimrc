@@ -48,6 +48,10 @@ Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
+" Make gf, sfind, etc work better in repositories
+" > Also used for ctrlp, see below
+Plug 'brentyi/vim-repo-file-search'
+
 " Fuzzy-find for files, buffers, tags!
 " > note: there are a ton of faster options (fzf, LeaderF, command-T, etc),
 " > but ctrlp feels way easier in terms of dependencies, portability, etc...
@@ -103,7 +107,6 @@ let g:NERDTreeIndicatorMapCustom = {
     \ }
 " }}
 
-
 " Massive language pack for syntax highlighting, etc
 Plug 'sheerun/vim-polyglot'
 
@@ -126,7 +129,7 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'itchyny/vim-cursorword'
 
 " Super intelligent indentation level detection
-" We load this early so user-defined autocmds override it
+" > We load this early so user-defined autocmds override it
 Plug 'tpope/vim-sleuth'
     runtime! plugin/sleuth.vim
 " }}
@@ -157,9 +160,6 @@ Plug 'Yggdroot/indentLine'
     let g:indentLine_fileTypeExclude = ['json', 'markdown', 'tex']
 " }}
 
-" Make gf, sfind, etc work better in repositories
-Plug 'brentyi/vim-repo-file-search'
-
 " Status line
 Plug 'itchyny/lightline.vim'
 " {{
@@ -188,11 +188,11 @@ Plug 'henrik/vim-indexed-search'
 Plug 'ajh17/VimCompletesMe'
 
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
-" This basically emulates the +clipboard vim feature flag
+" > This basically emulates the +clipboard vim feature flag
 Plug 'kana/vim-fakeclip'
 
 " Google's code format plugin + dependencies
-" (this vim-codefmt fork adds the --aggressive flag for autopep8)
+" > Our vim-codefmt fork just adds the --aggressive flag for autopep8
 Plug 'google/vim-maktaba'
 Plug 'google/vim-glaive'
 Plug 'brentyi/vim-codefmt'
@@ -202,7 +202,7 @@ Plug 'brentyi/vim-codefmt'
 " }}
 
 " Gutentags, for generating tag files
-" (this fork suppresses some errors from machines without ctags installed)
+" > Our fork suppresses some errors for machines without ctags installed
 Plug 'brentyi/vim-gutentags'
 " {{
     " Set cache location
