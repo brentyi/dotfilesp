@@ -57,7 +57,7 @@ Plug 'brentyi/vim-repo-file-search'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'nixprime/cpsm', { 'do': './install.sh' }
 " {{
-    let g:ctrlp_extensions = ['tag']
+    let g:ctrlp_extensions = ['tag', 'line']
     let g:ctrlp_show_hidden = 1
     let g:ctrlp_follow_symlinks=1
     let g:ctrlp_max_files=300000
@@ -65,7 +65,8 @@ Plug 'nixprime/cpsm', { 'do': './install.sh' }
     let g:ctrlp_reuse_window = 1
     let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
     nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
-    nnoremap <silent> <Leader><Leader>p :CtrlPTag<Return>
+    nnoremap <silent> <Leader>t :CtrlPTag<Return>
+    nnoremap <silent> <Leader>l :CtrlPLine<Return>
 " }}
 
 " NERDTree for filesystem navigation/manipulation
