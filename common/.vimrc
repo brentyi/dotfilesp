@@ -87,18 +87,18 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'f4t-t0ny/nerdtree-hg-plugin'
 " {{
-let g:NERDTreeIndicatorMapCustom = {
-    \ 'Modified'  : "M",
-    \ 'Staged'    : "+",
-    \ 'Untracked' : "?",
-    \ 'Renamed'   : "renamed",
-    \ 'Unmerged'  : "unmerged",
-    \ 'Deleted'   : "X",
-    \ 'Dirty'     : "d",
-    \ 'Clean'     : "c",
-    \ 'Ignored'   : "-",
-    \ 'Unknown'   : "??"
-    \ }
+    let g:NERDTreeIndicatorMapCustom = {
+        \ 'Modified'  : "M",
+        \ 'Staged'    : "+",
+        \ 'Untracked' : "?",
+        \ 'Renamed'   : "renamed",
+        \ 'Unmerged'  : "unmerged",
+        \ 'Deleted'   : "X",
+        \ 'Dirty'     : "d",
+        \ 'Clean'     : "c",
+        \ 'Ignored'   : "-",
+        \ 'Unknown'   : "??"
+        \ }
 " }}
 
 " Massive language pack for syntax highlighting, etc
@@ -159,20 +159,20 @@ Plug 'itchyny/lightline.vim'
 " {{
     let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', "wombat")
     let g:lightline = {
-    \ 'colorscheme': g:brent_lightline_colorscheme,
-    \ 'active': {
-    \   'right': [ [ 'lineinfo' ],
-    \              [ 'filetype', 'charvaluehex' ],
-    \              [ 'gutentags' ]]
-    \ },
-    \ 'inactive': {
-    \   'right': [ [], [], [ 'lineinfo' ] ]
-    \ },
-    \ 'component': {
-    \   'charvaluehex': '0x%B',
-    \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "ctags indexing...")}'
-    \ },
-    \ }
+        \ 'colorscheme': g:brent_lightline_colorscheme,
+        \ 'active': {
+        \   'right': [ [ 'lineinfo' ],
+        \              [ 'filetype', 'charvaluehex' ],
+        \              [ 'gutentags' ]]
+        \ },
+        \ 'inactive': {
+        \   'right': [ [], [], [ 'lineinfo' ] ]
+        \ },
+        \ 'component': {
+        \   'charvaluehex': '0x%B',
+        \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "ctags indexing...")}'
+        \ },
+        \ }
 " }}
 
 " Show instance # in statusline when we search
