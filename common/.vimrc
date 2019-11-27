@@ -48,7 +48,9 @@ Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
-" Quick navigation between files, buffers, tags!
+" Fuzzy-find for files, buffers, tags!
+" > note: there are a ton of faster options (fzf, LeaderF, command-T, etc),
+" > but ctrlp feels way easier in terms of dependencies, portability, etc...
 Plug 'ctrlpvim/ctrlp.vim'
 " {{
     let g:ctrlp_extensions = ['tag']
@@ -57,6 +59,13 @@ Plug 'ctrlpvim/ctrlp.vim'
     let g:ctrlp_max_files=300000
     let g:ctrlp_switch_buffer = '0'
     let g:ctrlp_reuse_window = 1
+    nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
+    nnoremap <silent> <Leader><Leader>p :CtrlPTag<Return>
+
+    function! s:smarter_fuzzy_file_search()
+        execute "CtrlP " . w:vim_repo_file_search_repo_root
+    endfunction
+    nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
 " }}
 
 " NERDTree for filesystem navigation/manipulation
@@ -368,21 +377,12 @@ onoremap ` '
 vnoremap ` '
 nnoremap ` '
 
-" Bindings for switching between buffers
-nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
-nnoremap <silent> <Leader>bn :bn<Return>
+" Bindings for deleting buffers
 nnoremap <silent> <Leader>bd :bd<Return>
-nnoremap <silent> <Leader>bl :ls<Return>
 
 " Bindings for switching between tabs
 nnoremap <silent> <Leader>tt :tabnew<Return>
-nnoremap <silent> <Leader>tn :tabn<Return>
 nnoremap <silent> <Leader>n :tabn<Return>
-nnoremap <silent> <Leader>tp :tabp<Return>
-
-" Bindings for jumping between tags
-nnoremap <silent> <Leader><Leader>p :CtrlPTag<Return>
-nnoremap <silent> <Leader>ts :tselect<Return>
 
 " Bindings to navigate using Ctrl+hjkl in insert mode
 inoremap <C-H> <Left>
