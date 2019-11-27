@@ -74,7 +74,6 @@ Plug 'scrooloose/nerdtree'
     let g:NERDTreeShowHidden = 1
     let g:NERDTreeShowLineNumbers = 1
     autocmd FileType nerdtree setlocal relativenumber
-    autocmd VimEnter * if !argc() | NERDTree | endif
     let g:NERDTreeMinimalUI = 1
     let g:NERDTreeFileExtensionHighlightFullName = 1
     let g:NERDTreeExactMatchHighlightFullName = 1
