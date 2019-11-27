@@ -49,7 +49,6 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
 " Make gf, sfind, etc work better in repositories
-" > Also used for ctrlp, see below
 Plug 'brentyi/vim-repo-file-search'
 
 " Fuzzy-find for files, buffers, tags!
@@ -65,11 +64,6 @@ Plug 'ctrlpvim/ctrlp.vim'
     let g:ctrlp_reuse_window = 1
     nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
     nnoremap <silent> <Leader><Leader>p :CtrlPTag<Return>
-
-    function! s:smarter_fuzzy_file_search()
-        execute "CtrlP " . w:vim_repo_file_search_repo_root
-    endfunction
-    nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
 " }}
 
 " NERDTree for filesystem navigation/manipulation
