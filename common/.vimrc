@@ -67,7 +67,7 @@ Plug 'nixprime/cpsm', { 'do': './install.sh' }
     let g:ctrlp_switch_buffer = '0'
     let g:ctrlp_reuse_window = 1
     if has('python') || has('python3')
-        " Enable CPSM only if python is supported
+        " Enable CPSM only if Python is supported
         let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
     endif
     nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
@@ -358,7 +358,7 @@ nnoremap <Esc>^[ <Esc>^[
 " Use backslash to toggle folds
 nnoremap <Bslash> za
 
-" Binding to disable line numbering -- useful for copy & paste, etc
+" Binding to toggle line numbering -- useful for copy & paste, etc
 if v:version > 703
     nnoremap <Leader>tln :set number!<Return>:set relativenumber!<Return>
 else
@@ -385,12 +385,6 @@ nnoremap <silent> <Leader>bd :bd<Return>
 " Bindings for switching between tabs
 nnoremap <silent> <Leader>tt :tabnew<Return>
 nnoremap <silent> <Leader>n :tabn<Return>
-
-" Bindings to navigate using Ctrl+hjkl in insert mode
-inoremap <C-H> <Left>
-inoremap <C-J> <Down>
-inoremap <C-K> <Up>
-inoremap <C-L> <Right>
 
 " 'Force write' binding for writing with sudo
 " Helpful if we don't have permissions for a specific file
