@@ -52,13 +52,14 @@ Plug 'tpope/vim-repeat'
 Plug 'brentyi/vim-repo-file-search'
 
 " Fuzzy-find for files, buffers, tags!
-" + cpsm for speed
-" > consider: switching cpsm for ctrlp-py-matcher to support more systems
+" + ctrlp-py-matcher for speed
+" > cpsm is faster but support for different systems seems shakey (for example,
+"   I can't get it to run in EC2 for whatever reason)
 " > alternatively: fzf+ag is ridiculously nice but I haven't been able to
 "   figure out how to make it respect &wildignore in a portable +
 "   easy-to-maintain way
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'nixprime/cpsm', { 'do': './install.sh' }
+Plug 'FelikZ/ctrlp-py-matcher'
 " {{
     let g:ctrlp_extensions = ['tag', 'line']
     let g:ctrlp_show_hidden = 1
@@ -67,8 +68,8 @@ Plug 'nixprime/cpsm', { 'do': './install.sh' }
     let g:ctrlp_switch_buffer = '0'
     let g:ctrlp_reuse_window = 1
     if has('python') || has('python3')
-        " Enable CPSM only if Python is supported
-        let g:ctrlp_match_func = {'match': 'cpsm#CtrlPMatch'}
+        " Use faster matcher when Python is supported
+        let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
     endif
     nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
     nnoremap <silent> <Leader>t :CtrlPTag<Return>
