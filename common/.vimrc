@@ -134,6 +134,7 @@ Plug 'itchyny/vim-cursorword'
 " Super intelligent indentation level detection
 " > We load this early so user-defined autocmds override it
 Plug 'tpope/vim-sleuth'
+" {{
     runtime! plugin/sleuth.vim
 " }}
 
