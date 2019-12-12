@@ -52,29 +52,48 @@ Plug 'tpope/vim-repeat'
 Plug 'brentyi/vim-repo-file-search'
 
 " Fuzzy-find for files, buffers, tags!
-" + ctrlp-py-matcher for speed
-" > cpsm is faster but support for different systems seems shakey (for example,
-"   I can't get it to run in EC2 for whatever reason)
-" > alternatively: fzf+ag is ridiculously nice but I haven't been able to
-"   figure out how to make it respect &wildignore in a portable +
-"   easy-to-maintain way
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'FelikZ/ctrlp-py-matcher'
-" {{
-    let g:ctrlp_extensions = ['tag', 'line']
-    let g:ctrlp_show_hidden = 1
-    let g:ctrlp_follow_symlinks=1
-    let g:ctrlp_max_files=300000
-    let g:ctrlp_switch_buffer = '0'
-    let g:ctrlp_reuse_window = 1
-    if has('python') || has('python3')
-        " Use faster matcher when Python is supported
-        let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-    endif
-    nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
-    nnoremap <silent> <Leader>t :CtrlPTag<Return>
-    nnoremap <silent> <Leader>l :CtrlPLine<Return>
-" }}
+let g:brent_use_fzf = get(g:, 'brent_use_fzf', 0)
+if !g:brent_use_fzf
+    " default to ctrlp + ctrlp-py-matcher, which is really nice & portable!
+    "
+    Plug 'ctrlpvim/ctrlp.vim'
+    Plug 'FelikZ/ctrlp-py-matcher'
+    " {{
+        let g:ctrlp_extensions = ['tag', 'line']
+        let g:ctrlp_show_hidden = 1
+        let g:ctrlp_follow_symlinks=1
+        let g:ctrlp_max_files=300000
+        let g:ctrlp_switch_buffer = '0'
+        let g:ctrlp_reuse_window = 1
+        " if executable('ag')
+        "     let g:ctrlp_user_command = 'ag %s -l --hidden --nocolor -g ""'
+        " endif
+        if has('python') || has('python3')
+            " Use faster matcher when Python is supported
+            let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+        endif
+        nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
+        nnoremap <silent> <Leader>t :CtrlPTag<Return>
+        nnoremap <silent> <Leader>l :CtrlPLine<Return>
+    " }}
+else
+    " FZF + ag is _much_ faster & actually useful when working with big repos
+    "
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'junegunn/fzf.vim'
+    " {{
+        function! s:smarter_fuzzy_file_search()
+            execute "Files " . b:vim_repo_file_search_repo_root
+        endfunction
+        nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
+        nnoremap <silent> <Leader>p :Buffers<Return>
+        nnoremap <silent> <Leader>t :Tags<Return>
+        nnoremap <silent> <Leader>l :Lines<Return>
+        if executable('ag')
+            let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+        endif
+    " }}
+endif
 
 " NERDTree for filesystem navigation/manipulation
 Plug 'scrooloose/nerdtree'

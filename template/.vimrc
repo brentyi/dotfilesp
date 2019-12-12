@@ -9,4 +9,8 @@
 let g:brent_colorscheme = "xoria256"
 let g:brent_lightline_colorscheme = "jellybeans"
 
+"""" Faster fuzzy find
+
+" let g:brent_use_fzf = 1
+
 source ~/dotfilesp/common/.vimrc

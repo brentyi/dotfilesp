@@ -14,5 +14,5 @@ if [[ `lsb_release -is` == "Ubuntu" ]]; then
 
 elif [[ `lsb_release -is` == "Fedora" ]]; then
     # install common utilities
-    sudo dnf install vim ctags tmux htop xclip -y
+    sudo dnf install vim ctags tmux htop xclip the_silver_searcher -y
 fi
