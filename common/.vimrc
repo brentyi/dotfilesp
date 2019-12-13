@@ -72,9 +72,23 @@ if !g:brent_use_fzf
             " Use faster matcher when Python is supported
             let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
         endif
-        nnoremap <silent> <Leader>p :CtrlPBuffer<Return>
-        nnoremap <silent> <Leader>t :CtrlPTag<Return>
-        nnoremap <silent> <Leader>l :CtrlPLine<Return>
+
+        function! s:ctrlp_file_under_cursor()
+            let g:ctrlp_default_input = expand('<cfile>')
+            CtrlP
+            let g:ctrlp_default_input = ''
+        endfunction
+
+        function! s:ctrlp_tag_under_cursor()
+            let g:ctrlp_default_input = expand('<cword>')
+            CtrlPTag
+            let g:ctrlp_default_input = ''
+        endfunction
+
+        nnoremap <silent> <Leader>p :CtrlPBuffer<CR>
+        nnoremap <silent> <Leader>t :call <SID>ctrlp_tag_under_cursor()<CR>
+        nnoremap <silent> <Leader>l :CtrlPLine<CR>
+        nnoremap <silent> <Leader>gf :call <SID>ctrlp_file_under_cursor()<CR>
     " }}
 else
     " FZF + ag is _much_ faster & actually useful when working with big repos
@@ -85,13 +99,21 @@ else
         function! s:smarter_fuzzy_file_search()
             execute "Files " . b:vim_repo_file_search_repo_root
         endfunction
-        nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
-        nnoremap <silent> <Leader>p :Buffers<Return>
-        nnoremap <silent> <Leader>t :Tags<Return>
-        nnoremap <silent> <Leader>l :Lines<Return>
+
+        " Use ag if available
         if executable('ag')
             let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+        else
+            echoerr "fzf enabled without ag!"
         endif
+
+        " Bindings
+        nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
+        nnoremap <Leader>p :Buffers<CR>
+        nnoremap <Leader>t :call fzf#vim#tags(expand('<cword>'))<CR>
+        nnoremap <Leader>l :Lines<CR>
+        nnoremap <Leader>gf :call fzf#vim#files(b:vim_repo_file_search_repo_root, {
+            \ 'options': '--query ' . expand('<cfile>')})<CR>
 
         " Band-aid for making fzf play nice w/ NERDTree + autochdir
         " Reproducing the error:
@@ -122,7 +144,7 @@ Plug 'scrooloose/nerdtree'
     let g:NERDTreePatternMatchHighlightFullName = 1
     let g:NERDTreeMapJumpNextSibling = '<Nop>'
     let g:NERDTreeMapJumpPrevSibling = '<Nop>'
-    nnoremap <Leader>o :NERDTree<Return>
+    nnoremap <Leader>o :NERDTree<CR>
 " }}
 
 " NERDTree extensions: syntax highlighting, version control indicators
@@ -388,7 +410,7 @@ imap [[ <Esc>
 imap ;; <Esc>
 
 " Search utilities -- highlight matches, clear highlighting with <Esc>
-nnoremap <Esc> :noh<Return><Esc>
+nnoremap <Esc> :noh<CR><Esc>
 nnoremap <Esc>^[ <Esc>^[
 
 " Use backslash to toggle folds
@@ -396,16 +418,16 @@ nnoremap <Bslash> za
 
 " Binding to toggle line numbering -- useful for copy & paste, etc
 if v:version > 703
-    nnoremap <Leader>tln :set number!<Return>:set relativenumber!<Return>
+    nnoremap <Leader>tln :set number!<CR>:set relativenumber!<CR>
 else
-    nnoremap <Leader>tln :set relativenumber!<Return>
+    nnoremap <Leader>tln :set relativenumber!<CR>
 endif
 
 " Binding to switch into/out of PASTE mode
-nnoremap <Leader>ip :set invpaste<Return>
+nnoremap <Leader>ip :set invpaste<CR>
 
 " Binding to remove trailing whitespaces in current files
-nnoremap <Leader>rtws :%s/\s\+$//e<Return>
+nnoremap <Leader>rtws :%s/\s\+$//e<CR>
 
 " Switch ' and ` for jumps: ' is much more intuitive and easier to access
 onoremap ' `
@@ -416,11 +438,11 @@ vnoremap ` '
 nnoremap ` '
 
 " Bindings for deleting buffers
-nnoremap <silent> <Leader>bd :bd<Return>
+nnoremap <silent> <Leader>bd :bd<CR>
 
 " Bindings for switching between tabs
-nnoremap <silent> <Leader>tt :tabnew<Return>
-nnoremap <silent> <Leader>n :tabn<Return>
+nnoremap <silent> <Leader>tt :tabnew<CR>
+nnoremap <silent> <Leader>n :tabn<CR>
 
 " 'Force write' binding for writing with sudo
 " Helpful if we don't have permissions for a specific file
@@ -439,8 +461,8 @@ set winminwidth=10
 " Match tmux behavior + bindings (with <C-w> instead of <C-b>)
 set splitbelow
 set splitright
-nmap <C-w>" :sp<Return>:e .<Return>
-nmap <C-w>% :vsp<Return>:e .<Return>
+nmap <C-w>" :sp<CR>:e .<CR>
+nmap <C-w>% :vsp<CR>:e .<CR>
 
 
 " #############################################
