@@ -92,6 +92,21 @@ else
         if executable('ag')
             let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
         endif
+
+        " Band-aid for making fzf play nice w/ NERDTree + autochdir
+        " Reproducing the error:
+        "     (1) Open a file
+        "     (2) Open another file w/ fzf
+        "     (3) :edit .  # <= this should show some errors
+        "     (4) Run `pwd` and `echo getcwd()` -- these will no longer match
+        "
+        " Oddly enough, this issue goes away when we either (a) use netrw
+        " instead of nerdtree, (b) disable autochdir, or (c) add this autocmd
+        " to fix the working directory state
+        augroup AutochdirFix
+            autocmd!
+            autocmd BufReadPost * execute 'cd ' . getcwd()
+        augroup END
     " }}
 endif
 
