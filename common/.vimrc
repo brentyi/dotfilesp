@@ -455,8 +455,8 @@ set winminwidth=10
 " Match tmux behavior + bindings (with <C-w> instead of <C-b>)
 set splitbelow
 set splitright
-nmap <C-w>" :sp<CR>:e .<CR>
-nmap <C-w>% :vsp<CR>:e .<CR>
+nmap <C-w>" :sp<CR>
+nmap <C-w>% :vsp<CR>
 
 
 " #############################################
