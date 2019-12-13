@@ -54,10 +54,11 @@ Plug 'brentyi/vim-repo-file-search'
 " Fuzzy-find for files, buffers, tags!
 let g:brent_use_fzf = get(g:, 'brent_use_fzf', 0)
 if !g:brent_use_fzf
-    " default to ctrlp + ctrlp-py-matcher, which is really nice & portable!
+    " Default to ctrlp, which is really nice & portable!
+    " Note: we've experimented with ctrlp-py-matcher, cpsm, etc, but support
+    " across systems + vim versions has been shaky for all of them
     "
     Plug 'ctrlpvim/ctrlp.vim'
-    Plug 'FelikZ/ctrlp-py-matcher'
     " {{
         let g:ctrlp_extensions = ['tag', 'line']
         let g:ctrlp_show_hidden = 1
@@ -65,13 +66,6 @@ if !g:brent_use_fzf
         let g:ctrlp_max_files=300000
         let g:ctrlp_switch_buffer = '0'
         let g:ctrlp_reuse_window = 1
-        " if executable('ag')
-        "     let g:ctrlp_user_command = 'ag %s -l --hidden --nocolor -g ""'
-        " endif
-        if has('python') || has('python3')
-            " Use faster matcher when Python is supported
-            let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-        endif
 
         function! s:ctrlp_file_under_cursor()
             let g:ctrlp_default_input = expand('<cfile>')
