@@ -473,27 +473,34 @@ nmap <C-w>% :vsp<CR>:e .<CR>
 "  - 'Default mode': arrow keys resize splits, mouse disabled
 "  - 'Friendly mode': arrow keys, mouse behave as usual
 
-let s:friendly_mode = 0
-function! s:toggle_friendly_mode()
+let s:friendly_mode = 1
+function! s:toggle_friendly_mode(verbose)
     if s:friendly_mode
-        unmap <silent> <Up>
-        unmap <silent> <Down>
-        unmap <silent> <Right>
-        unmap <silent> <Left>
-        set mouse=a
-        let s:friendly_mode = 0
-        echo "enabled friendly mode!"
-    else
         nmap <silent> <Up> :exe "resize +5"<CR>
         nmap <silent> <Down> :exe "resize -5"<CR>
         nmap <silent> <Right> :exe "vert resize +5"<CR>
         nmap <silent> <Left> :exe "vert resize -5"<CR>
         set mouse=
+        let s:friendly_mode = 0
+
+        if a:verbose
+            echo "disabled friendly mode!"
+        endif
+    else
+        unmap <silent> <Up>
+        unmap <silent> <Down>
+        unmap <silent> <Right>
+        unmap <silent> <Left>
+        set mouse=a
         let s:friendly_mode = 1
+
+        if a:verbose
+            echo "enabled friendly mode!"
+        endif
     endif
 endfunction
-call <SID>toggle_friendly_mode()
-nmap <Leader>f :call <SID>toggle_friendly_mode()<CR>
+call <SID>toggle_friendly_mode(0)
+nnoremap <silent> <Leader>f :call <SID>toggle_friendly_mode(1)<CR>
 
 
 " #############################################
