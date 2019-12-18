@@ -420,8 +420,11 @@ endif
 " Binding to switch into/out of PASTE mode
 nnoremap <Leader>ip :set invpaste<CR>
 
-" Binding to remove trailing whitespaces in current files
-nnoremap <Leader>rtws :%s/\s\+$//e<CR>
+" Binding to trim trailing whitespaces in current file
+nnoremap <Leader>ttws :%s/\s\+$//e<CR>
+
+" Binding to 'replace this word'
+nnoremap <Leader>rtw :%s/\<<C-r><C-w>\>/
 
 " Switch ' and ` for jumps: ' is much more intuitive and easier to access
 onoremap ' `
