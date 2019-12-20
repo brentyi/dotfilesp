@@ -240,6 +240,12 @@ Plug 'henrik/vim-indexed-search'
 
 " Lightweight autocompletion!
 Plug 'ajh17/VimCompletesMe'
+" {{
+    " Use j, k for selecting autocompletion results & enter for selection
+    inoremap <expr> j ((pumvisible())?("\<C-n>"):("j"))
+    inoremap <expr> k ((pumvisible())?("\<C-p>"):("k"))
+    inoremap <expr> <CR> ((pumvisible())?("\<C-y>"):("\<CR>"))
+" }}
 
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
 " > This basically emulates the +clipboard vim feature flag
