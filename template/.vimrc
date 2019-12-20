@@ -13,4 +13,11 @@ let g:brent_lightline_colorscheme = "jellybeans"
 
 " let g:brent_use_fzf = 1
 
+"""" Ignore patterns for gutentags
+
+let g:gutentags_ctags_exclude = [
+    \ 'third_party',
+    \ 'third-party',
+    \ ]
+
 source ~/dotfilesp/common/.vimrc
