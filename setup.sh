@@ -110,7 +110,7 @@ if [[ $install_miniconda = 1 ]]; then
     echo -e "\n---------"
     echo "Miniconda"
     echo "---------"
-    bash scripts/install_miniconda.sh
+    bash scripts/install_miniconda.sh $HOME
 fi
 
 echo ""
