@@ -80,7 +80,8 @@ if !g:brent_use_fzf
         endfunction
 
         nnoremap <silent> <Leader>p :CtrlPBuffer<CR>
-        nnoremap <silent> <Leader>t :call <SID>ctrlp_tag_under_cursor()<CR>
+        nnoremap <silent> <Leader>t :CtrlPTag<CR>
+        nnoremap <silent> <Leader>gt :call <SID>ctrlp_tag_under_cursor()<CR>
         nnoremap <silent> <Leader>l :CtrlPLine<CR>
         nnoremap <silent> <Leader>gf :call <SID>ctrlp_file_under_cursor()<CR>
     " }}
@@ -104,7 +105,8 @@ else
         " Bindings
         nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
         nnoremap <Leader>p :Buffers<CR>
-        nnoremap <Leader>t :call fzf#vim#tags(expand('<cword>'))<CR>
+        nnoremap <Leader>t :Tags<CR>
+        nnoremap <Leader>gt :call fzf#vim#tags(expand('<cword>'))<CR>
         nnoremap <Leader>l :Lines<CR>
         nnoremap <Leader>gf :call fzf#vim#files(b:vim_repo_file_search_repo_root, {
             \ 'options': '--query ' . expand('<cfile>')})<CR>
