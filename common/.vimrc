@@ -412,7 +412,7 @@ imap [[ <Esc>
 imap ;; <Esc>
 
 " Search utilities -- highlight matches, clear highlighting with <Esc>
-nnoremap <Esc> :noh<CR><Esc>
+nnoremap <silent> <Esc> :noh<CR>:redraw!<CR><Esc>
 nnoremap <Esc>^[ <Esc>^[
 
 " Use backslash to toggle folds
