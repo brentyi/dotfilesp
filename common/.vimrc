@@ -179,6 +179,13 @@ Plug 'sjl/badwolf'
 " Vim + tmux integration
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux-focus-events'
+" {{
+    " https://github.com/tmux-plugins/vim-tmux-focus-events/issues/2
+    augroup BlurArtifactBandaid
+        autocmd!
+        au FocusLost * silent redraw!
+    augroup END
+" }}
 
 " Underline all instances of current word
 Plug 'itchyny/vim-cursorword'
