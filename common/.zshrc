@@ -47,7 +47,7 @@ u() {
         echo "----------"
         git pull
         # git submodule update --init --recursive
-        vim +PlugInstall +qall
+        vim +PlugUpdate +qall
         rm -rf ~/.antigen
         # cleanup
         if [ -d "$HOME/.oh-my-zsh" ]; then

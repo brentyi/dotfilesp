@@ -27,7 +27,7 @@ let s:vim_plug_path = (has('nvim') ? '~/.config/nvim' : '~/.vim') . '/autoload/p
 if empty(glob(s:vim_plug_path))
     execute "silent !curl -fLo " . s:vim_plug_path . " --create-dirs "
         \ . "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    autocmd VimEnter * PlugUpdate --sync | source $MYVIMRC
 endif
 
 
