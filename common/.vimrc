@@ -258,7 +258,9 @@ Plug 'ajh17/VimCompletesMe'
 
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
 " > This basically emulates the +clipboard vim feature flag
-Plug 'kana/vim-fakeclip'
+" > Our fork contains important bug fixes, feature enhancements, etc from
+"    unmerged pull requests made to the upstream repository
+Plug 'brentyi/vim-fakeclip'
 
 " Google's code format plugin + dependencies
 " > Our vim-codefmt fork just adds the --aggressive flag for autopep8
