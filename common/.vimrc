@@ -226,14 +226,24 @@ Plug 'Yggdroot/indentLine'
 " Status line
 Plug 'itchyny/lightline.vim'
 " {{
-    " If possible, generate a path relative to our repository root
-    function! s:lightline_filename()
-        let root = fnamemodify(get(b:, 'vim_repo_file_search_repo_root'), ':h')
-        let path = expand('%:p')
-        if path[:len(root)-1] ==# root
-            return path[len(root)+1:]
+    " If possible, generate a relative path to display
+    function! s:lightline_filepath()
+        " Get a full path to the current file
+        let l:path = expand("%:p")
+
+        " Chop off the filename
+        let l:path = l:path[:-len(expand("%:t")) - 2]
+
+        let l:repo_root = fnamemodify(get(b:, 'vim_repo_file_search_repo_root'), ':h')
+        if l:path[:len(l:repo_root)-1] ==# l:repo_root
+            " Check if we can generate a path relative to a repository...
+            let l:path = l:path[len(l:repo_root) + 1:]
+        elseif path[:len($HOME)-1] ==# $HOME
+            " ...how about relative to our home directory?
+            let l:path = "~" . l:path[len($HOME):]
         endif
-        return expand('%')
+
+        return l:path
     endfunction
 
     let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', "wombat")
@@ -242,17 +252,23 @@ Plug 'itchyny/lightline.vim'
         \ 'active': {
         \   'right': [ [ 'lineinfo' ],
         \              [ 'filetype', 'charvaluehex' ],
-        \              [ 'gutentags' ]]
+        \              [ 'gutentags' ],
+        \              [ 'filepath' ],
+        \              [ 'truncate' ]]
         \ },
         \ 'inactive': {
-        \   'right': [ [], [], [ 'lineinfo' ] ]
+        \   'right': [ [],
+        \              [],
+        \              [ 'filepath', 'lineinfo' ],
+        \              [ 'truncate' ]]
         \ },
         \ 'component': {
         \   'charvaluehex': '0x%B',
-        \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "ctags indexing...")}'
+        \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "[ctags indexing]")}',
+        \   'truncate': '%<',
         \ },
         \ 'component_function': {
-        \   'filename': string(function('s:lightline_filename')),
+        \   'filepath': string(function('s:lightline_filepath')),
         \ },
         \ }
 " }}
