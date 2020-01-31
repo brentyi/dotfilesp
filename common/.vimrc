@@ -226,6 +226,16 @@ Plug 'Yggdroot/indentLine'
 " Status line
 Plug 'itchyny/lightline.vim'
 " {{
+    " If possible, generate a path relative to our repository root
+    function! s:lightline_filename()
+        let root = fnamemodify(get(b:, 'vim_repo_file_search_repo_root'), ':h')
+        let path = expand('%:p')
+        if path[:len(root)-1] ==# root
+            return path[len(root)+1:]
+        endif
+        return expand('%')
+    endfunction
+
     let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', "wombat")
     let g:lightline = {
         \ 'colorscheme': g:brent_lightline_colorscheme,
@@ -240,6 +250,9 @@ Plug 'itchyny/lightline.vim'
         \ 'component': {
         \   'charvaluehex': '0x%B',
         \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "ctags indexing...")}'
+        \ },
+        \ 'component_function': {
+        \   'filename': string(function('s:lightline_filename')),
         \ },
         \ }
 " }}
