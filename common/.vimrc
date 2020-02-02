@@ -306,6 +306,12 @@ Plug 'ajh17/VimCompletesMe'
     inoremap <expr> j ((pumvisible())?("\<C-n>"):("j"))
     inoremap <expr> k ((pumvisible())?("\<C-p>"):("k"))
     inoremap <expr> <CR> ((pumvisible())?("\<C-y>"):("\<CR>"))
+
+    " Hide autocomplete preview window
+    augroup Autocompletion
+        autocmd!
+        autocmd FileType cpp,c let b:vcm_tab_complete = "omni"
+    augroup END
 " }}
 
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
