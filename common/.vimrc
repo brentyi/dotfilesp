@@ -51,6 +51,10 @@ Plug 'tpope/vim-repeat'
 " Make gf, sfind, etc work better in repositories
 Plug 'brentyi/vim-repo-file-search'
 
+" Doodads for Mercurial, Git
+Plug 'tpope/vim-fugitive'
+Plug 'ludovicchabant/vim-lawrencium'
+
 " Fuzzy-find for files, buffers, tags!
 let g:brent_use_fzf = get(g:, 'brent_use_fzf', 0)
 if !g:brent_use_fzf
