@@ -96,7 +96,7 @@ else
     Plug 'junegunn/fzf.vim'
     " {{
         function! s:smarter_fuzzy_file_search()
-            execute "Files " . b:vim_repo_file_search_repo_root
+            execute "Files " . b:repo_file_search_root
         endfunction
 
         " Use ag if available
@@ -112,7 +112,7 @@ else
         nnoremap <Leader>t :Tags<CR>
         nnoremap <Leader>gt :call fzf#vim#tags(expand('<cword>'))<CR>
         nnoremap <Leader>l :Lines<CR>
-        nnoremap <Leader>gf :call fzf#vim#files(b:vim_repo_file_search_repo_root, {
+        nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, {
             \ 'options': '--query ' . expand('<cfile>')})<CR>
 
         " Band-aid for making fzf play nice w/ NERDTree + autochdir
@@ -238,7 +238,7 @@ Plug 'itchyny/lightline.vim'
         " Chop off the filename
         let l:path = l:path[:-len(expand("%:t")) - 2]
 
-        let l:repo_root = fnamemodify(get(b:, 'vim_repo_file_search_repo_root'), ':h')
+        let l:repo_root = fnamemodify(get(b:, 'repo_file_search_root'), ':h')
         if l:path[:len(l:repo_root)-1] ==# l:repo_root
             " Check if we can generate a path relative to a repository...
             let l:path = l:path[len(l:repo_root) + 1:]
