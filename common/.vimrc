@@ -307,11 +307,14 @@ Plug 'ajh17/VimCompletesMe'
     inoremap <expr> k ((pumvisible())?("\<C-p>"):("k"))
     inoremap <expr> <CR> ((pumvisible())?("\<C-y>"):("\<CR>"))
 
-    " Hide autocomplete preview window
+    " Filetype-specific tab completion modes
     augroup Autocompletion
         autocmd!
         autocmd FileType cpp,c let b:vcm_tab_complete = "omni"
     augroup END
+
+    " Binding to close preview windows (eg from autocompletion)
+    nnoremap <silent> <Leader>pc :pc<CR>
 " }}
 
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
