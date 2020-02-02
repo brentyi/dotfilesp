@@ -54,6 +54,25 @@ Plug 'brentyi/vim-repo-file-search'
 " Doodads for Mercurial, Git
 Plug 'tpope/vim-fugitive'
 Plug 'ludovicchabant/vim-lawrencium'
+" {{
+    function! s:vc_diff()
+        if b:repo_file_search_type == 'hg'
+            Hgvdiff
+        elseif b:repo_file_search_type == 'git'
+            Gdiff
+        endif
+    endfunction
+    nnoremap <silent> <Leader>d :call <SID>vc_diff()<CR>
+
+    function! s:vc_status()
+        if b:repo_file_search_type == 'hg'
+            Hgstatus
+        elseif b:repo_file_search_type == 'git'
+            Gstatus
+        endif
+    endfunction
+    nnoremap <silent> <Leader>s :call <SID>vc_status()<CR>
+" }}
 
 " Fuzzy-find for files, buffers, tags!
 let g:brent_use_fzf = get(g:, 'brent_use_fzf', 0)
