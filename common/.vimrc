@@ -498,6 +498,14 @@ else
     nnoremap <Leader>tln :set relativenumber!<CR>
 endif
 
+" Bindings for lower-effort writing, quitting, reloading
+nnoremap <Leader>wq :wq<CR>
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>q :q<CR>
+nnoremap <Leader>q! :q!<CR>
+nnoremap <Leader>e :e<CR>
+nnoremap <Leader>e! :e!<CR>
+
 " Binding to switch into/out of PASTE mode
 nnoremap <Leader>ip :set invpaste<CR>
 
