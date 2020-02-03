@@ -299,8 +299,11 @@ Plug 'itchyny/lightline.vim'
 " Show instance # in statusline when we search
 Plug 'henrik/vim-indexed-search'
 
-" Lightweight autocompletion!
+" Lightweight autocompletion w/ tab! ...and clang_complete for C++
+" > For clang_complete, g:clang_library_path should be set if clang isn't in our
+"   system search path
 Plug 'ajh17/VimCompletesMe'
+Plug 'xavierd/clang_complete'
 " {{
     " Use j, k for selecting autocompletion results & enter for selection
     inoremap <expr> j ((pumvisible())?("\<C-n>"):("j"))
