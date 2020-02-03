@@ -299,18 +299,15 @@ Plug 'itchyny/lightline.vim'
 " Show instance # in statusline when we search
 Plug 'henrik/vim-indexed-search'
 
-" Lightweight autocompletion w/ tab! ...and clang_complete for C++
-" > For clang_complete, g:clang_library_path should be set if clang isn't in our
-"   system search path
+" Lightweight autocompletion w/ tab key
 Plug 'ajh17/VimCompletesMe'
-Plug 'xavierd/clang_complete'
 " {{
     " Use j, k for selecting autocompletion results & enter for selection
     inoremap <expr> j ((pumvisible())?("\<C-n>"):("j"))
     inoremap <expr> k ((pumvisible())?("\<C-p>"):("k"))
     inoremap <expr> <CR> ((pumvisible())?("\<C-y>"):("\<CR>"))
 
-    " Filetype-specific tab completion modes
+    " Use omnicomplete by default for C++
     augroup Autocompletion
         autocmd!
         autocmd FileType cpp,c let b:vcm_tab_complete = "omni"
@@ -318,6 +315,26 @@ Plug 'xavierd/clang_complete'
 
     " Binding to close preview windows (eg from autocompletion)
     nnoremap <silent> <Leader>pc :pc<CR>
+" }}
+
+" C++ autocompletion
+Plug 'xavierd/clang_complete'
+" {{
+    " Automatically find all installed versions of libclang, for when clang isn't
+    " in the system search path
+    let s:clang_library_paths = glob('/usr/lib/llvm-*/lib/libclang.so.1')
+    let s:min_version = 0.0
+
+    " Find the newest version and set g:clang_library_path
+    for s:path in split(s:clang_library_paths, '\n')
+        let s:current_version = str2float(
+            \ split(split(s:path, '-')[1], '/')[0])
+
+        if filereadable(s:path) && s:current_version > s:min_version
+            let g:clang_library_path=s:path
+            let s:min_version = s:current_version
+        endif
+    endfor
 " }}
 
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
