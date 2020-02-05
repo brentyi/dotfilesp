@@ -548,8 +548,24 @@ onoremap ` '
 vnoremap ` '
 nnoremap ` '
 
-" Bindings for deleting buffers
+" Bindings for deleting buffer
+" > bd: delete current buffer
+" > bc: clear all but current buffer
+" > baa: open/add all files in current directory to buffers
 nnoremap <silent> <Leader>bd :bd<CR>
+nnoremap <silent> <Leader>bc :%bd\|e#<CR>
+function! s:buffer_add_all()
+    " Get a full path to the current file
+    let l:path = expand("%:p")
+
+    " Chop off the filename and add wildcard
+    let l:pattern = l:path[:-len(expand("%:t")) - 1] . "**/*"
+    for l:path in split(glob(l:pattern), '\n')
+        execute "badd " . l:path
+    endfor
+endfunction
+nnoremap <silent> <Leader>baa :call <SID>buffer_add_all()<CR>
+
 
 " Bindings for switching between tabs
 nnoremap <silent> <Leader>tt :tabnew<CR>
