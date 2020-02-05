@@ -102,10 +102,17 @@ if !g:brent_use_fzf
             let g:ctrlp_default_input = ''
         endfunction
 
+        function! s:ctrlp_line_under_cursor()
+            let g:ctrlp_default_input = expand('<cword>')
+            CtrlPLine
+            let g:ctrlp_default_input = ''
+        endfunction
+
         nnoremap <silent> <Leader>p :CtrlPBuffer<CR>
         nnoremap <silent> <Leader>t :CtrlPTag<CR>
         nnoremap <silent> <Leader>gt :call <SID>ctrlp_tag_under_cursor()<CR>
         nnoremap <silent> <Leader>l :CtrlPLine<CR>
+        nnoremap <silent> <Leader>gl :call <SID>ctrlp_line_under_cursor()<CR>
         nnoremap <silent> <Leader>gf :call <SID>ctrlp_file_under_cursor()<CR>
     " }}
 else
@@ -131,6 +138,7 @@ else
         nnoremap <Leader>t :Tags<CR>
         nnoremap <Leader>gt :call fzf#vim#tags(expand('<cword>'))<CR>
         nnoremap <Leader>l :Lines<CR>
+        nnoremap <Leader>gl :call fzf#vim#lines(expand('<cword>'))<CR>
         nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, {
             \ 'options': '--query ' . expand('<cfile>')})<CR>
 
