@@ -199,9 +199,6 @@ Plug 'sheerun/vim-polyglot'
 " Tag matching for HTML
 Plug 'gregsexton/MatchTag'
 
-" Better Python indentation
-Plug 'vim-scripts/indentpython.vim'
-
 " ~~ Color schemes ~~
 Plug 'vim-scripts/xoria256.vim'
 Plug 'tomasr/molokai'
