@@ -644,6 +644,9 @@ augroup FiletypeHelpers
     autocmd BufNewFile,BufRead BUCK* set filetype=python
     autocmd BufNewFile,BufRead TARGETS set filetype=python
 
+    " Angle bracket matching for C++ templates
+    autocmd FileType cpp setlocal matchpairs+=<:>
+
     " Automatically insert header gates for h/hpp files
     function! s:insert_gates()
         let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
