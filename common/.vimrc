@@ -449,7 +449,11 @@ else
 endif
 hi MatchParen cterm=bold,underline ctermbg=none ctermfg=7
 hi VertSplit ctermfg=0 ctermbg=0
-autocmd VimEnter,WinEnter * match TrailingWhitespace /\s\+$/
+
+augroup MatchTrailingWhitespace
+    autocmd!
+    autocmd VimEnter,WinEnter * call matchadd('TrailingWhitespace', '\s\+$')
+augroup END
 
 " Visually different markers for various types of whitespace
 " (for distinguishing tabs vs spaces)
@@ -637,17 +641,21 @@ augroup FiletypeHelpers
     " (ROS) Launch files should be highlighted as xml
     autocmd BufNewFile,BufRead *.launch set filetype=xml
 
-    " Make files need to be indented with tabs
+    " (Make) indent with tabs
     autocmd FileType make setlocal noexpandtab
 
-    " Buck files should be highlighted as python
+    " (Buck) highlight as python
     autocmd BufNewFile,BufRead BUCK* set filetype=python
     autocmd BufNewFile,BufRead TARGETS set filetype=python
 
-    " Angle bracket matching for C++ templates
+    " (C++) Angle bracket matching for templates
     autocmd FileType cpp setlocal matchpairs+=<:>
 
-    " Automatically insert header gates for h/hpp files
+    " (Python) Highlight lines that are too long
+    highlight OverLength ctermbg=darkgrey
+    autocmd VimEnter,WinEnter *.py call matchadd('OverLength', '\%>79v.\+')
+
+    " (C/C++) Automatically insert header gates for h/hpp files
     function! s:insert_gates()
         let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
         execute "normal! i#ifndef " . gatename
