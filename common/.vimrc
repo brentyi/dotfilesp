@@ -172,6 +172,13 @@ Plug 'scrooloose/nerdtree'
     let g:NERDTreeMapJumpNextSibling = '<Nop>'
     let g:NERDTreeMapJumpPrevSibling = '<Nop>'
     nnoremap <Leader>o :NERDTree<CR>
+
+    augroup NERDTreeBindings
+        " Match 'open in split' bindings of CtrlP and fzf
+        autocmd!
+        autocmd Filetype nerdtree nmap <buffer> <C-v> s
+        autocmd Filetype nerdtree nmap <buffer> <C-x> i
+    augroup END
 " }}
 
 " NERDTree extensions: syntax highlighting, version control indicators
