@@ -388,6 +388,16 @@ Plug 'brentyi/vim-gutentags'
     augroup END
 " }}
 
+" Animations for fun?
+Plug 'camspiers/animate.vim'
+" {{
+    let g:animate#duration = 150.0
+    let g:animate#easing_func = 'animate#ease_out_quad'
+    let g:fzf_layout = {
+        \ 'window': 'new | wincmd J | resize 1 | call animate#window_percent_height(0.5)'
+        \ }
+" }}
+
 call plug#end()
 
 " Initialize Glaive + codefmt
@@ -611,10 +621,14 @@ nmap <C-w>% :vsp<CR>
 let s:friendly_mode = 1
 function! s:toggle_friendly_mode(verbose)
     if s:friendly_mode
-        nmap <silent> <Up> :exe "resize +5"<CR>
-        nmap <silent> <Down> :exe "resize -5"<CR>
-        nmap <silent> <Right> :exe "vert resize +5"<CR>
-        nmap <silent> <Left> :exe "vert resize -5"<CR>
+        nnoremap <silent> <Up>
+                    \ :<C-U>call animate#window_delta_height(v:count1 * 8)<CR>
+        nnoremap <silent> <Down>
+                    \ :<C-U>call animate#window_delta_height(v:count1 * -8)<CR>
+        nnoremap <silent> <Left>
+                    \ :<C-U>call animate#window_delta_width(v:count1 * 8)<CR>
+        nnoremap <silent> <Right>
+                    \ :<C-U>call animate#window_delta_width(v:count1 * -8)<CR>
         set mouse=
         let s:friendly_mode = 0
 
