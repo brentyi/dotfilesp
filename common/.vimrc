@@ -54,6 +54,11 @@ Plug 'brentyi/vim-repo-file-search'
 " Doodads for Mercurial, Git
 Plug 'tpope/vim-fugitive'
 Plug 'ludovicchabant/vim-lawrencium'
+if has('nvim') || has('patch-8.0.902')
+  Plug 'mhinz/vim-signify'
+else
+  Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+endif
 " {{
     function! s:vc_diff()
         if b:repo_file_search_type == 'hg'
@@ -72,6 +77,9 @@ Plug 'ludovicchabant/vim-lawrencium'
         endif
     endfunction
     nnoremap <silent> <Leader>s :call <SID>vc_status()<CR>
+
+    " For vim-signify
+    set updatetime=100
 " }}
 
 " Fuzzy-find for files, buffers, tags!
