@@ -634,9 +634,9 @@ function! s:toggle_friendly_mode(verbose)
         nnoremap <silent> <Down>
                     \ :<C-U>call animate#window_delta_height(v:count1 * -8)<CR>
         nnoremap <silent> <Left>
-                    \ :<C-U>call animate#window_delta_width(v:count1 * 8)<CR>
-        nnoremap <silent> <Right>
                     \ :<C-U>call animate#window_delta_width(v:count1 * -8)<CR>
+        nnoremap <silent> <Right>
+                    \ :<C-U>call animate#window_delta_width(v:count1 * 8)<CR>
         set mouse=
         let s:friendly_mode = 0
 
