@@ -342,11 +342,13 @@ Plug 'xavierd/clang_complete'
 " {{
     " Automatically find all installed versions of libclang, for when clang isn't
     " in the system search path
-    let s:clang_library_paths = glob('/usr/lib/llvm-*/lib/libclang.so.1')
+    "
+    " Possible to-do: make this only run for C/C++ files?
+    let s:clang_paths = glob('/usr/lib/llvm-*/lib/libclang.so.1')
     let s:min_version = 0.0
 
     " Find the newest version and set g:clang_library_path
-    for s:path in split(s:clang_library_paths, '\n')
+    for s:path in split(s:clang_paths, '\n')
         let s:current_version = str2float(
             \ split(split(s:path, '-')[1], '/')[0])
 
@@ -371,6 +373,27 @@ Plug 'brentyi/vim-codefmt'
 " {{
     nnoremap <Leader>cf :FormatCode<CR>
     vnoremap <Leader>cf :FormatLines<CR>
+
+    " Automatically search for clang-format if it's not in our PATH
+    "
+    " Possible to-do: make this only run for C/C++ files?
+    let s:clang_format_executable=""
+    if !executable('clang-format')
+        let s:clang_paths = glob('/usr/lib/llvm-*/bin/clang-format')
+        let s:min_version = 0.0
+
+        " Find the newest version and set g:clang_format_executable
+        for s:path in split(s:clang_paths, '\n')
+            let s:current_version = str2float(
+                \ split(split(s:path, '-')[1], '/')[0])
+
+            if filereadable(s:path) && s:current_version > s:min_version
+                " g:clang_format_executable is used for Glaive below
+                let g:clang_format_executable=s:path
+                let s:min_version = s:current_version
+            endif
+        endfor
+    endif
 " }}
 
 " Gutentags, for generating tag files
@@ -411,6 +434,7 @@ call plug#end()
 " Initialize Glaive + codefmt
 call glaive#Install()
 Glaive codefmt plugin[mappings]
+Glaive codefmt clang_format_executable=`g:clang_format_executable`
 
 " Files for ctrlp + gutentags to ignore!
 set wildignore=*.swp,*.o,*.pyc,*.pb
