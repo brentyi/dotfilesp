@@ -377,7 +377,7 @@ Plug 'brentyi/vim-codefmt'
     " Automatically search for clang-format if it's not in our PATH
     "
     " Possible to-do: make this only run for C/C++ files?
-    let s:clang_format_executable=""
+    let g:clang_format_executable=""
     if !executable('clang-format')
         let s:clang_paths = glob('/usr/lib/llvm-*/bin/clang-format')
         let s:min_version = 0.0
