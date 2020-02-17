@@ -4,11 +4,11 @@ A collection of config files & setup scripts
 ## Setup
 Cloned to `$HOME/dotfilesp`:
 ```
-Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b]
+Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m]
         -c      common utilities: vim, tmux, htop, python
         -z      zsh
         -d      dotfiles
-        -r      ROS (Indigo/Kinetic)
+        -r      ROS
         -g      Google Chrome
         -b      Beaglebone libraries
         -m      Miniconda
