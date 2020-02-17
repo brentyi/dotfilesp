@@ -327,10 +327,10 @@ Plug 'ajh17/VimCompletesMe'
     inoremap <expr> k ((pumvisible())?("\<C-p>"):("k"))
     inoremap <expr> <CR> ((pumvisible())?("\<C-y>"):("\<CR>"))
 
-    " Use omnicomplete by default for C++
+    " Use omnicomplete by default for C++ (clang) and Python (jedi)
     augroup Autocompletion
         autocmd!
-        autocmd FileType cpp,c let b:vcm_tab_complete = "omni"
+        autocmd FileType cpp,c,python let b:vcm_tab_complete = "omni"
     augroup END
 
     " Binding to close preview windows (eg from autocompletion)
@@ -339,6 +339,13 @@ Plug 'ajh17/VimCompletesMe'
 
 " Python magic (auto-completion, definition jumping, etc)
 Plug 'davidhalter/jedi-vim'
+" {{
+    " Disable automatic autocomplete popup
+    let g:jedi#popup_on_dot=0
+
+    " Leave docs open (close binding below)
+    let g:jedi#auto_close_doc=1
+" }}
 
 " C++ autocompletion
 Plug 'xavierd/clang_complete'
