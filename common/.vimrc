@@ -67,7 +67,7 @@ endif
             Gdiff
         endif
     endfunction
-    nnoremap <silent> <Leader>d :call <SID>vc_diff()<CR>
+    nnoremap <silent> <Leader>vcd :call <SID>vc_diff()<CR>
 
     function! s:vc_status()
         if b:repo_file_search_type == 'hg'
@@ -76,7 +76,7 @@ endif
             Gstatus
         endif
     endfunction
-    nnoremap <silent> <Leader>s :call <SID>vc_status()<CR>
+    nnoremap <silent> <Leader>vcs :call <SID>vc_status()<CR>
 
     " For vim-signify
     set updatetime=300
@@ -336,6 +336,9 @@ Plug 'ajh17/VimCompletesMe'
     " Binding to close preview windows (eg from autocompletion)
     nnoremap <silent> <Leader>pc :pc<CR>
 " }}
+
+" Python magic (auto-completion, definition jumping, etc)
+Plug 'davidhalter/jedi-vim'
 
 " C++ autocompletion
 Plug 'xavierd/clang_complete'
