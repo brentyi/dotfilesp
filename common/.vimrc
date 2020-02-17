@@ -79,7 +79,7 @@ endif
     nnoremap <silent> <Leader>s :call <SID>vc_status()<CR>
 
     " For vim-signify
-    set updatetime=100
+    set updatetime=300
 " }}
 
 " Fuzzy-find for files, buffers, tags!
