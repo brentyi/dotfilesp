@@ -388,7 +388,9 @@ Plug 'brentyi/vim-codefmt'
     "
     " Possible to-do: make this only run for C/C++ files?
     let g:clang_format_executable=""
-    if !executable('clang-format')
+    if executable('clang-format')
+        let g:clang_format_executable="clang-format"
+    else
         let s:clang_paths = glob('/usr/lib/llvm-*/bin/clang-format')
         let s:min_version = 0.0
 
