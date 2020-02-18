@@ -60,6 +60,7 @@ else
   Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
 endif
 " {{
+    " Keybinding for opening diffs
     function! s:vc_diff()
         if b:repo_file_search_type == 'hg'
             Hgvdiff
@@ -69,6 +70,7 @@ endif
     endfunction
     nnoremap <silent> <Leader>vcd :call <SID>vc_diff()<CR>
 
+    " Keybinding for printing repo status
     function! s:vc_status()
         if b:repo_file_search_type == 'hg'
             Hgstatus
@@ -77,6 +79,16 @@ endif
         endif
     endfunction
     nnoremap <silent> <Leader>vcs :call <SID>vc_status()<CR>
+
+    " Keybinding for blame/annotate
+    function! s:vc_blame()
+        if b:repo_file_search_type == 'hg'
+            Hgannotate
+        elseif b:repo_file_search_type == 'git'
+            Gblame
+        endif
+    endfunction
+    nnoremap <silent> <Leader>vcb :call <SID>vc_blame()<CR>
 
     " For vim-signify
     set updatetime=300
