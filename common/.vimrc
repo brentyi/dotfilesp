@@ -750,9 +750,10 @@ augroup END
 
 if exists('$TMUX')
     augroup TmuxHelpers
+      " TODO: fix strange behavior when we break-pane in tmux
         autocmd!
         autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system("tmux rename-window 'vim " . expand("%:t") . "'")
-        autocmd VimLeave * call system("tmux setw automatic-rename")
+        autocmd VimLeave,FocusLost * call system("tmux set-window-option automatic-rename")
     augroup END
 endif
 
