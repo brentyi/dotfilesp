@@ -305,6 +305,8 @@ Plug 'itchyny/lightline.vim'
     let g:lightline = {
         \ 'colorscheme': g:brent_lightline_colorscheme,
         \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ],
+        \             [ 'readonly', 'filename', 'modified' ] ],
         \   'right': [ [ 'lineinfo' ],
         \              [ 'filetype', 'charvaluehex' ],
         \              [ 'gutentags' ],
@@ -312,6 +314,7 @@ Plug 'itchyny/lightline.vim'
         \              [ 'truncate' ]]
         \ },
         \ 'inactive': {
+        \   'left': [ [ 'readonly', 'filename', 'modified' ] ],
         \   'right': [ [],
         \              [],
         \              [ 'filepath', 'lineinfo' ],
@@ -357,6 +360,9 @@ Plug 'davidhalter/jedi-vim'
 
     " Leave docs open (close binding below)
     let g:jedi#auto_close_doc=1
+
+    " Disable call signature popup
+    let g:jedi#show_call_signatures=0
 " }}
 
 " C++ autocompletion
