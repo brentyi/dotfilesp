@@ -531,7 +531,7 @@ hi VertSplit ctermfg=0 ctermbg=0
 
 augroup MatchTrailingWhitespace
     autocmd!
-    autocmd VimEnter,WinEnter * call matchadd('TrailingWhitespace', '\s\+$')
+    autocmd VimEnter,BufEnter,WinEnter * call matchadd('TrailingWhitespace', '\s\+$')
 augroup END
 
 " Visually different markers for various types of whitespace
@@ -736,7 +736,7 @@ augroup FiletypeHelpers
 
     " (Python) Highlight lines that are too long
     highlight OverLength ctermbg=darkgrey
-    autocmd VimEnter,WinEnter *.py call matchadd('OverLength', '\%>79v.\+')
+    autocmd VimEnter,BufEnter,WinEnter *.py call matchadd('OverLength', '\%>79v.\+')
 
     " (C/C++) Automatically insert header gates for h/hpp files
     function! s:insert_gates()
