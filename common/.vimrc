@@ -631,7 +631,7 @@ nnoremap ` '
 " Bindings for deleting buffer
 " > bd: delete current buffer
 " > bc: clear all but current buffer
-" > baa: open/add all files in current directory to buffers
+" > baa: open buffer for all files w/ same extension in current directory
 nnoremap <silent> <Leader>bd :bd<CR>
 nnoremap <silent> <Leader>bc :%bd\|e#<CR>
 function! s:buffer_add_all()
@@ -639,9 +639,13 @@ function! s:buffer_add_all()
     let l:path = expand("%:p")
 
     " Chop off the filename and add wildcard
-    let l:pattern = l:path[:-len(expand("%:t")) - 1] . "**/*"
+    let l:pattern = l:path[:-len(expand("%:t")) - 1] . "**/*." . expand("%:e")
+    echom "Loaded buffers matching pattern: " . l:pattern
     for l:path in split(glob(l:pattern), '\n')
-        execute "badd " . l:path
+        let filesize = getfsize(l:path)
+        if filesize > 0 && filesize < 80000
+            execute "badd " . l:path
+        endif
     endfor
 endfunction
 nnoremap <silent> <Leader>baa :call <SID>buffer_add_all()<CR>
