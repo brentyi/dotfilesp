@@ -199,8 +199,8 @@ Plug 'scrooloose/nerdtree'
     augroup NERDTreeBindings
         " Match 'open in split' bindings of CtrlP and fzf
         autocmd!
-        autocmd Filetype nerdtree nmap <buffer> <C-v> s
-        autocmd Filetype nerdtree nmap <buffer> <C-x> i
+        autocmd FileType nerdtree nmap <buffer> <C-v> s
+        autocmd FileType nerdtree nmap <buffer> <C-x> i
     augroup END
 " }}
 
@@ -744,6 +744,9 @@ augroup FiletypeHelpers
         normal! kk
     endfunction
     autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
+
+    " (Commits) Enable spellcheck
+    autocmd FileType gitcommit,hgcommit setlocal spell
 augroup END
 
 
