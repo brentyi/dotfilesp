@@ -225,6 +225,13 @@ Plug 'f4t-t0ny/nerdtree-hg-plugin'
 
 " Massive language pack for syntax highlighting, etc
 Plug 'sheerun/vim-polyglot'
+" {{
+    " Disable weird 'commas as pipes' feature in csv.vim
+    let g:csv_no_conceal = 1
+" }}
+
+" Rainbow highlighting + SQL-esque queries in CSV files
+Plug 'mechatroner/rainbow_csv'
 
 " Tag matching for HTML
 Plug 'gregsexton/MatchTag'
