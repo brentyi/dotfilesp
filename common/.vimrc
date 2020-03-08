@@ -48,7 +48,10 @@ Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 
-" Make gf, sfind, etc work better in repositories
+" Various path/repository-related helpers
+" > Make gf, sfind, etc work better in repositories
+" > Populates b:repo_file_search_root, b:repo_file_search_type,
+"   b:repo_file_search_display variables
 Plug 'brentyi/vim-repo-file-search'
 
 " Doodads for Mercurial, Git
@@ -281,37 +284,10 @@ Plug 'Yggdroot/indentLine'
 " Status line
 Plug 'itchyny/lightline.vim'
 " {{
-    " If possible, generate a relative path to display
+    " Display human-readable path to file
+    " This is generated in vim-repo-file-search
     function! s:lightline_filepath()
-        " Get a full path to the current file
-        let l:full_path = expand("%:p")
-
-        " Chop off the filename
-        let l:full_path = l:full_path[:-len(expand("%:t")) - 2]
-
-        " Generate path to our file relative to our repository root
-        let l:repo_path = l:full_path
-        let l:repo_root = get(b:, 'repo_file_search_root')
-        if len(l:repo_root) > 0
-            " Generate a path relative to our repository root's parent
-            let l:repo_head = fnamemodify(fnamemodify(l:repo_root, ':h'), ':h')
-            if l:full_path[:len(l:repo_head)-1] ==# l:repo_head
-                let l:repo_path = ".../" . l:full_path[len(l:repo_head) + 1:]
-            endif
-        endif
-
-        " Generate a path relative to our home directory
-        let l:home_path = l:full_path
-        if l:full_path[:len($HOME)-1] ==# $HOME
-            let l:home_path = "~" . l:full_path[len($HOME):]
-        endif
-
-        " Return shorter option
-        if len(l:repo_path) < len(l:home_path)
-            return l:repo_path
-        else
-            return l:home_path
-        endif
+        return get(b:, 'repo_file_search_display', "")
     endfunction
 
     let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', "wombat")
