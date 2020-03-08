@@ -55,9 +55,9 @@ Plug 'brentyi/vim-repo-file-search'
 Plug 'tpope/vim-fugitive'
 Plug 'ludovicchabant/vim-lawrencium'
 if has('nvim') || has('patch-8.0.902')
-  Plug 'mhinz/vim-signify'
+    Plug 'mhinz/vim-signify'
 else
-  Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+    Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
 endif
 " {{
     " Keybinding for opening diffs
@@ -284,21 +284,34 @@ Plug 'itchyny/lightline.vim'
     " If possible, generate a relative path to display
     function! s:lightline_filepath()
         " Get a full path to the current file
-        let l:path = expand("%:p")
+        let l:full_path = expand("%:p")
 
         " Chop off the filename
-        let l:path = l:path[:-len(expand("%:t")) - 2]
+        let l:full_path = l:full_path[:-len(expand("%:t")) - 2]
 
-        let l:repo_root = fnamemodify(get(b:, 'repo_file_search_root'), ':h')
-        if l:path[:len(l:repo_root)-1] ==# l:repo_root
-            " Check if we can generate a path relative to a repository...
-            let l:path = l:path[len(l:repo_root) + 1:]
-        elseif path[:len($HOME)-1] ==# $HOME
-            " ...how about relative to our home directory?
-            let l:path = "~" . l:path[len($HOME):]
+        " Generate path to our file relative to our repository root
+        let l:repo_path = l:full_path
+        let l:repo_root = get(b:, 'repo_file_search_root')
+        if len(l:repo_root) > 0
+            " Generate a path relative to our repository root's parent
+            let l:repo_head = fnamemodify(fnamemodify(l:repo_root, ':h'), ':h')
+            if l:full_path[:len(l:repo_head)-1] ==# l:repo_head
+                let l:repo_path = ".../" . l:full_path[len(l:repo_head) + 1:]
+            endif
         endif
 
-        return l:path
+        " Generate a path relative to our home directory
+        let l:home_path = l:full_path
+        if l:full_path[:len($HOME)-1] ==# $HOME
+            let l:home_path = "~" . l:full_path[len($HOME):]
+        endif
+
+        " Return shorter option
+        if len(l:repo_path) < len(l:home_path)
+            return l:repo_path
+        else
+            return l:home_path
+        endif
     endfunction
 
     let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', "wombat")
