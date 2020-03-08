@@ -323,6 +323,9 @@ Plug 'itchyny/lightline.vim'
 " Show instance # in statusline when we search
 Plug 'henrik/vim-indexed-search'
 
+" Autocompletion for Github issues, users, etc
+Plug 'rhysd/github-complete.vim'
+
 " Lightweight autocompletion w/ tab key
 Plug 'ajh17/VimCompletesMe'
 " {{
@@ -331,10 +334,11 @@ Plug 'ajh17/VimCompletesMe'
     inoremap <expr> k ((pumvisible())?("\<C-p>"):("k"))
     inoremap <expr> <CR> ((pumvisible())?("\<C-y>"):("\<CR>"))
 
-    " Use omnicomplete by default for C++ (clang) and Python (jedi)
+    " Use omnicomplete by default for C++ (clang), Python (jedi), and
+    " gitcommit (github-complete)
     augroup Autocompletion
         autocmd!
-        autocmd FileType cpp,c,python let b:vcm_tab_complete = "omni"
+        autocmd FileType cpp,c,python,gitcommit let b:vcm_tab_complete = "omni"
     augroup END
 
     " Binding to close preview windows (eg from autocompletion)
