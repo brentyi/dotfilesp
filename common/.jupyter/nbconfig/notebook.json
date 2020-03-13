@@ -1,0 +1,11 @@
+{
+  "load_extensions": {
+    "vim_binding/vim_binding": true
+  },
+  "CodeCell": {
+    "cm_config": {
+      "autoCloseBrackets": false,
+      "lineNumbers": true
+    }
+  }
+}
