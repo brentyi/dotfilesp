@@ -741,6 +741,8 @@ augroup FiletypeHelpers
     " (Python) Highlight lines that are too long
     highlight OverLength ctermbg=darkgrey
     autocmd VimEnter,BufEnter,WinEnter *.py call matchadd('OverLength', '\%>79v.\+')
+    autocmd VimLeave,BufLeave,WinLeave *.py call
+        \ clearmatches()
 
     " (C/C++) Automatically insert header gates for h/hpp files
     function! s:insert_gates()
