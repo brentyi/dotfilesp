@@ -394,13 +394,17 @@ Plug 'xavierd/clang_complete'
 Plug 'brentyi/vim-fakeclip'
 
 " Google's code format plugin + dependencies
-" > Our vim-codefmt fork just adds the --aggressive flag for autopep8
+" > Our vim-codefmt fork adds support for black, tweaks some autopep8/yapf
+"   settings (these aren't used with black enabled, though)
 Plug 'google/vim-maktaba'
 Plug 'google/vim-glaive'
 Plug 'brentyi/vim-codefmt'
 " {{
     nnoremap <Leader>cf :FormatCode<CR>
     vnoremap <Leader>cf :FormatLines<CR>
+
+    " Use black for Python
+    autocmd FileType python AutoFormatBuffer black
 
     " Automatically search for clang-format if it's not in our PATH
     "
