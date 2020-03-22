@@ -508,18 +508,8 @@ inoremap <C-C> <Esc>
 
 " Configuring colors
 set background=dark
-if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
-    " When we have 256 colors available
-    " (This is usually true)
-    set t_Co=256
-    let g:brent_colorscheme = get(g:, 'brent_colorscheme', "xoria256")
-    execute "colorscheme " . g:brent_colorscheme
-    hi LineNr ctermfg=241 ctermbg=234
-    hi CursorLineNr cterm=bold ctermfg=232 ctermbg=250
-    hi Visual cterm=bold ctermbg=238
-    hi TrailingWhitespace ctermbg=52
-    let g:indentLine_color_term=237
-else
+let g:brent_colorscheme = get(g:, 'brent_colorscheme', "xoria256")
+if g:brent_colorscheme == 'legacy'
     " Fallback colors for some legacy terminals
     set t_Co=16
     set foldcolumn=1
@@ -529,6 +519,16 @@ else
     hi Visual cterm=bold ctermbg=1
     hi TrailingWhitespace ctermbg=1
     hi Search ctermfg=4 ctermbg=7
+else
+    " When we have 256 colors available
+    " (This is usually true)
+    set t_Co=256
+    execute "colorscheme " . g:brent_colorscheme
+    hi LineNr ctermfg=241 ctermbg=234
+    hi CursorLineNr cterm=bold ctermfg=232 ctermbg=250
+    hi Visual cterm=bold ctermbg=238
+    hi TrailingWhitespace ctermbg=52
+    let g:indentLine_color_term=237
 endif
 hi MatchParen cterm=bold,underline ctermbg=none ctermfg=7
 hi VertSplit ctermfg=0 ctermbg=0
