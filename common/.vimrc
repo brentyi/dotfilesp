@@ -403,8 +403,9 @@ Plug 'brentyi/vim-codefmt'
     nnoremap <Leader>cf :FormatCode<CR>
     vnoremap <Leader>cf :FormatLines<CR>
 
-    " Use black for Python
-    autocmd FileType python AutoFormatBuffer black
+    " Autoformatter configuration
+    autocmd FileType python let b:codefmt_formatter='yapf'
+    autocmd FileType javascript let b:codefmt_formatter='prettier'
 
     " Automatically search for clang-format if it's not in our PATH
     "
