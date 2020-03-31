@@ -370,21 +370,37 @@ Plug 'xavierd/clang_complete'
 " {{
     " Automatically find all installed versions of libclang, for when clang isn't
     " in the system search path
-    "
-    " Possible to-do: make this only run for C/C++ files?
-    let s:clang_paths = glob('/usr/lib/llvm-*/lib/libclang.so.1')
-    let s:min_version = 0.0
+    function! s:find_libclang()
+        " Delete the autocmd: we only need to find libclang once
+        autocmd! FindLibclang
 
-    " Find the newest version and set g:clang_library_path
-    for s:path in split(s:clang_paths, '\n')
-        let s:current_version = str2float(
-            \ split(split(s:path, '-')[1], '/')[0])
+        " List all possible paths
+        let s:clang_paths = glob('/usr/lib/llvm-*/lib/libclang.so.1')
 
-        if filereadable(s:path) && s:current_version > s:min_version
-            let g:clang_library_path=s:path
-            let s:min_version = s:current_version
+        " Find the newest version and set g:clang_library_path
+        let s:min_version = 0.0
+        for s:path in split(s:clang_paths, '\n')
+            let s:current_version = str2float(
+                \ split(split(s:path, '-')[1], '/')[0])
+
+            if filereadable(s:path) && s:current_version > s:min_version
+                let g:clang_library_path=s:path
+                echom "Found libclang: " . s:path
+                let s:min_version = s:current_version
+            endif
+        endfor
+
+        " Failure message
+        if g:clang_library_path == ""
+            echom "Couldn't find libclang!"
         endif
-    endfor
+    endfunction
+
+    " Search for libclang when we open a C/C++ file
+    augroup FindLibclang
+        autocmd!
+        autocmd Filetype c,cpp call s:find_libclang()
+    augroup END
 " }}
 
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
@@ -408,28 +424,45 @@ Plug 'brentyi/vim-codefmt'
     autocmd FileType python vnoremap <Leader>cf :FormatLines yapf<CR>
     autocmd FileType javascript let b:codefmt_formatter='prettier'
 
-    " Automatically search for clang-format if it's not in our PATH
-    "
-    " Possible to-do: make this only run for C/C++ files?
-    let g:clang_format_executable=""
-    if executable('clang-format')
-        let g:clang_format_executable="clang-format"
-    else
-        let s:clang_paths = glob('/usr/lib/llvm-*/bin/clang-format')
-        let s:min_version = 0.0
+    " Automatically find the newest installed version of clang-format
+    function! s:find_clang_format()
+        " Delete the autocmd: we only need to find libclang once
+        autocmd! FindClangFormat
 
-        " Find the newest version and set g:clang_format_executable
+        " If clang-format is in PATH, we don't need to do anything
+        if executable('clang-format')
+            echom "Found clang-format in $PATH"
+                Glaive codefmt clang_format_executable='clang-format'
+            return
+        endif
+
+        " List all possible paths
+        let s:clang_paths = glob('/usr/lib/llvm-*/bin/clang-format')
+
+        " Find the newest version and set clang_format_executable
+        let s:min_version = 0.0
         for s:path in split(s:clang_paths, '\n')
             let s:current_version = str2float(
                 \ split(split(s:path, '-')[1], '/')[0])
 
             if filereadable(s:path) && s:current_version > s:min_version
-                " g:clang_format_executable is used for Glaive below
-                let g:clang_format_executable=s:path
+                Glaive codefmt clang_format_executable=`s:path`
+                echom "Found clang-format: " . s:path
                 let s:min_version = s:current_version
             endif
         endfor
-    endif
+
+        " Failure message
+        if g:clang_format_executable == ""
+            echom "Couldn't find clang-format!"
+        endif
+    endfunction
+
+    " Search for clang-format when we open a C/C++ file
+    augroup FindClangFormat
+        autocmd!
+        autocmd Filetype c,cpp call s:find_clang_format()
+    augroup END
 " }}
 
 " Gutentags, for generating tag files
@@ -470,7 +503,6 @@ call plug#end()
 " Initialize Glaive + codefmt
 call glaive#Install()
 Glaive codefmt plugin[mappings]
-Glaive codefmt clang_format_executable=`g:clang_format_executable`
 
 " Files for ctrlp + gutentags to ignore!
 set wildignore=*.swp,*.o,*.pyc,*.pb
