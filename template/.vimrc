@@ -25,4 +25,9 @@ let g:brent_lightline_colorscheme = 'jellybeans'
 "     \ 'third-party',
 "     \ ]
 
+"""" Move swap files
+"""" Sometimes speeds things up if working with virtual filesystem, etc
+
+" set directory=$HOME/.vim/swapfiles//
+
 source ~/dotfilesp/common/.vimrc
