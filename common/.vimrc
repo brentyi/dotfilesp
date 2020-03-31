@@ -375,18 +375,18 @@ Plug 'xavierd/clang_complete'
         autocmd! FindLibclang
 
         " List all possible paths
-        let s:clang_paths = glob('/usr/lib/llvm-*/lib/libclang.so.1')
+        let l:clang_paths = glob('/usr/lib/llvm-*/lib/libclang.so.1')
 
         " Find the newest version and set g:clang_library_path
-        let s:min_version = 0.0
-        for s:path in split(s:clang_paths, '\n')
-            let s:current_version = str2float(
-                \ split(split(s:path, '-')[1], '/')[0])
+        let l:min_version = 0.0
+        for l:path in split(l:clang_paths, '\n')
+            let l:current_version = str2float(
+                \ split(split(l:path, '-')[1], '/')[0])
 
-            if filereadable(s:path) && s:current_version > s:min_version
-                let g:clang_library_path=s:path
-                echom "Found libclang: " . s:path
-                let s:min_version = s:current_version
+            if filereadable(l:path) && l:current_version > l:min_version
+                let g:clang_library_path=l:path
+                echom "Found libclang: " . l:path
+                let l:min_version = l:current_version
             endif
         endfor
 
@@ -437,18 +437,18 @@ Plug 'brentyi/vim-codefmt'
         endif
 
         " List all possible paths
-        let s:clang_paths = glob('/usr/lib/llvm-*/bin/clang-format')
+        let l:clang_paths = glob('/usr/lib/llvm-*/bin/clang-format')
 
         " Find the newest version and set clang_format_executable
-        let s:min_version = 0.0
-        for s:path in split(s:clang_paths, '\n')
-            let s:current_version = str2float(
-                \ split(split(s:path, '-')[1], '/')[0])
+        let l:min_version = 0.0
+        for l:path in split(l:clang_paths, '\n')
+            let l:current_version = str2float(
+                \ split(split(l:path, '-')[1], '/')[0])
 
-            if filereadable(s:path) && s:current_version > s:min_version
-                Glaive codefmt clang_format_executable=`s:path`
-                echom "Found clang-format: " . s:path
-                let s:min_version = s:current_version
+            if filereadable(l:path) && l:current_version > l:min_version
+                Glaive codefmt clang_format_executable=`l:path`
+                echom "Found clang-format: " . l:path
+                let l:min_version = l:current_version
             endif
         endfor
 
@@ -666,7 +666,7 @@ onoremap ` '
 vnoremap ` '
 nnoremap ` '
 
-" Bindings for deleting buffer
+" Bindings for buffer stuff
 " > bd: delete current buffer
 " > bc: clear all but current buffer
 " > baa: open buffer for all files w/ same extension in current directory
