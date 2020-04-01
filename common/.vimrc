@@ -391,7 +391,7 @@ Plug 'xavierd/clang_complete'
         endfor
 
         " Failure message
-        if g:clang_library_path == ""
+        if !exists('g:clang_library_path')
             echom "Couldn't find libclang!"
         endif
     endfunction
