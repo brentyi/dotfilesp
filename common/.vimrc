@@ -365,7 +365,7 @@ Plug 'davidhalter/jedi-vim'
     let g:jedi#show_call_signatures=0
 " }}
 
-" C++ autocompletion
+" C/C++ autocompletion
 Plug 'xavierd/clang_complete'
 " {{
     " Automatically find all installed versions of libclang, for when clang isn't
@@ -375,17 +375,28 @@ Plug 'xavierd/clang_complete'
         autocmd! FindLibclang
 
         " List all possible paths
-        let l:clang_paths = glob('/usr/lib/llvm-*/lib/libclang.so.1')
+        let l:clang_paths =
+            \ glob('/usr/lib/llvm-*/lib/libclang.so.1', 0, 1)
+            \ + glob('/usr/lib64/llvm-*/lib/libclang.so.1', 0, 1)
+            \ + glob('/usr/lib/libclang.so.*', 0, 1)
+            \ + glob('/usr/lib64/libclang.so.*', 0, 1)
 
         " Find the newest version and set g:clang_library_path
         let l:min_version = 0.0
-        for l:path in split(l:clang_paths, '\n')
-            let l:current_version = str2float(
-                \ split(split(l:path, '-')[1], '/')[0])
+        for l:path in l:clang_paths
+            try
+                " Figure out version from filename
+                let l:current_version = str2float(
+                    \ split(split(l:path, '-')[1], '/')[0])
+            catch
+                " No version in filename, let's just use pi...
+                let l:current_version = 3.14159265
+            endtry
 
             if filereadable(l:path) && l:current_version > l:min_version
                 let g:clang_library_path=l:path
-                echom "Found libclang: " . l:path
+                echom "Found libclang: " . l:path . ", v" .
+                       \ string(l:current_version)
                 let l:min_version = l:current_version
             endif
         endfor
@@ -437,7 +448,9 @@ Plug 'brentyi/vim-codefmt'
         endif
 
         " List all possible paths
-        let l:clang_paths = glob('/usr/lib/llvm-*/bin/clang-format')
+        let l:clang_paths =
+            \ glob('/usr/lib/llvm-*/bin/clang-format', 0, 1)
+            \ + glob('/usr/lib64/llvm-*/bin/clang-format', 0, 1)
 
         " Find the newest version and set clang_format_executable
         let l:min_version = 0.0
