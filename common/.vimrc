@@ -281,6 +281,14 @@ Plug 'vim-scripts/restore_view.vim'
     set viewoptions=cursor,folds,slash,unix
 " }}
 
+" Paste images directly into markdown files
+" TODO: switch to upstream repo if this PR is merged:
+"       > https://github.com/ferrine/md-img-paste.vim/pull/24
+Plug 'brentyi/md-img-paste.vim'
+" {{
+    autocmd FileType markdown nnoremap <Leader>pi :call mdip#MarkdownClipboardImage()<CR>
+" }}
+
 " Display markers to signify different indentation levels
 Plug 'Yggdroot/indentLine'
 " {{
