@@ -23,10 +23,19 @@ let mapleader = "\<Space>"
 set shell=/bin/bash
 
 " Automatically install vim-plug plugin manager
-let s:vim_plug_path = (has('nvim') ? '~/.config/nvim' : '~/.vim') . '/autoload/plug.vim'
+let s:vim_plug_folder = (has('nvim') ? "$HOME/.config/nvim" : "$HOME/.vim") . '/autoload/'
+let s:vim_plug_path = s:vim_plug_folder . 'plug.vim'
 if empty(glob(s:vim_plug_path))
-    execute "silent !curl -fLo " . s:vim_plug_path . " --create-dirs "
-        \ . "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    if executable("curl")
+        execute "silent !curl -fLo " . s:vim_plug_path . " --create-dirs "
+            \ . "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    elseif executable("wget")
+        execute "silent !mkdir -p " . s:vim_plug_folder
+        execute "silent !wget --output-document=" . s:vim_plug_path
+            \ . " https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    else
+        echoerr "Need curl or wget to download vim-plug!"
+    endif
     autocmd VimEnter * PlugUpdate --sync | source $MYVIMRC
 endif
 
