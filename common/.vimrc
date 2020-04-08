@@ -285,8 +285,17 @@ Plug 'vim-scripts/restore_view.vim'
 " TODO: switch to upstream repo if this PR is merged:
 "       > https://github.com/ferrine/md-img-paste.vim/pull/24
 Plug 'brentyi/md-img-paste.vim'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 " {{
-    autocmd FileType markdown nnoremap <Leader>pi :call mdip#MarkdownClipboardImage()<CR>
+    augroup MarkdownBindings
+        autocmd!
+        " Markdown paste image
+        autocmd FileType markdown nnoremap <silent> <buffer>
+            \ <Leader>mdpi :call mdip#MarkdownClipboardImage()<CR>
+        " Markdown toggle preview
+        autocmd FileType markdown nmap <silent> <buffer>
+            \ <Leader>mdtp <Plug>MarkdownPreviewToggle
+    augroup END
 " }}
 
 " Display markers to signify different indentation levels
