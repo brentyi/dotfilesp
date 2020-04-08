@@ -290,10 +290,8 @@ Plug 'vim-scripts/restore_view.vim'
     set viewoptions=cursor,folds,slash,unix
 " }}
 
-" Paste images directly into markdown files
-" TODO: switch to upstream repo if this PR is merged:
-"       > https://github.com/ferrine/md-img-paste.vim/pull/24
-Plug 'brentyi/md-img-paste.vim'
+" Helpers for Markdown: directly paste image + live preview
+Plug 'ferrine/md-img-paste.vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 " {{
     augroup MarkdownBindings
