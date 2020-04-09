@@ -743,11 +743,6 @@ cmap W! w !sudo tee >/dev/null %
 " > Configuring splits <
 " #############################################
 
-" Sizing defaults + minimum
-set winheight=20
-set winwidth=50
-set winminwidth=10
-
 " Match tmux behavior + bindings (with <C-w> instead of <C-b>)
 set splitbelow
 set splitright
