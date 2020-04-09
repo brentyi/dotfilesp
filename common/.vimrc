@@ -265,9 +265,13 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'itchyny/vim-cursorword'
 
 " Super intelligent indentation level detection
-" > We load this early so user-defined autocmds override it
 Plug 'tpope/vim-sleuth'
 " {{
+    " Default to 4 spaces
+    set shiftwidth=4
+    set expandtab
+
+    " Load plugin early so user-defined autocmds override it
     runtime! plugin/sleuth.vim
 " }}
 
@@ -803,10 +807,10 @@ augroup FiletypeHelpers
     " (ROS) Launch files should be highlighted as xml
     autocmd BufNewFile,BufRead *.launch set filetype=xml
 
-    " (Make) indent with tabs
-    autocmd FileType make setlocal noexpandtab
+    " (Makefile) Only tabs are supported
+    autocmd FileType make setlocal noexpandtab | setlocal shiftwidth&
 
-    " (Buck) highlight as python
+    " (Buck) Highlight as python
     autocmd BufNewFile,BufRead BUCK* set filetype=python
     autocmd BufNewFile,BufRead TARGETS set filetype=python
 
