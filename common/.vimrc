@@ -307,6 +307,9 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
         autocmd FileType markdown nmap <silent> <buffer>
             \ <Leader>mdtp <Plug>MarkdownPreviewToggle
     augroup END
+
+    " Don't automatically close preview windows when we switch buffers
+    let g:mkdp_auto_close = 0
 " }}
 
 " Display markers to signify different indentation levels
@@ -812,10 +815,12 @@ augroup FiletypeHelpers
     " (C++) Angle bracket matching for templates
     autocmd FileType cpp setlocal matchpairs+=<:>
 
-    " (Python) Highlight lines that are too long
+    " (Python/C++/Markdown) Highlight lines that are too long
     highlight OverLength ctermbg=darkgrey
     autocmd VimEnter,BufEnter,WinEnter *.py call matchadd('OverLength', '\%>79v.\+')
-    autocmd VimLeave,BufLeave,WinLeave *.py call
+    autocmd VimEnter,BufEnter,WinEnter *.md call matchadd('OverLength', '\%>79v.\+')
+    autocmd VimEnter,BufEnter,WinEnter *.cpp call matchadd('OverLength', '\%>100v.\+')
+    autocmd VimLeave,BufLeave,WinLeave * call
         \ clearmatches()
 
     " (C/C++) Automatically insert header gates for h/hpp files
