@@ -1,3 +1,6 @@
+"""" Github API token for github-complete.vim
+" let g:github_complete_github_api_token=""
+
 """" Color configuration
 
 " let g:brent_colorscheme = 'molokai'
