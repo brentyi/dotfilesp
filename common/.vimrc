@@ -294,9 +294,15 @@ Plug 'vim-scripts/restore_view.vim'
     set viewoptions=cursor,folds,slash,unix
 " }}
 
-" Helpers for Markdown: directly paste image + live preview
+" Helpers for Markdown:
+" 1) Directly paste images
+" 2) Live preview
+" 3) Emoji autocompletion
+"    > Our fork removes emojis not found in common markdown parsers (Github,
+"      markdown-it), and adds ones that are
 Plug 'ferrine/md-img-paste.vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'brentyi/vim-emoji'
 " {{
     augroup MarkdownBindings
         autocmd!
@@ -306,6 +312,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
         " Markdown toggle preview
         autocmd FileType markdown nmap <silent> <buffer>
             \ <Leader>mdtp <Plug>MarkdownPreviewToggle
+        autocmd FileType markdown setlocal completefunc=emoji#complete
     augroup END
 
     " Don't automatically close preview windows when we switch buffers
@@ -362,7 +369,8 @@ Plug 'itchyny/lightline.vim'
 Plug 'henrik/vim-indexed-search'
 
 " Autocompletion for Github issues, users, etc
-Plug 'rhysd/github-complete.vim'
+" > Our fork just adds more emojis :)
+Plug 'brentyi/github-complete.vim'
 
 " Lightweight autocompletion w/ tab key
 Plug 'ajh17/VimCompletesMe'
@@ -372,11 +380,15 @@ Plug 'ajh17/VimCompletesMe'
     inoremap <expr> k ((pumvisible())?("\<C-p>"):("k"))
     inoremap <expr> <CR> ((pumvisible())?("\<C-y>"):("\<CR>"))
 
-    " Use omnicomplete by default for C++ (clang), Python (jedi), and
-    " gitcommit (github-complete)
     augroup Autocompletion
         autocmd!
+
+        " Use omnicomplete by default for C++ (clang), Python (jedi), and
+        " gitcommit (github-complete)
         autocmd FileType cpp,c,python,gitcommit let b:vcm_tab_complete = "omni"
+
+        " Use vim-emoji for markdown
+        autocmd FileType markdown let b:vcm_tab_complete = "user"
     augroup END
 
     " Binding to close preview windows (eg from autocompletion)
