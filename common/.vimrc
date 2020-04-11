@@ -403,7 +403,7 @@ Plug 'davidhalter/jedi-vim'
     let g:jedi#popup_on_dot=0
 
     " Leave docs open (close binding below)
-    let g:jedi#auto_close_doc=1
+    let g:jedi#auto_close_doc=0
 
     " Disable call signature popup
     let g:jedi#show_call_signatures=0
