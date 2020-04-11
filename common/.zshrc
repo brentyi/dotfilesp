@@ -62,12 +62,13 @@ u() {
 }
 
 tmux_renumber() {
-    sessions=$(tmux ls | grep '^[0-9]\+:' | cut -f1 -d':' | sort)
+    sessions=$(tmux ls | cut -f1 -d':')
 
+    total=$(($(echo $sessions | wc -l) - 1))
     new=0
     while read -r old
     do
-        tmux rename -t $old $new
+        tmux rename -t $old $new/$total
         ((new++))
     done <<< "$sessions"
 }
