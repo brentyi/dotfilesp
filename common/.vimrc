@@ -237,6 +237,7 @@ Plug 'sheerun/vim-polyglot'
 " {{
     " Disable weird 'commas as pipes' feature in csv.vim
     let g:csv_no_conceal = 1
+    let g:vim_markdown_conceal = 0
 " }}
 
 " Rainbow highlighting + SQL-esque queries in CSV files
