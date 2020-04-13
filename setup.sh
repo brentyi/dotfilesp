@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m]"
+    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y]"
     echo -e "\t-c\tcommon utilities: vim, tmux, htop, python"
     echo -e "\t-z\tzsh"
     echo -e "\t-d\tdotfiles"
@@ -9,6 +9,7 @@ usage() {
     echo -e "\t-g\tGoogle Chrome"
     echo -e "\t-b\tBeaglebone libraries"
     echo -e "\t-m\tMiniconda"
+    echo -e "\t-y\tYarn (+nodejs)"
 }
 
 valid=0
@@ -20,7 +21,7 @@ install_beaglebone=0
 install_zsh=0
 install_miniconda=0
 
-while getopts czdrgbm flag; do
+while getopts czdrgbmy flag; do
   case $flag in
     c)
       valid=1
@@ -49,6 +50,10 @@ while getopts czdrgbm flag; do
     m)
       valid=1
       install_miniconda=1
+      ;;
+    y)
+      valid=1
+      install_yarn=1
       ;;
     ?)
       valid=0
@@ -111,6 +116,13 @@ if [[ $install_miniconda = 1 ]]; then
     echo "Miniconda"
     echo "---------"
     bash scripts/install_miniconda.sh $HOME
+fi
+
+if [[ $install_yarn = 1 ]]; then
+    echo -e "\n---------"
+    echo "Yarn"
+    echo "---------"
+    bash scripts/install_yarn.sh
 fi
 
 echo ""
