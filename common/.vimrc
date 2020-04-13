@@ -298,11 +298,13 @@ Plug 'vim-scripts/restore_view.vim'
 " Helpers for Markdown:
 " 1) Directly paste images
 " 2) Live preview
+"    > Our fork uses a pre-release version of KaTeX, to add support for
+"    the globalGroup parameter
 " 3) Emoji autocompletion
 "    > Our fork removes emojis not found in common markdown parsers (Github,
 "      markdown-it), and adds ones that are
 Plug 'ferrine/md-img-paste.vim'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'brentyi/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'brentyi/vim-emoji'
 " {{
     augroup MarkdownBindings
@@ -318,6 +320,13 @@ Plug 'brentyi/vim-emoji'
 
     " Don't automatically close preview windows when we switch buffers
     let g:mkdp_auto_close = 0
+
+    " KaTeX options
+    let g:mkdp_preview_options = {
+        \ 'katex': {
+            \ 'globalGroup': 1,
+            \  },
+        \ }
 " }}
 
 " Display markers to signify different indentation levels
