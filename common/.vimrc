@@ -237,7 +237,11 @@ Plug 'sheerun/vim-polyglot'
 " {{
     " Disable weird 'commas as pipes' feature in csv.vim
     let g:csv_no_conceal = 1
+
+    " Markdown configuration: don't hide characters, disable auto bullet
+    " insertion
     let g:vim_markdown_conceal = 0
+    let g:vim_markdown_auto_insert_bullets = 0
 " }}
 
 " Rainbow highlighting + SQL-esque queries in CSV files
