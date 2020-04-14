@@ -245,6 +245,9 @@ Plug 'sheerun/vim-polyglot'
     let g:vim_markdown_math = 1
 " }}
 
+" Fancy colors for CSS
+Plug 'ap/vim-css-color'
+
 " Rainbow highlighting + SQL-esque queries in CSV files
 Plug 'mechatroner/rainbow_csv'
 
