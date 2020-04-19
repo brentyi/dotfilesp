@@ -308,11 +308,13 @@ Plug 'vim-scripts/restore_view.vim'
 " 2) Live preview
 "    > Our fork uses a pre-release version of KaTeX, to add support for
 "    the globalGroup parameter
-" 3) Emoji autocompletion
+" 3) Table of contents generation
+" 4) Emoji autocompletion
 "    > Our fork removes emojis not found in common markdown parsers (Github,
 "      markdown-it), and adds ones that are
 Plug 'ferrine/md-img-paste.vim'
 Plug 'brentyi/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'mzlogin/vim-markdown-toc'
 Plug 'brentyi/vim-emoji'
 " {{
     augroup MarkdownBindings
@@ -324,6 +326,9 @@ Plug 'brentyi/vim-emoji'
         autocmd FileType markdown nmap <silent> <buffer>
             \ <Leader>mdtp <Plug>MarkdownPreviewToggle
         autocmd FileType markdown setlocal completefunc=emoji#complete
+        " Markdown generate TOC
+        autocmd FileType markdown nnoremap <silent> <buffer>
+            \ <Leader>mdtoc :GenTocGFM<CR>
     augroup END
 
     " Don't automatically close preview windows when we switch buffers
