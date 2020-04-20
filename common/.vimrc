@@ -851,9 +851,12 @@ augroup FiletypeHelpers
     autocmd FileType cpp setlocal matchpairs+=<:>
 
     " (Python/C++/Markdown) Highlight lines that are too long
+    " 88 for Python (to match black defaults)
+    " 80 for Markdown (to match prettier defaults)
+    " 100 for C++ (clang-format is 80 by default, but we've been overriding to 100)
     highlight OverLength ctermbg=darkgrey
-    autocmd VimEnter,BufEnter,WinEnter *.py call matchadd('OverLength', '\%>79v.\+')
-    autocmd VimEnter,BufEnter,WinEnter *.md call matchadd('OverLength', '\%>79v.\+')
+    autocmd VimEnter,BufEnter,WinEnter *.py call matchadd('OverLength', '\%>88v.\+')
+    autocmd VimEnter,BufEnter,WinEnter *.md call matchadd('OverLength', '\%>80v.\+')
     autocmd VimEnter,BufEnter,WinEnter *.cpp call matchadd('OverLength', '\%>100v.\+')
     autocmd VimLeave,BufLeave,WinLeave * call
         \ clearmatches()
