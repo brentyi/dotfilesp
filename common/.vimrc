@@ -497,8 +497,8 @@ Plug 'brentyi/vim-codefmt'
     vnoremap <Leader>cf :FormatLines<CR>
 
     " Autoformatter configuration
-    autocmd FileType python nnoremap <Leader>cf :FormatCode black<CR>
-    autocmd FileType python vnoremap <Leader>cf :FormatLines yapf<CR>
+    autocmd FileType python nnoremap <buffer> <Leader>cf :FormatCode black<CR>
+    autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>
     autocmd FileType javascript let b:codefmt_formatter='prettier'
 
     " Automatically find the newest installed version of clang-format
