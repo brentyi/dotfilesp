@@ -499,7 +499,7 @@ Plug 'brentyi/vim-codefmt'
     " Autoformatter configuration
     augroup CodeFmtSettings
         autocmd!
-        autocmd FileType python nnoremap <buffer> <Leader>cf :FormatCode black<CR>
+        autocmd FileType python nnoremap <buffer> <Leader>cf :FormatCode black<CR>:Isort<CR>
         autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>
         autocmd FileType javascript let b:codefmt_formatter='prettier'
     augroup END
@@ -842,7 +842,7 @@ augroup FiletypeHelpers
 
     " (Python) isort bindings
     command! -range=% Isort :<line1>,<line2>! isort -
-    augroup IsortMappings 
+    augroup IsortMappings
         autocmd!
         autocmd FileType python nnoremap <buffer> <Leader>si :Isort<CR>
         autocmd FileType python vnoremap <buffer> <Leader>si :Isort<CR>
