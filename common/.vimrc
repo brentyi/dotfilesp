@@ -563,10 +563,10 @@ Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 " {{
     " (Python) Docstring bindings
     let g:pydocstring_formatter = get(g:, 'pydocstring_formatter', 'google')
-    augroup DocstringBinding
-        autocmd!
-        autocmd FileType python nnoremap <buffer> <Leader>pds :Pydocstring<CR>
-    augroup END
+
+    " <Plug>(pydocstring) needs to be mapped, or the plugin will override our
+    " <C-l> binding
+    nmap <Leader>pds <Plug>(pydocstring)
 " }}
 
 " Gutentags, for generating tag files
