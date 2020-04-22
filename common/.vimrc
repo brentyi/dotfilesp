@@ -547,6 +547,7 @@ Plug 'brentyi/vim-codefmt'
     augroup END
 " }}
 
+" Automated import sorting
 Plug 'brentyi/isort.vim'
 " {{
     " (Python) isort bindings
@@ -554,6 +555,17 @@ Plug 'brentyi/isort.vim'
         autocmd!
         autocmd FileType python nnoremap <buffer> <Leader>si :Isort<CR>
         autocmd FileType python vnoremap <buffer> <Leader>si :Isort<CR>
+    augroup END
+" }}
+
+" Automated docstring template generation
+Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
+" {{
+    " (Python) Docstring bindings
+    let g:pydocstring_formatter = get(g:, 'pydocstring_formatter', 'google')
+    augroup DocstringBinding
+        autocmd!
+        autocmd FileType python nnoremap <buffer> <Leader>pds :Pydocstring<CR>
     augroup END
 " }}
 

@@ -33,4 +33,10 @@ let g:brent_lightline_colorscheme = 'jellybeans'
 
 " set directory=$HOME/.vim/swapfiles//
 
+"""" Python docstring generation format
+
+" let g:pydocstring_formatter = 'google'
+" let g:pydocstring_formatter = 'numpy'
+" let g:pydocstring_formatter = 'sphinx'
+
 source ~/dotfilesp/common/.vimrc
