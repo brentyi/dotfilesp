@@ -497,9 +497,12 @@ Plug 'brentyi/vim-codefmt'
     vnoremap <Leader>cf :FormatLines<CR>
 
     " Autoformatter configuration
-    autocmd FileType python nnoremap <buffer> <Leader>cf :FormatCode black<CR>
-    autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>
-    autocmd FileType javascript let b:codefmt_formatter='prettier'
+    augroup CodeFmtSettings
+        autocmd!
+        autocmd FileType python nnoremap <buffer> <Leader>cf :FormatCode black<CR>
+        autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>
+        autocmd FileType javascript let b:codefmt_formatter='prettier'
+    augroup END
 
     " Automatically find the newest installed version of clang-format
     function! s:find_clang_format()
@@ -836,6 +839,15 @@ nnoremap <silent> <Leader>f :call <SID>toggle_friendly_mode(1)<CR>
 
 augroup FiletypeHelpers
     autocmd!
+
+    " (Python) isort bindings
+    command! -range=% Isort :<line1>,<line2>! isort -
+    augroup IsortMappings 
+        autocmd!
+        autocmd FileType python nnoremap <buffer> <Leader>si :Isort<CR>
+        autocmd FileType python vnoremap <buffer> <Leader>si :Isort<CR>
+    augroup END
+
 
     " (ROS) Launch files should be highlighted as xml
     autocmd BufNewFile,BufRead *.launch set filetype=xml
