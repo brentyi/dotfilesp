@@ -597,9 +597,12 @@ Plug 'camspiers/animate.vim'
 " {{
     let g:animate#duration = 150.0
     let g:animate#easing_func = 'animate#ease_out_quad'
-    let g:fzf_layout = {
-        \ 'window': 'new | wincmd J | resize 1 | call animate#window_percent_height(0.5)'
-        \ }
+    if !has('nvim')
+        " This breaks in neovim for whatever reason
+        let g:fzf_layout = {
+            \ 'window': 'new | wincmd J | resize 1 | call animate#window_percent_height(0.5)'
+            \ }
+    endif
 " }}
 
 call plug#end()
