@@ -547,6 +547,16 @@ Plug 'brentyi/vim-codefmt'
     augroup END
 " }}
 
+Plug 'brentyi/isort.vim'
+" {{
+    " (Python) isort bindings
+    augroup IsortMappings
+        autocmd!
+        autocmd FileType python nnoremap <buffer> <Leader>si :Isort<CR>
+        autocmd FileType python vnoremap <buffer> <Leader>si :Isort<CR>
+    augroup END
+" }}
+
 " Gutentags, for generating tag files
 " > Our fork suppresses some errors for machines without ctags installed
 Plug 'brentyi/vim-gutentags'
@@ -839,15 +849,6 @@ nnoremap <silent> <Leader>f :call <SID>toggle_friendly_mode(1)<CR>
 
 augroup FiletypeHelpers
     autocmd!
-
-    " (Python) isort bindings
-    command! -range=% Isort :<line1>,<line2>! isort -
-    augroup IsortMappings
-        autocmd!
-        autocmd FileType python nnoremap <buffer> <Leader>si :Isort<CR>
-        autocmd FileType python vnoremap <buffer> <Leader>si :Isort<CR>
-    augroup END
-
 
     " (ROS) Launch files should be highlighted as xml
     autocmd BufNewFile,BufRead *.launch set filetype=xml
