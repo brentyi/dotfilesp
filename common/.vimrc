@@ -313,7 +313,7 @@ Plug 'vim-scripts/restore_view.vim'
 "    > Our fork removes emojis not found in common markdown parsers (Github,
 "      markdown-it), and adds ones that are
 Plug 'ferrine/md-img-paste.vim'
-Plug 'brentyi/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'brentyi/markdown-preview.nvim', { 'do': ':call mkdp#util#install()' }
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'brentyi/vim-emoji'
 " {{
