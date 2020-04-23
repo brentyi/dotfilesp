@@ -506,7 +506,7 @@ Plug 'brentyi/vim-codefmt'
 
     " Automatically find the newest installed version of clang-format
     function! s:find_clang_format()
-        " Delete the autocmd: we only need to find libclang once
+        " Delete the autocmd: we only need to find clang-format once
         autocmd! FindClangFormat
 
         " If clang-format is in PATH, we don't need to do anything
