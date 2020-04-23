@@ -493,14 +493,15 @@ Plug 'google/vim-maktaba'
 Plug 'google/vim-glaive'
 Plug 'brentyi/vim-codefmt'
 " {{
-    nnoremap <Leader>cf :FormatCode<CR>
-    vnoremap <Leader>cf :FormatLines<CR>
+    nnoremap <Leader>cf :FormatCode<CR>:redraw!<CR>
+    vnoremap <Leader>cf :FormatLines<CR>:redraw!<CR>
 
     " Autoformatter configuration
     augroup CodeFmtSettings
         autocmd!
-        autocmd FileType python nnoremap <buffer> <Leader>cf :FormatCode black<CR>:Isort<CR>
-        autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>
+        autocmd FileType python nnoremap <buffer> <Leader>cf
+            \ :FormatCode black<CR>:Isort<CR>:redraw!<CR>
+        autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>:redraw!<CR>
         autocmd FileType javascript let b:codefmt_formatter='prettier'
     augroup END
 
