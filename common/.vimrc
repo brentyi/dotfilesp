@@ -500,7 +500,8 @@ Plug 'brentyi/vim-codefmt'
     augroup CodeFmtSettings
         autocmd!
         autocmd FileType python nnoremap <buffer> <Leader>cf
-            \ :FormatCode black<CR>:Isort<CR>:redraw!<CR>
+            \ :call isort#Isort(1, line('$'), function('codefmt#FormatBuffer', ['black']))<CR>
+            \ :redraw!<CR>
         autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>:redraw!<CR>
         autocmd FileType javascript let b:codefmt_formatter='prettier'
     augroup END
