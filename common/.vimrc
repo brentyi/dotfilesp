@@ -37,7 +37,7 @@ if empty(glob(s:vim_plug_path))
     else
         echoerr "Need curl or wget to download vim-plug!"
     endif
-    autocmd VimEnter * PlugUpdate --sync | source $MYVIMRC
+    autocmd VimEnter * PlugUpdate! --sync 32 | source $MYVIMRC
     let s:fresh_install = 1
 endif
 
@@ -273,7 +273,8 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 " }}
 
 " Underline all instances of current word
-Plug 'itchyny/vim-cursorword'
+" > Our fork suppresses an install error
+Plug 'brentyi/vim-cursorword'
 
 " Super intelligent indentation level detection
 Plug 'tpope/vim-sleuth'
@@ -611,7 +612,7 @@ Plug 'camspiers/animate.vim'
 
 call plug#end()
 
-" We only want to do the rest if are plugins are already installed :)
+" We only want to do the rest if our plugins are already installed :)
 if !s:fresh_install
     " Initialize Glaive + codefmt
     call glaive#Install()
