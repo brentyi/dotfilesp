@@ -25,6 +25,7 @@ set shell=/bin/bash
 " Automatically install vim-plug plugin manager
 let s:vim_plug_folder = (has('nvim') ? "$HOME/.config/nvim" : "$HOME/.vim") . '/autoload/'
 let s:vim_plug_path = s:vim_plug_folder . 'plug.vim'
+let s:fresh_install = 0
 if empty(glob(s:vim_plug_path))
     if executable("curl")
         execute "silent !curl -fLo " . s:vim_plug_path . " --create-dirs "
@@ -37,6 +38,7 @@ if empty(glob(s:vim_plug_path))
         echoerr "Need curl or wget to download vim-plug!"
     endif
     autocmd VimEnter * PlugUpdate --sync | source $MYVIMRC
+    let s:fresh_install = 1
 endif
 
 
@@ -576,7 +578,7 @@ Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 Plug 'brentyi/vim-gutentags'
 " {{
     " Set cache location
-    let g:gutentags_cache_dir = '~/.cache/tags'
+    let g:gutentags_cache_dir = '~/.vim/.cache/tags'
 
     " Lightline integration
     function! GutentagsStatus()
@@ -609,336 +611,338 @@ Plug 'camspiers/animate.vim'
 
 call plug#end()
 
-" Initialize Glaive + codefmt
-call glaive#Install()
-Glaive codefmt plugin[mappings]
+" We only want to do the rest if are plugins are already installed :)
+if !s:fresh_install
+    " Initialize Glaive + codefmt
+    call glaive#Install()
+    Glaive codefmt plugin[mappings]
 
-" Files for ctrlp + gutentags to ignore!
-set wildignore=*.swp,*.o,*.pyc,*.pb
-" Linux/MacOSX
-set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*,*/.venv/*,*/site-packages/*
-" Windows ('noshellslash')
-set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\*,*\\.venv\\*,*\\site-packages\\*
-
-
-" #############################################
-" > Visuals <
-" #############################################
-
-syntax on
-
-" Line numbering
-if v:version > 703
-    " Vim versions after 703 support enabling both number and relativenumber
-    " (To display relative numbers for all but the current line)
-    set number
-endif
-set relativenumber
-
-" Show at least 7 lines above/below the cursor when we scroll
-set scrolloff=7
-
-" Cursor crosshair when we enter insert mode
-" Note we re-bind Ctrl+C in order for InsertLeave to be called
-augroup InsertModeCrossHairs
-    autocmd!
-    autocmd InsertEnter * set cursorline
-    autocmd InsertLeave * set nocursorline
-    autocmd InsertEnter * set cursorcolumn
-    autocmd InsertLeave * set nocursorcolumn
-augroup END
-inoremap <C-C> <Esc>
-
-" Configuring colors
-set background=dark
-let g:brent_colorscheme = get(g:, 'brent_colorscheme', "xoria256")
-if g:brent_colorscheme == 'legacy'
-    " Fallback colors for some legacy terminals
-    set t_Co=16
-    set foldcolumn=1
-    hi FoldColumn ctermbg=7
-    hi LineNr cterm=bold ctermfg=0 ctermbg=0
-    hi CursorLineNr ctermfg=0 ctermbg=7
-    hi Visual cterm=bold ctermbg=1
-    hi TrailingWhitespace ctermbg=1
-    hi Search ctermfg=4 ctermbg=7
-else
-    " When we have 256 colors available
-    " (This is usually true)
-    set t_Co=256
-    execute "colorscheme " . g:brent_colorscheme
-    hi LineNr ctermfg=241 ctermbg=234
-    hi CursorLineNr cterm=bold ctermfg=232 ctermbg=250
-    hi Visual cterm=bold ctermbg=238
-    hi TrailingWhitespace ctermbg=52
-    let g:indentLine_color_term=237
-endif
-hi MatchParen cterm=bold,underline ctermbg=none ctermfg=7
-hi VertSplit ctermfg=0 ctermbg=0
-
-augroup MatchTrailingWhitespace
-    autocmd!
-    autocmd VimEnter,BufEnter,WinEnter * call matchadd('TrailingWhitespace', '\s\+$')
-augroup END
-
-" Visually different markers for various types of whitespace
-" (for distinguishing tabs vs spaces)
-set list listchars=tab:❘-,trail:\ ,extends:»,precedes:«,nbsp:×
-
-" Show the statusline, always!
-set laststatus=2
-
-" Hide redundant mode indicator underneath statusline
-set noshowmode
-
-" Highlight searches
-set hlsearch
+    " Files for ctrlp + gutentags to ignore!
+    set wildignore=*.swp,*.o,*.pyc,*.pb
+    " Linux/MacOSX
+    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*,*/.venv/*,*/site-packages/*
+    " Windows ('noshellslash')
+    set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\*,*\\.venv\\*,*\\site-packages\\*
 
 
-" #############################################
-" > General behavior stuff <
-" #############################################
+    " #############################################
+    " > Visuals <
+    " #############################################
 
-" Set plugin, indentation settings automatically based on the filetype
-filetype plugin indent on
+    syntax on
 
-" Make escape insert mode zippier
-set timeoutlen=300 ttimeoutlen=10
-
-" Allow backspacing over everything (eg line breaks)
-set backspace=2
-
-" Expand history of saved commands
-set history=35
-
-" Enable modeline for file-specific vim settings
-" This is insecure on some vim versions and should maybe be removed?
-set modeline
-
-" Automatically change working directory to current file location
-set autochdir
-
-" Fold behavior tweaks
-set foldmethod=indent
-set foldlevel=99
-
-" Passive FTP mode for remote netrw
-let g:netrw_ftp_cmd = 'ftp -p'
-
-
-" #############################################
-" > Key mappings for usability <
-" #############################################
-
-" Alternate escape key bindings
-vmap [[ <Esc>
-vmap ;; <Esc>
-imap [[ <Esc>
-imap ;; <Esc>
-
-" Search utilities -- highlight matches, clear highlighting with <Esc>
-nnoremap <silent> <Esc> :noh<CR>:redraw!<CR><Esc>
-nnoremap <Esc>^[ <Esc>^[
-
-" Use backslash to toggle folds
-nnoremap <Bslash> za
-
-" Binding to toggle line numbering -- useful for copy & paste, etc
-if v:version > 703
-    nnoremap <Leader>tln :set number!<CR>:set relativenumber!<CR>
-else
-    nnoremap <Leader>tln :set relativenumber!<CR>
-endif
-
-" Bindings for lower-effort writing, quitting, reloading
-nnoremap <Leader>wq :wq<CR>
-nnoremap <Leader>w :w<CR>
-nnoremap <Leader>q :q<CR>
-nnoremap <Leader>q! :q!<CR>
-nnoremap <Leader>e :e<CR>
-nnoremap <Leader>e! :e!<CR>
-
-" Binding to switch into/out of PASTE mode
-nnoremap <Leader>ip :set invpaste<CR>
-
-" Binding to trim trailing whitespaces in current file
-nnoremap <Leader>ttws :%s/\s\+$//e<CR>
-
-" Binding to 'replace this word'
-nnoremap <Leader>rtw :%s/\<<C-r><C-w>\>/
-
-" Switch ' and ` for jumps: ' is much more intuitive and easier to access
-onoremap ' `
-vnoremap ' `
-nnoremap ' `
-onoremap ` '
-vnoremap ` '
-nnoremap ` '
-
-" Bindings for buffer stuff
-" > bd: delete current buffer
-" > bc: clear all but current buffer
-" > baa: open buffer for all files w/ same extension in current directory
-nnoremap <silent> <Leader>bd :bd<CR>
-nnoremap <silent> <Leader>bc :%bd\|e#<CR>
-function! s:buffer_add_all()
-    " Get a full path to the current file
-    let l:path = expand("%:p")
-
-    " Chop off the filename and add wildcard
-    let l:pattern = l:path[:-len(expand("%:t")) - 1] . "**/*." . expand("%:e")
-    echom "Loaded buffers matching pattern: " . l:pattern
-    for l:path in split(glob(l:pattern), '\n')
-        let filesize = getfsize(l:path)
-        if filesize > 0 && filesize < 80000
-            execute "badd " . l:path
-        endif
-    endfor
-endfunction
-nnoremap <silent> <Leader>baa :call <SID>buffer_add_all()<CR>
-
-
-" Bindings for switching between tabs
-nnoremap <silent> <Leader>tt :tabnew<CR>
-nnoremap <silent> <Leader>n :tabn<CR>
-
-" 'Force write' binding for writing with sudo
-" Helpful if we don't have permissions for a specific file
-cmap W! w !sudo tee >/dev/null %
-
-
-" #############################################
-" > Configuring splits <
-" #############################################
-
-" Match tmux behavior + bindings (with <C-w> instead of <C-b>)
-set splitbelow
-set splitright
-nmap <C-w>" :sp<CR>
-nmap <C-w>% :vsp<CR>
-
-
-" #############################################
-" > Friendly mode <
-" ##############################################
-
-" This maps <Leader>f to toggle between:
-"  - 'Default mode': arrow keys resize splits, mouse disabled
-"  - 'Friendly mode': arrow keys, mouse behave as usual
-
-let s:friendly_mode = 1
-function! s:toggle_friendly_mode(verbose)
-    if s:friendly_mode
-        nnoremap <silent> <Up>
-                    \ :<C-U>call animate#window_delta_height(v:count1 * 8)<CR>
-        nnoremap <silent> <Down>
-                    \ :<C-U>call animate#window_delta_height(v:count1 * -8)<CR>
-        nnoremap <silent> <Left>
-                    \ :<C-U>call animate#window_delta_width(v:count1 * -8)<CR>
-        nnoremap <silent> <Right>
-                    \ :<C-U>call animate#window_delta_width(v:count1 * 8)<CR>
-        set mouse=
-        let s:friendly_mode = 0
-
-        if a:verbose
-            echo "disabled friendly mode!"
-        endif
-    else
-        unmap <silent> <Up>
-        unmap <silent> <Down>
-        unmap <silent> <Right>
-        unmap <silent> <Left>
-        set mouse=a
-        let s:friendly_mode = 1
-
-        if a:verbose
-            echo "enabled friendly mode!"
-        endif
+    " Line numbering
+    if v:version > 703
+        " Vim versions after 703 support enabling both number and relativenumber
+        " (To display relative numbers for all but the current line)
+        set number
     endif
-endfunction
-call <SID>toggle_friendly_mode(0)
-nnoremap <silent> <Leader>f :call <SID>toggle_friendly_mode(1)<CR>
+    set relativenumber
 
+    " Show at least 7 lines above/below the cursor when we scroll
+    set scrolloff=7
 
-" #############################################
-" > Filetype-specific configurations <
-" #############################################
-
-augroup FiletypeHelpers
-    autocmd!
-
-    " (ROS) Launch files should be highlighted as xml
-    autocmd BufNewFile,BufRead *.launch set filetype=xml
-
-    " (Makefile) Only tabs are supported
-    autocmd FileType make setlocal noexpandtab | setlocal shiftwidth&
-
-    " (Buck) Highlight as python
-    autocmd BufNewFile,BufRead BUCK* set filetype=python
-    autocmd BufNewFile,BufRead TARGETS set filetype=python
-
-    " (C++) Angle bracket matching for templates
-    autocmd FileType cpp setlocal matchpairs+=<:>
-
-    " (Python/C++/Markdown) Highlight lines that are too long
-    " 88 for Python (to match black defaults)
-    " 80 for Markdown (to match prettier defaults)
-    " 100 for C++ (clang-format is 80 by default, but we've been overriding to 100)
-    highlight OverLength ctermbg=darkgrey
-    autocmd VimEnter,BufEnter,WinEnter *.py call matchadd('OverLength', '\%>88v.\+')
-    autocmd VimEnter,BufEnter,WinEnter *.md call matchadd('OverLength', '\%>80v.\+')
-    autocmd VimEnter,BufEnter,WinEnter *.cpp call matchadd('OverLength', '\%>100v.\+')
-    autocmd VimLeave,BufLeave,WinLeave * call
-        \ clearmatches()
-
-    " (C/C++) Automatically insert header gates for h/hpp files
-    function! s:insert_gates()
-        let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
-        execute "normal! i#ifndef " . gatename
-        execute "normal! o#define " . gatename . " "
-        execute "normal! Go#endif /* " . gatename . " */"
-        normal! kk
-    endfunction
-    autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
-
-    " (Commits) Enable spellcheck
-    autocmd FileType gitcommit,hgcommit setlocal spell
-augroup END
-
-
-" #############################################
-" > Automatic window renaming for tmux <
-" #############################################
-
-if exists('$TMUX')
-    augroup TmuxHelpers
-      " TODO: fix strange behavior when we break-pane in tmux
+    " Cursor crosshair when we enter insert mode
+    " Note we re-bind Ctrl+C in order for InsertLeave to be called
+    augroup InsertModeCrossHairs
         autocmd!
-        autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system("tmux rename-window 'vim " . expand("%:t") . "'")
-        autocmd VimLeave,FocusLost * call system("tmux set-window-option automatic-rename")
+        autocmd InsertEnter * set cursorline
+        autocmd InsertLeave * set nocursorline
+        autocmd InsertEnter * set cursorcolumn
+        autocmd InsertLeave * set nocursorcolumn
+    augroup END
+    inoremap <C-C> <Esc>
+
+    " Configuring colors
+    set background=dark
+    let g:brent_colorscheme = get(g:, 'brent_colorscheme', "xoria256")
+    if g:brent_colorscheme == 'legacy'
+        " Fallback colors for some legacy terminals
+        set t_Co=16
+        set foldcolumn=1
+        hi FoldColumn ctermbg=7
+        hi LineNr cterm=bold ctermfg=0 ctermbg=0
+        hi CursorLineNr ctermfg=0 ctermbg=7
+        hi Visual cterm=bold ctermbg=1
+        hi TrailingWhitespace ctermbg=1
+        hi Search ctermfg=4 ctermbg=7
+    else
+        " When we have 256 colors available
+        " (This is usually true)
+        set t_Co=256
+        execute "colorscheme " . g:brent_colorscheme
+        hi LineNr ctermfg=241 ctermbg=234
+        hi CursorLineNr cterm=bold ctermfg=232 ctermbg=250
+        hi Visual cterm=bold ctermbg=238
+        hi TrailingWhitespace ctermbg=52
+        let g:indentLine_color_term=237
+    endif
+    hi MatchParen cterm=bold,underline ctermbg=none ctermfg=7
+    hi VertSplit ctermfg=0 ctermbg=0
+
+    augroup MatchTrailingWhitespace
+        autocmd!
+        autocmd VimEnter,BufEnter,WinEnter * call matchadd('TrailingWhitespace', '\s\+$')
+    augroup END
+
+    " Visually different markers for various types of whitespace
+    " (for distinguishing tabs vs spaces)
+    set list listchars=tab:❘-,trail:\ ,extends:»,precedes:«,nbsp:×
+
+    " Show the statusline, always!
+    set laststatus=2
+
+    " Hide redundant mode indicator underneath statusline
+    set noshowmode
+
+    " Highlight searches
+    set hlsearch
+
+
+    " #############################################
+    " > General behavior stuff <
+    " #############################################
+
+    " Set plugin, indentation settings automatically based on the filetype
+    filetype plugin indent on
+
+    " Make escape insert mode zippier
+    set timeoutlen=300 ttimeoutlen=10
+
+    " Allow backspacing over everything (eg line breaks)
+    set backspace=2
+
+    " Expand history of saved commands
+    set history=35
+
+    " Enable modeline for file-specific vim settings
+    " This is insecure on some vim versions and should maybe be removed?
+    set modeline
+
+    " Automatically change working directory to current file location
+    set autochdir
+
+    " Fold behavior tweaks
+    set foldmethod=indent
+    set foldlevel=99
+
+    " Passive FTP mode for remote netrw
+    let g:netrw_ftp_cmd = 'ftp -p'
+
+
+    " #############################################
+    " > Key mappings for usability <
+    " #############################################
+
+    " Alternate escape key bindings
+    vmap [[ <Esc>
+    vmap ;; <Esc>
+    imap [[ <Esc>
+    imap ;; <Esc>
+
+    " Search utilities -- highlight matches, clear highlighting with <Esc>
+    nnoremap <silent> <Esc> :noh<CR>:redraw!<CR><Esc>
+    nnoremap <Esc>^[ <Esc>^[
+
+    " Use backslash to toggle folds
+    nnoremap <Bslash> za
+
+    " Binding to toggle line numbering -- useful for copy & paste, etc
+    if v:version > 703
+        nnoremap <Leader>tln :set number!<CR>:set relativenumber!<CR>
+    else
+        nnoremap <Leader>tln :set relativenumber!<CR>
+    endif
+
+    " Bindings for lower-effort writing, quitting, reloading
+    nnoremap <Leader>wq :wq<CR>
+    nnoremap <Leader>w :w<CR>
+    nnoremap <Leader>q :q<CR>
+    nnoremap <Leader>q! :q!<CR>
+    nnoremap <Leader>e :e<CR>
+    nnoremap <Leader>e! :e!<CR>
+
+    " Binding to switch into/out of PASTE mode
+    nnoremap <Leader>ip :set invpaste<CR>
+
+    " Binding to trim trailing whitespaces in current file
+    nnoremap <Leader>ttws :%s/\s\+$//e<CR>
+
+    " Binding to 'replace this word'
+    nnoremap <Leader>rtw :%s/\<<C-r><C-w>\>/
+
+    " Switch ' and ` for jumps: ' is much more intuitive and easier to access
+    onoremap ' `
+    vnoremap ' `
+    nnoremap ' `
+    onoremap ` '
+    vnoremap ` '
+    nnoremap ` '
+
+    " Bindings for buffer stuff
+    " > bd: delete current buffer
+    " > bc: clear all but current buffer
+    " > baa: open buffer for all files w/ same extension in current directory
+    nnoremap <silent> <Leader>bd :bd<CR>
+    nnoremap <silent> <Leader>bc :%bd\|e#<CR>
+    function! s:buffer_add_all()
+        " Get a full path to the current file
+        let l:path = expand("%:p")
+
+        " Chop off the filename and add wildcard
+        let l:pattern = l:path[:-len(expand("%:t")) - 1] . "**/*." . expand("%:e")
+        echom "Loaded buffers matching pattern: " . l:pattern
+        for l:path in split(glob(l:pattern), '\n')
+            let filesize = getfsize(l:path)
+            if filesize > 0 && filesize < 80000
+                execute "badd " . l:path
+            endif
+        endfor
+    endfunction
+    nnoremap <silent> <Leader>baa :call <SID>buffer_add_all()<CR>
+
+
+    " Bindings for switching between tabs
+    nnoremap <silent> <Leader>tt :tabnew<CR>
+    nnoremap <silent> <Leader>n :tabn<CR>
+
+    " 'Force write' binding for writing with sudo
+    " Helpful if we don't have permissions for a specific file
+    cmap W! w !sudo tee >/dev/null %
+
+
+    " #############################################
+    " > Configuring splits <
+    " #############################################
+
+    " Match tmux behavior + bindings (with <C-w> instead of <C-b>)
+    set splitbelow
+    set splitright
+    nmap <C-w>" :sp<CR>
+    nmap <C-w>% :vsp<CR>
+
+
+    " #############################################
+    " > Friendly mode <
+    " ##############################################
+
+    " This maps <Leader>f to toggle between:
+    "  - 'Default mode': arrow keys resize splits, mouse disabled
+    "  - 'Friendly mode': arrow keys, mouse behave as usual
+
+    let s:friendly_mode = 1
+    function! s:toggle_friendly_mode(verbose)
+        if s:friendly_mode
+            nnoremap <silent> <Up>
+                        \ :<C-U>call animate#window_delta_height(v:count1 * 8)<CR>
+            nnoremap <silent> <Down>
+                        \ :<C-U>call animate#window_delta_height(v:count1 * -8)<CR>
+            nnoremap <silent> <Left>
+                        \ :<C-U>call animate#window_delta_width(v:count1 * -8)<CR>
+            nnoremap <silent> <Right>
+                        \ :<C-U>call animate#window_delta_width(v:count1 * 8)<CR>
+            set mouse=
+            let s:friendly_mode = 0
+
+            if a:verbose
+                echo "disabled friendly mode!"
+            endif
+        else
+            unmap <silent> <Up>
+            unmap <silent> <Down>
+            unmap <silent> <Right>
+            unmap <silent> <Left>
+            set mouse=a
+            let s:friendly_mode = 1
+
+            if a:verbose
+                echo "enabled friendly mode!"
+            endif
+        endif
+    endfunction
+    call <SID>toggle_friendly_mode(0)
+    nnoremap <silent> <Leader>f :call <SID>toggle_friendly_mode(1)<CR>
+
+
+    " #############################################
+    " > Filetype-specific configurations <
+    " #############################################
+
+    augroup FiletypeHelpers
+        autocmd!
+
+        " (ROS) Launch files should be highlighted as xml
+        autocmd BufNewFile,BufRead *.launch set filetype=xml
+
+        " (Makefile) Only tabs are supported
+        autocmd FileType make setlocal noexpandtab | setlocal shiftwidth&
+
+        " (Buck) Highlight as python
+        autocmd BufNewFile,BufRead BUCK* set filetype=python
+        autocmd BufNewFile,BufRead TARGETS set filetype=python
+
+        " (C++) Angle bracket matching for templates
+        autocmd FileType cpp setlocal matchpairs+=<:>
+
+        " (Python/C++/Markdown) Highlight lines that are too long
+        " 88 for Python (to match black defaults)
+        " 80 for Markdown (to match prettier defaults)
+        " 100 for C++ (clang-format is 80 by default, but we've been overriding to 100)
+        highlight OverLength ctermbg=darkgrey
+        autocmd VimEnter,BufEnter,WinEnter *.py call matchadd('OverLength', '\%>88v.\+')
+        autocmd VimEnter,BufEnter,WinEnter *.md call matchadd('OverLength', '\%>80v.\+')
+        autocmd VimEnter,BufEnter,WinEnter *.cpp call matchadd('OverLength', '\%>100v.\+')
+        autocmd VimLeave,BufLeave,WinLeave * call
+            \ clearmatches()
+
+        " (C/C++) Automatically insert header gates for h/hpp files
+        function! s:insert_gates()
+            let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
+            execute "normal! i#ifndef " . gatename
+            execute "normal! o#define " . gatename . " "
+            execute "normal! Go#endif /* " . gatename . " */"
+            normal! kk
+        endfunction
+        autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
+
+        " (Commits) Enable spellcheck
+        autocmd FileType gitcommit,hgcommit setlocal spell
+    augroup END
+
+
+    " #############################################
+    " > Automatic window renaming for tmux <
+    " #############################################
+
+    if exists('$TMUX')
+        augroup TmuxHelpers
+          " TODO: fix strange behavior when we break-pane in tmux
+            autocmd!
+            autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system("tmux rename-window 'vim " . expand("%:t") . "'")
+            autocmd VimLeave,FocusLost * call system("tmux set-window-option automatic-rename")
+        augroup END
+    endif
+
+
+    " #############################################
+    " > Spellcheck <
+    " #############################################
+
+    map <F5> :setlocal spell! spelllang=en_us<CR>
+    inoremap <F5> <C-\><C-O>:setlocal spelllang=en_us spell! spell?<CR>
+    hi clear SpellBad
+    hi SpellBad cterm=bold,italic ctermfg=red
+
+
+    " #############################################
+    " > Meta <
+    " #############################################
+
+    augroup AutoReloadVimRC
+        autocmd!
+        autocmd BufWritePost $MYVIMRC source $MYVIMRC
+
+        " For init.vim->.vimrc symlinks in Neovim
+        autocmd BufWritePost .vimrc source $MYVIMRC
     augroup END
 endif
-
-
-" #############################################
-" > Spellcheck <
-" #############################################
-
-map <F5> :setlocal spell! spelllang=en_us<CR>
-inoremap <F5> <C-\><C-O>:setlocal spelllang=en_us spell! spell?<CR>
-hi clear SpellBad
-hi SpellBad cterm=bold,italic ctermfg=red
-
-
-" #############################################
-" > Meta <
-" #############################################
-
-augroup AutoReloadVimRC
-    autocmd!
-    autocmd BufWritePost $MYVIMRC source $MYVIMRC
-
-    " For init.vim->.vimrc symlinks in Neovim
-    autocmd BufWritePost .vimrc source $MYVIMRC
-augroup END
-
