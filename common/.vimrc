@@ -502,9 +502,11 @@ Plug 'brentyi/vim-codefmt'
     " Autoformatter configuration
     augroup CodeFmtSettings
         autocmd!
+        function! s:format_black()
+            call codefmt#FormatBuffer('black') | normal "redraw!"
+        endfunction
         autocmd FileType python nnoremap <buffer> <Leader>cf
-            \ :call isort#Isort(1, line('$'), function('codefmt#FormatBuffer', ['black']))<CR>
-            \ :redraw!<CR>
+            \ :call isort#Isort(1, line('$'), function('<SID>format_black'))<CR>
         autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>:redraw!<CR>
         autocmd FileType javascript let b:codefmt_formatter='prettier'
     augroup END
