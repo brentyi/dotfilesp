@@ -503,7 +503,7 @@ Plug 'brentyi/vim-codefmt'
     augroup CodeFmtSettings
         autocmd!
         function! s:format_black()
-            call codefmt#FormatBuffer('black') | normal "redraw!"
+            call codefmt#FormatBuffer('black') | execute "redraw!"
         endfunction
         autocmd FileType python nnoremap <buffer> <Leader>cf
             \ :call isort#Isort(1, line('$'), function('<SID>format_black'))<CR>
