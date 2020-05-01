@@ -166,11 +166,28 @@ else
             echoerr "fzf enabled without ag!"
         endif
 
+        " We want to use gutentags for tag generation
+        let g:fzf_tags_command = ""
+
+        " Preview for tag search
+        " Note that:
+        " - We manually specify FZF_PREVIEW_LINES, because initial
+        "   auto-detection is broken by vim-animate
+        " - Line numbers must be included in tag files (see gutentags config)
+        let s:preview_script = s:bundle_path . '/fzf.vim/bin/preview.sh '
+            \ . '{2}:$(echo {} | cut -f 5 | sed -r ''s/line://g'')'
+        command! -bang -nargs=* TagsWithPreview
+            \ call fzf#vim#tags(<q-args>, {
+            \      'options': '
+            \         --preview ''FZF_PREVIEW_LINES=' . string(float2nr(ceil(winheight('%') * 0.4)))
+            \         . ' ' . s:preview_script . ''''
+            \ }, <bang>0)
+
         " Bindings
         nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
         nnoremap <Leader>p :Buffers<CR>
-        nnoremap <Leader>t :Tags<CR>
-        nnoremap <Leader>gt :call fzf#vim#tags(expand('<cword>'))<CR>
+        nnoremap <Leader>t :TagsWithPreview<CR>
+        nnoremap <Leader>gt :execute 'TagsWithPreview ' . expand('<cword>')<CR>
         nnoremap <Leader>l :Lines<CR>
         nnoremap <Leader>gl :call fzf#vim#lines(expand('<cword>'))<CR>
         nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, {
@@ -582,6 +599,17 @@ Plug 'brentyi/vim-gutentags'
 " {{
     " Set cache location
     let g:gutentags_cache_dir = '~/.vim/.cache/tags'
+
+    " Enable extra ctags features
+    " - a: Access/export of class members
+    " - i: Inheritance information
+    " - l: Programming language
+    " - m: Implementation information
+    " - n: Line number
+    " - S: Signature of routine (e.g. prototype or parameter list)
+    let g:gutentags_ctags_extra_args = [
+          \ '--fields=+ailmnS',
+          \ ]
 
     " Lightline integration
     function! GutentagsStatus()
