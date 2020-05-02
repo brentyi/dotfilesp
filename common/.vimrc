@@ -290,8 +290,7 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 " }}
 
 " Underline all instances of current word
-" > Our fork suppresses an install error
-Plug 'brentyi/vim-cursorword'
+Plug 'itchyny/vim-cursorword'
 
 " Super intelligent indentation level detection
 Plug 'tpope/vim-sleuth'
