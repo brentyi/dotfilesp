@@ -193,19 +193,19 @@ else
         nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, {
             \ 'options': '--query ' . expand('<cfile>')})<CR>
 
-        " Band-aid for making fzf play nice w/ NERDTree + autochdir
-        " Reproducing the error:
-        "     (1) Open a file
-        "     (2) Open another file w/ fzf
-        "     (3) :edit .  # <= this should show some errors
-        "     (4) Run `pwd` and `echo getcwd()` -- these will no longer match
+        " Automatically change working directory to current file location
+        " Emulates `set autochdir`, which appears to have some issues w/ fzf
         "
-        " Oddly enough, this issue goes away when we either (a) use netrw
-        " instead of nerdtree, (b) disable autochdir, or (c) add this autocmd
-        " to fix the working directory state
+        " Reproducing the error without this hack:
+        "     (1) set autochdir
+        "     (2) Open a file
+        "     (3) Open another file w/ fzf
+        "     (4) :edit .  # <= this should show some errors
+        "     (5) Run `pwd` and `echo getcwd()` -- these will no longer match
+        "
         augroup AutochdirFix
             autocmd!
-            autocmd BufReadPost * execute 'cd ' . getcwd()
+            autocmd BufReadPost * silent! lcd %:p:h
         augroup END
     " }}
 endif
@@ -748,9 +748,6 @@ if !s:fresh_install
     " Enable modeline for file-specific vim settings
     " This is insecure on some vim versions and should maybe be removed?
     set modeline
-
-    " Automatically change working directory to current file location
-    set autochdir
 
     " Fold behavior tweaks
     set foldmethod=indent
