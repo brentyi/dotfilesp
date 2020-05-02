@@ -659,10 +659,10 @@ Plug 'camspiers/animate.vim'
 Plug 'dense-analysis/ale'
 " {{
     " Disable ALE by default
-    let g:ale_enable = 0
+    let g:ale_enabled = 0
     nnoremap <silent> <Leader>c :ALEToggle<CR>
 
-    " Populate errors in a quickfix window.
+    " Populate errors in a quickfix window
     let g:ale_set_loclist = 0
     let g:ale_set_quickfix = 1
 
