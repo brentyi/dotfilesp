@@ -518,12 +518,29 @@ Plug 'brentyi/vim-codefmt'
     " Autoformatter configuration
     augroup CodeFmtSettings
         autocmd!
-        function! s:format_black()
-            call codefmt#FormatBuffer('black') | execute "redraw!"
+
+        " Async Python formatting: run isort, then Black
+        " + some hacky stuff to prevent cursor jumps
+        function! s:format_python()
+            let s:format_python_restore_pos = getpos('.')
+            let s:format_python_orig_line_count = line('$')
+            call isort#Isort(1, line('$'), function('s:format_python_callback'))
         endfunction
+
+        function! s:format_python_callback()
+            if s:format_python_orig_line_count != line('$')
+                call codefmt#FormatBuffer('black') | execute "redraw!"
+                call setpos('.', s:format_python_restore_pos)
+            else
+                call codefmt#FormatBuffer('black') | execute "redraw!"
+            endif
+        endfunction
+
         autocmd FileType python nnoremap <buffer> <Leader>cf
-            \ :call isort#Isort(1, line('$'), function('<SID>format_black'))<CR>
+            \ :call <SID>format_python()<CR>
         autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>:redraw!<CR>
+
+        " Use prettier for Javascript
         autocmd FileType javascript let b:codefmt_formatter='prettier'
     augroup END
 
