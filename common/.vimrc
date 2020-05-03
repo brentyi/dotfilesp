@@ -183,6 +183,31 @@ else
             \         . ' ' . s:preview_script . ''''
             \ }, <bang>0)
 
+        " Preview for git grep
+        command! -bang -nargs=* Grep
+          \ call fzf#vim#grep(
+          \   'git grep --line-number '.shellescape(<q-args>), 0,
+          \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+
+        " Using grep for visual mode selection
+        function! s:GrepVisual(type)
+            " Save the contents of the unnamed register
+            let save_tmp = @@
+
+            " Copy visual selection into unnamed_register
+            if a:type ==# 'v'
+                normal! `<v`>y
+            elseif a:type ==# 'char'
+                normal! `[v`]y
+            else
+                return
+            endif
+            execute "Grep " @@
+
+            " Restore the unnamed register
+            let @@ = save_tmp
+        endfunction
+
         " Bindings
         nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
         nnoremap <Leader>p :Buffers<CR>
@@ -192,6 +217,8 @@ else
         nnoremap <Leader>gl :call fzf#vim#lines(expand('<cword>'))<CR>
         nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, {
             \ 'options': '--query ' . expand('<cfile>')})<CR>
+        nnoremap <Leader>gw :execute 'Grep ' . expand('<cword>')<CR>
+        vnoremap <Leader>g :<c-u>call <SID>GrepVisual(visualmode())<cr>
 
         " Automatically change working directory to current file location
         " Emulates `set autochdir`, which appears to have some issues w/ fzf
