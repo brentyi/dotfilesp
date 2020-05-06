@@ -197,9 +197,7 @@ else
                 return
             endif
 
-            call fzf#vim#ag('', fzf#vim#with_preview({
-                \ 'options': '--query ' . shellescape(@@),
-                \ 'dir': b:repo_file_search_root}))
+execute "Ag " @@
 
             " Restore the unnamed register
             let @@ = l:save_tmp
