@@ -183,16 +183,10 @@ else
             \         . ' ' . s:preview_script . ''''
             \ }, <bang>0)
 
-        " Preview for git grep
-        command! -bang -nargs=* Grep
-          \ call fzf#vim#grep(
-          \   'git grep --line-number '.shellescape(<q-args>), 0,
-          \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
-
         " Using grep for visual mode selection
         function! s:GrepVisual(type)
             " Save the contents of the unnamed register
-            let save_tmp = @@
+            let l:save_tmp = @@
 
             " Copy visual selection into unnamed_register
             if a:type ==# 'v'
@@ -202,23 +196,35 @@ else
             else
                 return
             endif
-            execute "Grep " @@
+
+            call fzf#vim#ag('', fzf#vim#with_preview({
+                \ 'options': '--query ' . shellescape(@@),
+                \ 'dir': b:repo_file_search_root}))
 
             " Restore the unnamed register
-            let @@ = save_tmp
+            let @@ = l:save_tmp
         endfunction
 
-        " Bindings
+        " Bindings: search file names
         nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
         nnoremap <Leader>p :Buffers<CR>
+        nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, fzf#vim#with_preview({
+            \ 'options': '--query ' . shellescape(expand('<cfile>'))}))<CR>
+
+        " Bindings: search tags
         nnoremap <Leader>t :TagsWithPreview<CR>
         nnoremap <Leader>gt :execute 'TagsWithPreview ' . expand('<cword>')<CR>
+
+        " Bindings: search lines in open buffers
         nnoremap <Leader>l :Lines<CR>
         nnoremap <Leader>gl :call fzf#vim#lines(expand('<cword>'))<CR>
-        nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, {
-            \ 'options': '--query ' . expand('<cfile>')})<CR>
-        nnoremap <Leader>gw :execute 'Grep ' . expand('<cword>')<CR>
-        vnoremap <Leader>g :<c-u>call <SID>GrepVisual(visualmode())<cr>
+
+        " Bindings: search lines in files with ag
+        nnoremap <Leader>a :call fzf#vim#ag('', fzf#vim#with_preview({
+            \ 'dir': b:repo_file_search_root}))<CR>
+        vnoremap <Leader>a :<c-u>call <SID>GrepVisual(visualmode())<cr>
+        nnoremap <Leader>ga :call fzf#vim#ag('', fzf#vim#with_preview({
+            \ 'options': '--query ' . shellescape(expand('<cword>')), 'dir': b:repo_file_search_root}))<CR>
 
         " Automatically change working directory to current file location
         " Emulates `set autochdir`, which appears to have some issues w/ fzf
