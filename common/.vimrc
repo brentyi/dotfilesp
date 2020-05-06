@@ -218,11 +218,9 @@ execute "Ag " @@
         nnoremap <Leader>gl :call fzf#vim#lines(expand('<cword>'))<CR>
 
         " Bindings: search lines in files with ag
-        nnoremap <Leader>a :call fzf#vim#ag('', fzf#vim#with_preview({
-            \ 'dir': b:repo_file_search_root}))<CR>
+        nnoremap <Leader>a :Ag<CR>
         vnoremap <Leader>a :<c-u>call <SID>GrepVisual(visualmode())<cr>
-        nnoremap <Leader>ga :call fzf#vim#ag('', fzf#vim#with_preview({
-            \ 'options': '--query ' . shellescape(expand('<cword>')), 'dir': b:repo_file_search_root}))<CR>
+        nnoremap <Leader>ga :execute 'Ag ' . expand('<cword>')<CR>
 
         " Automatically change working directory to current file location
         " Emulates `set autochdir`, which appears to have some issues w/ fzf
