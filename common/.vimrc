@@ -184,6 +184,11 @@ else
             \ }, <bang>0)
 
         " Using grep for visual mode selection
+        command! -bang -nargs=* Ag
+            \ call fzf#vim#ag(<q-args>, fzf#vim#with_preview({
+            \     'dir': b:repo_file_search_root
+            \ }), <bang>0)
+
         function! s:GrepVisual(type)
             " Save the contents of the unnamed register
             let l:save_tmp = @@
