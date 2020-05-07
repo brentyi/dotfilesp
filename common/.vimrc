@@ -183,15 +183,50 @@ else
             \         . ' ' . s:preview_script . ''''
             \ }, <bang>0)
 
-        " Bindings
+        " Call Ag relative to repository root
+        command! -bang -nargs=* Ag
+            \ call fzf#vim#ag(<q-args>, '--hidden', fzf#vim#with_preview({
+            \     'dir': b:repo_file_search_root
+            \ }), <bang>0)
+
+        " Using grep for visual mode selection
+        function! s:GrepVisual(type)
+            " Save the contents of the unnamed register
+            let l:save_tmp = @@
+
+            " Copy visual selection into unnamed_register
+            if a:type ==# 'v'
+                normal! `<v`>y
+            elseif a:type ==# 'char'
+                normal! `[v`]y
+            else
+                return
+            endif
+
+            execute "Ag " @@
+
+            " Restore the unnamed register
+            let @@ = l:save_tmp
+        endfunction
+
+        " Bindings: search file names
         nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
         nnoremap <Leader>p :Buffers<CR>
+        nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, fzf#vim#with_preview({
+            \ 'options': '--query ' . shellescape(expand('<cfile>'))}))<CR>
+
+        " Bindings: search tags
         nnoremap <Leader>t :TagsWithPreview<CR>
         nnoremap <Leader>gt :execute 'TagsWithPreview ' . expand('<cword>')<CR>
+
+        " Bindings: search lines in open buffers
         nnoremap <Leader>l :Lines<CR>
         nnoremap <Leader>gl :call fzf#vim#lines(expand('<cword>'))<CR>
-        nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, {
-            \ 'options': '--query ' . expand('<cfile>')})<CR>
+
+        " Bindings: search lines in files with ag
+        nnoremap <Leader>a :Ag<CR>
+        vnoremap <Leader>a :<c-u>call <SID>GrepVisual(visualmode())<cr>
+        nnoremap <Leader>ga :execute 'Ag ' . expand('<cword>')<CR>
 
         " Automatically change working directory to current file location
         " Emulates `set autochdir`, which appears to have some issues w/ fzf
