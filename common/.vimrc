@@ -183,12 +183,13 @@ else
             \         . ' ' . s:preview_script . ''''
             \ }, <bang>0)
 
-        " Using grep for visual mode selection
+        " Call Ag relative to repository root
         command! -bang -nargs=* Ag
-            \ call fzf#vim#ag(<q-args>, fzf#vim#with_preview({
+            \ call fzf#vim#ag(<q-args>, '--hidden', fzf#vim#with_preview({
             \     'dir': b:repo_file_search_root
             \ }), <bang>0)
 
+        " Using grep for visual mode selection
         function! s:GrepVisual(type)
             " Save the contents of the unnamed register
             let l:save_tmp = @@
@@ -202,7 +203,7 @@ else
                 return
             endif
 
-execute "Ag " @@
+            execute "Ag " @@
 
             " Restore the unnamed register
             let @@ = l:save_tmp
