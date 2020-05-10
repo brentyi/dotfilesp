@@ -52,7 +52,9 @@ execute "call plug#begin('" . s:bundle_path . "')"
 
 " Navigation inside files
 Plug 'easymotion/vim-easymotion'
-Plug 'justinmk/vim-sneak'
+" {{
+    map s <Plug>(easymotion-bd-f)
+" }}
 
 " Shortcuts for manipulating quotes, brackets, parentheses, HTML tags
 " + vim-repeat for making '.' work for vim-surround
@@ -706,6 +708,9 @@ if !s:fresh_install
     " Windows ('noshellslash')
     set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\*,*\\.venv\\*,*\\site-packages\\*
 
+    " Set up the wild menu
+    set wildmenu
+    set wildmode=longest:full,full
 
     " #############################################
     " > Visuals <
