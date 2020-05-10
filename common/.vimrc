@@ -691,6 +691,30 @@ Plug 'camspiers/animate.vim'
     endif
 " }}
 
+Plug 'dense-analysis/ale'
+" {{
+    " Disable ALE by default
+    let g:ale_lint_on_text_changed = 'never'
+    let g:ale_lint_on_insert_leave = 0
+    let g:ale_lint_on_enter = 0
+    let g:ale_lint_on_save = 0
+    nnoremap <silent> <Leader>ale :ALELint<CR>
+
+    " Populate errors in a quickfix window
+    let g:ale_set_loclist = 0
+    let g:ale_set_quickfix = 1
+
+    " Python specific options
+    " Flake8 ignore list:
+    "     E501: line too long (<n> characters)
+    "     D100: Missing docstring in public module
+    "     D101: Missing docstring in public class
+    "     D102: Missing docstring in public method
+    "     D103: Missing docstring in public function
+    let g:ale_python_flake8_options = "--ignore=E501,D100,D101,D102,D103"
+    let g:ale_python_mypy_options= "--ignore-missing-imports"
+" }}
+
 call plug#end()
 
 " We only want to do the rest if our plugins are already installed :)
@@ -880,7 +904,6 @@ if !s:fresh_install
     endfunction
     nnoremap <silent> <Leader>baa :call <SID>buffer_add_all()<CR>
 
-
     " Bindings for switching between tabs
     nnoremap <silent> <Leader>tt :tabnew<CR>
     nnoremap <silent> <Leader>n :tabn<CR>
@@ -888,6 +911,13 @@ if !s:fresh_install
     " 'Force write' binding for writing with sudo
     " Helpful if we don't have permissions for a specific file
     cmap W! w !sudo tee >/dev/null %
+
+    " Quickfix windows bindings
+    " Right now, we only use this for ALE
+    nnoremap <expr> <silent> <Leader>j (&diff ? "]c" : ":cnext\<CR>")
+    nnoremap <expr> <silent> <Leader>k (&diff ? "[c" : ":cprev\<CR>")
+    nnoremap <expr> <silent> <Leader>fc (&diff ? "[c" : ":cclose\<CR>")
+    nnoremap <silent> <Leader>fw :cwindow<CR>
 
 
     " #############################################
