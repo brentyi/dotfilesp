@@ -659,20 +659,24 @@ Plug 'camspiers/animate.vim'
 Plug 'dense-analysis/ale'
 " {{
     " Disable ALE by default
-    let g:ale_enabled = 0
-    nnoremap <silent> <Leader>c :ALEToggle<CR>
+    let g:ale_lint_on_text_changed = 'never'
+    let g:ale_lint_on_insert_leave = 0
+    let g:ale_lint_on_enter = 0
+    let g:ale_lint_on_save = 0
+    nnoremap <silent> <Leader>ale :ALELint<CR>
 
     " Populate errors in a quickfix window
     let g:ale_set_loclist = 0
     let g:ale_set_quickfix = 1
 
     " Python specific options
+    " Flake8 ignore list:
+    "     E501: line too long (<n> characters)
+    "     D100: Missing docstring in public module
+    "     D101: Missing docstring in public class
+    "     D102: Missing docstring in public method
+    "     D103: Missing docstring in public function
     let g:ale_python_flake8_options = "--ignore=E501,D100,D101,D102,D103"
-    " E501: line too long (<n> characters)
-    " D100: Missing docstring in public module
-    " D101: Missing docstring in public class
-    " D102: Missing docstring in public method
-    " D103: Missing docstring in public function
     let g:ale_python_mypy_options= "--ignore-missing-imports"
 " }}
 
@@ -821,8 +825,6 @@ if !s:fresh_install
     " Bindings for lower-effort writing, quitting, reloading
     nnoremap <Leader>wq :wq<CR>
     nnoremap <Leader>w :w<CR>
-    nnoremap <Leader>q :q<CR>
-    nnoremap <Leader>q! :q!<CR>
     nnoremap <Leader>e :e<CR>
     nnoremap <Leader>e! :e!<CR>
 
@@ -865,7 +867,6 @@ if !s:fresh_install
     endfunction
     nnoremap <silent> <Leader>baa :call <SID>buffer_add_all()<CR>
 
-
     " Bindings for switching between tabs
     nnoremap <silent> <Leader>tt :tabnew<CR>
     nnoremap <silent> <Leader>n :tabn<CR>
@@ -874,12 +875,12 @@ if !s:fresh_install
     " Helpful if we don't have permissions for a specific file
     cmap W! w !sudo tee >/dev/null %
 
-
     " Quickfix windows bindings
-    nnoremap <expr> <silent> <C-j> (&diff ? "]c" : ":cnext\<CR>")
-    nnoremap <expr> <silent> <C-k> (&diff ? "[c" : ":cprev\<CR>")
-    nnoremap <expr> <silent> <C-c> (&diff ? "[c" : ":cclose\<CR>")
-    nnoremap <Leader>cw :cwindow<CR>
+    " Right now, we only use this for ALE
+    nnoremap <expr> <silent> <Leader>j (&diff ? "]c" : ":cnext\<CR>")
+    nnoremap <expr> <silent> <Leader>k (&diff ? "[c" : ":cprev\<CR>")
+    nnoremap <expr> <silent> <Leader>qfc (&diff ? "[c" : ":cclose\<CR>")
+    nnoremap <silent> <Leader>qfw :cwindow<CR>
 
 
     " #############################################
