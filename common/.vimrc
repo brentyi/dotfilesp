@@ -825,6 +825,8 @@ if !s:fresh_install
     " Bindings for lower-effort writing, quitting, reloading
     nnoremap <Leader>wq :wq<CR>
     nnoremap <Leader>w :w<CR>
+    nnoremap <Leader>q :q<CR>
+    nnoremap <Leader>q! :q!<CR>
     nnoremap <Leader>e :e<CR>
     nnoremap <Leader>e! :e!<CR>
 
@@ -879,8 +881,8 @@ if !s:fresh_install
     " Right now, we only use this for ALE
     nnoremap <expr> <silent> <Leader>j (&diff ? "]c" : ":cnext\<CR>")
     nnoremap <expr> <silent> <Leader>k (&diff ? "[c" : ":cprev\<CR>")
-    nnoremap <expr> <silent> <Leader>qfc (&diff ? "[c" : ":cclose\<CR>")
-    nnoremap <silent> <Leader>qfw :cwindow<CR>
+    nnoremap <expr> <silent> <Leader>fc (&diff ? "[c" : ":cclose\<CR>")
+    nnoremap <silent> <Leader>fw :cwindow<CR>
 
 
     " #############################################
