@@ -170,17 +170,13 @@ else
         let g:fzf_tags_command = ""
 
         " Preview for tag search
-        " Note that:
-        " - We manually specify FZF_PREVIEW_LINES, because initial
-        "   auto-detection is broken by vim-animate
-        " - Line numbers must be included in tag files (see gutentags config)
+        " Note that line numbers must be included in tag files (see gutentags config)
         let s:preview_script = s:bundle_path . '/fzf.vim/bin/preview.sh '
             \ . '{2}:$(echo {} | cut -f 5 | sed -r ''s/line://g'')'
         command! -bang -nargs=* TagsWithPreview
             \ call fzf#vim#tags(<q-args>, {
             \      'options': '
-            \         --preview ''FZF_PREVIEW_LINES=' . string(float2nr(ceil(winheight('%') * 0.4)))
-            \         . ' ' . s:preview_script . ''''
+            \         --preview ''' . s:preview_script . ''''
             \ }, <bang>0)
 
         " Call Ag relative to repository root
@@ -679,16 +675,11 @@ Plug 'brentyi/vim-gutentags'
 " }}
 
 " Animations for fun?
+" > Note: enabling this for fzf will partially break preview windows
 Plug 'camspiers/animate.vim'
 " {{
     let g:animate#duration = 150.0
     let g:animate#easing_func = 'animate#ease_out_quad'
-    if !has('nvim')
-        " This breaks in neovim for whatever reason
-        let g:fzf_layout = {
-            \ 'window': 'new | wincmd J | resize 1 | call animate#window_percent_height(0.5)'
-            \ }
-    endif
 " }}
 
 Plug 'dense-analysis/ale'
