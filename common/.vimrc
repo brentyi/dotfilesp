@@ -75,6 +75,7 @@ else
 endif
 " {{
     " Keybinding for opening diffs
+    nnoremap <Leader>vcd :call <SID>vc_diff()<CR>
     function! s:vc_diff()
         if b:repo_file_search_type == 'hg'
             Hgvdiff
@@ -82,9 +83,9 @@ endif
             Gdiff
         endif
     endfunction
-    nnoremap <silent> <Leader>vcd :call <SID>vc_diff()<CR>
 
     " Keybinding for printing repo status
+    nnoremap <Leader>vcs :call <SID>vc_status()<CR>
     function! s:vc_status()
         if b:repo_file_search_type == 'hg'
             Hgstatus
@@ -92,9 +93,9 @@ endif
             Gstatus
         endif
     endfunction
-    nnoremap <silent> <Leader>vcs :call <SID>vc_status()<CR>
 
     " Keybinding for blame/annotate
+    nnoremap <Leader>vcb :call <SID>vc_blame()<CR>
     function! s:vc_blame()
         if b:repo_file_search_type == 'hg'
             Hgannotate
@@ -102,7 +103,6 @@ endif
             Gblame
         endif
     endfunction
-    nnoremap <silent> <Leader>vcb :call <SID>vc_blame()<CR>
 
     " For vim-signify
     set updatetime=300
@@ -124,6 +124,15 @@ if !g:brent_use_fzf
         let g:ctrlp_switch_buffer = '0'
         let g:ctrlp_reuse_window = 1
 
+        " Bindings
+        nnoremap <Leader>p :CtrlPBuffer<CR>
+        nnoremap <Leader>t :CtrlPTag<CR>
+        nnoremap <Leader>gt :call <SID>ctrlp_tag_under_cursor()<CR>
+        nnoremap <Leader>l :CtrlPLine<CR>
+        nnoremap <Leader>gl :call <SID>ctrlp_line_under_cursor()<CR>
+        nnoremap <Leader>gf :call <SID>ctrlp_file_under_cursor()<CR>
+
+        " Binding implementations
         function! s:ctrlp_file_under_cursor()
             let g:ctrlp_default_input = expand('<cfile>')
             CtrlP
@@ -141,13 +150,6 @@ if !g:brent_use_fzf
             CtrlPLine
             let g:ctrlp_default_input = ''
         endfunction
-
-        nnoremap <silent> <Leader>p :CtrlPBuffer<CR>
-        nnoremap <silent> <Leader>t :CtrlPTag<CR>
-        nnoremap <silent> <Leader>gt :call <SID>ctrlp_tag_under_cursor()<CR>
-        nnoremap <silent> <Leader>l :CtrlPLine<CR>
-        nnoremap <silent> <Leader>gl :call <SID>ctrlp_line_under_cursor()<CR>
-        nnoremap <silent> <Leader>gf :call <SID>ctrlp_file_under_cursor()<CR>
     " }}
 else
     " FZF + ag is _much_ faster & actually useful when working with big repos
@@ -370,14 +372,14 @@ Plug 'brentyi/vim-emoji'
     augroup MarkdownBindings
         autocmd!
         " Markdown paste image
-        autocmd FileType markdown nnoremap <silent> <buffer>
+        autocmd FileType markdown nnoremap <buffer>
             \ <Leader>mdpi :call mdip#MarkdownClipboardImage()<CR>
         " Markdown toggle preview
-        autocmd FileType markdown nmap <silent> <buffer>
+        autocmd FileType markdown nmap <buffer>
             \ <Leader>mdtp <Plug>MarkdownPreviewToggle
         autocmd FileType markdown setlocal completefunc=emoji#complete
         " Markdown generate TOC
-        autocmd FileType markdown nnoremap <silent> <buffer>
+        autocmd FileType markdown nnoremap <buffer>
             \ <Leader>mdtoc :GenTocGFM<CR>
     augroup END
 
@@ -463,9 +465,6 @@ Plug 'ajh17/VimCompletesMe'
         " Use vim-emoji for markdown
         autocmd FileType markdown let b:vcm_tab_complete = "user"
     augroup END
-
-    " Binding to close preview windows (eg from autocompletion)
-    nnoremap <silent> <Leader>pc :pc<CR>
 " }}
 
 " Python magic (auto-completion, definition jumping, etc)
@@ -552,6 +551,12 @@ Plug 'brentyi/vim-codefmt'
 
         " Async Python formatting: run isort, then Black
         " + some hacky stuff to prevent cursor jumps
+        "
+        " If formatting in visual mode, use yapf
+        autocmd FileType python nnoremap <buffer> <Leader>cf
+            \ :call <SID>format_python()<CR>
+        autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>:redraw!<CR>
+
         function! s:format_python()
             let s:format_python_restore_pos = getpos('.')
             let s:format_python_orig_line_count = line('$')
@@ -566,10 +571,6 @@ Plug 'brentyi/vim-codefmt'
                 call codefmt#FormatBuffer('black') | execute "redraw!"
             endif
         endfunction
-
-        autocmd FileType python nnoremap <buffer> <Leader>cf
-            \ :call <SID>format_python()<CR>
-        autocmd FileType python vnoremap <buffer> <Leader>cf :FormatLines yapf<CR>:redraw!<CR>
 
         " Use prettier for Javascript
         autocmd FileType javascript let b:codefmt_formatter='prettier'
@@ -684,16 +685,21 @@ Plug 'camspiers/animate.vim'
 
 Plug 'dense-analysis/ale'
 " {{
+    " Bindings
+    nnoremap <Leader>al :ALELint<CR>
+    nnoremap <Leader>ar :ALEReset<CR>
+    nnoremap <Leader>arb :ALEResetBuffer<CR>
+
     " Disable ALE by default
     let g:ale_lint_on_text_changed = 'never'
     let g:ale_lint_on_insert_leave = 0
     let g:ale_lint_on_enter = 0
     let g:ale_lint_on_save = 0
-    nnoremap <silent> <Leader>ale :ALELint<CR>
 
-    " Populate errors in a quickfix window
+    " Populate errors in a quickfix window, and open it automatically
     let g:ale_set_loclist = 0
     let g:ale_set_quickfix = 1
+    let g:ale_open_list = 1
 
     " Python specific options
     " Flake8 ignore list:
@@ -836,7 +842,7 @@ if !s:fresh_install
     imap ;; <Esc>
 
     " Search utilities -- highlight matches, clear highlighting with <Esc>
-    nnoremap <silent> <Esc> :noh<CR>:redraw!<CR><Esc>
+    nnoremap <Esc> :noh<CR>:redraw!<CR><Esc>
     nnoremap <Esc>^[ <Esc>^[
 
     " Use backslash to toggle folds
@@ -878,8 +884,9 @@ if !s:fresh_install
     " > bd: delete current buffer
     " > bc: clear all but current buffer
     " > baa: open buffer for all files w/ same extension in current directory
-    nnoremap <silent> <Leader>bd :bd<CR>
-    nnoremap <silent> <Leader>bc :%bd\|e#<CR>
+    nnoremap <Leader>bd :bd<CR>
+    nnoremap <Leader>bc :%bd\|e#<CR>
+    nnoremap <Leader>baa :call <SID>buffer_add_all()<CR>
     function! s:buffer_add_all()
         " Get a full path to the current file
         let l:path = expand("%:p")
@@ -894,22 +901,41 @@ if !s:fresh_install
             endif
         endfor
     endfunction
-    nnoremap <silent> <Leader>baa :call <SID>buffer_add_all()<CR>
 
     " Bindings for switching between tabs
-    nnoremap <silent> <Leader>tt :tabnew<CR>
-    nnoremap <silent> <Leader>n :tabn<CR>
+    nnoremap <Leader>tt :tabnew<CR>
+    nnoremap <Leader>n :tabn<CR>
 
     " 'Force write' binding for writing with sudo
     " Helpful if we don't have permissions for a specific file
     cmap W! w !sudo tee >/dev/null %
 
-    " Quickfix windows bindings
-    " Right now, we only use this for ALE
-    nnoremap <expr> <silent> <Leader>j (&diff ? "]c" : ":cnext\<CR>")
-    nnoremap <expr> <silent> <Leader>k (&diff ? "[c" : ":cprev\<CR>")
-    nnoremap <expr> <silent> <Leader>fc (&diff ? "[c" : ":cclose\<CR>")
-    nnoremap <silent> <Leader>fw :cwindow<CR>
+    " Some <Leader>direction movement bindings for quickfix windows + diffs
+    nnoremap <expr> <Leader>j (&diff ? "]c" : ":cnext\<CR>")
+    nnoremap <expr> <Leader>k (&diff ? "[c" : ":cprev\<CR>")
+
+    " Close preview/quickfix/location list/help windows with <Leader>c
+    nnoremap <Leader>c :call <SID>window_cleanup()<CR>
+    function! s:window_cleanup()
+        " Close preview windows
+        execute "pclose"
+
+        " Close quickfix windows
+        execute "cclose"
+
+        " Close location list windows
+        execute "lclose"
+
+        " Close help windows
+        execute "helpclose"
+
+        " Close Python docstring buffers (eg from jedi-vim)
+        for l:b in filter(range(1, bufnr('$')), 'bufloaded(v:val)')
+            if bufname(l:b) == '__doc__'
+                execute "bd " . l:b
+            endif
+        endfor
+    endfun
 
 
     " #############################################
@@ -930,6 +956,8 @@ if !s:fresh_install
     " This maps <Leader>f to toggle between:
     "  - 'Default mode': arrow keys resize splits, mouse disabled
     "  - 'Friendly mode': arrow keys, mouse behave as usual
+
+    nnoremap <silent> <Leader>f :call <SID>toggle_friendly_mode(1)<CR>
 
     let s:friendly_mode = 1
     function! s:toggle_friendly_mode(verbose)
@@ -962,7 +990,6 @@ if !s:fresh_install
         endif
     endfunction
     call <SID>toggle_friendly_mode(0)
-    nnoremap <silent> <Leader>f :call <SID>toggle_friendly_mode(1)<CR>
 
 
     " #############################################
@@ -997,6 +1024,7 @@ if !s:fresh_install
             \ clearmatches()
 
         " (C/C++) Automatically insert header gates for h/hpp files
+        autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
         function! s:insert_gates()
             let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
             execute "normal! i#ifndef " . gatename
@@ -1004,7 +1032,6 @@ if !s:fresh_install
             execute "normal! Go#endif /* " . gatename . " */"
             normal! kk
         endfunction
-        autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
 
         " (Commits) Enable spellcheck
         autocmd FileType gitcommit,hgcommit setlocal spell
