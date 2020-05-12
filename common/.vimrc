@@ -702,7 +702,8 @@ Plug 'dense-analysis/ale'
     "     D101: Missing docstring in public class
     "     D102: Missing docstring in public method
     "     D103: Missing docstring in public function
-    let g:ale_python_flake8_options = "--ignore=E501,D100,D101,D102,D103"
+    "     W503: line break before binary operator
+    let g:ale_python_flake8_options = "--ignore=E501,D100,D101,D102,D103,W503"
     let g:ale_python_mypy_options= "--ignore-missing-imports"
 " }}
 
