@@ -53,7 +53,8 @@ execute "call plug#begin('" . s:bundle_path . "')"
 " Navigation inside files
 Plug 'easymotion/vim-easymotion'
 " {{
-    map s <Plug>(easymotion-bd-f)
+    map s <Plug>(easymotion-f)
+    map S <Plug>(easymotion-F)
 " }}
 
 " Shortcuts for manipulating quotes, brackets, parentheses, HTML tags
