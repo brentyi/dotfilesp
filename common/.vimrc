@@ -361,14 +361,12 @@ Plug 'vim-scripts/restore_view.vim'
 " Helpers for Markdown:
 " 1) Directly paste images
 " 2) Live preview
-"    > Our fork uses a pre-release version of KaTeX, to add support for
-"    the globalGroup parameter
 " 3) Table of contents generation
 " 4) Emoji autocompletion
 "    > Our fork removes emojis not found in common markdown parsers (Github,
 "      markdown-it), and adds ones that are
 Plug 'ferrine/md-img-paste.vim'
-Plug 'brentyi/markdown-preview.nvim', { 'do': ':call mkdp#util#install()' }
+Plug 'iamcco/markdown-preview.nvim', { 'do': ':call mkdp#util#install()', 'for': ['markdown', 'vim-plug']}
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'brentyi/vim-emoji'
 " {{
