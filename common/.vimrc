@@ -684,7 +684,10 @@ Plug 'camspiers/animate.vim'
     let g:animate#easing_func = 'animate#ease_out_quad'
 " }}
 
-Plug 'dense-analysis/ale'
+" Linting
+" > Our fork expands support for alex, which is somewhat problematic but can
+"   still be helpful?
+Plug 'brentyi/ale'
 " {{
     " Bindings
     nnoremap <Leader>al :ALELint<CR>
@@ -712,6 +715,19 @@ Plug 'dense-analysis/ale'
     "     W503: line break before binary operator
     let g:ale_python_flake8_options = "--ignore=E501,D100,D101,D102,D103,W503"
     let g:ale_python_mypy_options= "--ignore-missing-imports"
+
+    " Alex stuff needs to be manually enabled
+    let g:ale_linters = {
+        \ 'asciidoc': ['alex'],
+        \ 'cpp': ['alex'],
+        \ 'help': ['alex'],
+        \ 'html': ['alex'],
+        \ 'javascript': ['alex'],
+        \ 'markdown': ['alex'],
+        \ 'python': ['alex', 'flake8', 'mypy', 'pylint'],
+        \ 'rst': ['alex'],
+        \ 'tex': ['alex'],
+        \ }
 " }}
 
 call plug#end()
