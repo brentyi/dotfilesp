@@ -129,6 +129,7 @@ if !g:brent_use_fzf
 
         " Bindings
         nnoremap <Leader>p :CtrlPBuffer<CR>
+        nnoremap <Leader>h :CtrlPMRUFiles<CR>
         nnoremap <Leader>t :CtrlPTag<CR>
         nnoremap <Leader>gt :call <SID>ctrlp_tag_under_cursor()<CR>
         nnoremap <Leader>l :CtrlPLine<CR>
@@ -213,6 +214,7 @@ else
         " Bindings: search file names
         nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
         nnoremap <Leader>p :Buffers<CR>
+        nnoremap <Leader>h :History<CR>
         nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, fzf#vim#with_preview({
             \ 'options': '--query ' . shellescape(expand('<cfile>'))}))<CR>
 
