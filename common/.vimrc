@@ -1,6 +1,5 @@
 "
 " brent yi
-"
 
 
 " #############################################
@@ -109,6 +108,20 @@ endif
 
     " For vim-signify
     set updatetime=300
+    augroup SignifyColors
+        autocmd!
+        function! s:SetSignifyColors()
+            highlight SignColumn ctermbg=NONE guibg=NONE
+            highlight SignifySignAdd ctermfg=green guifg=#00ff00 cterm=NONE gui=NONE
+            highlight SignifySignDelete ctermfg=red guifg=#ff0000 cterm=NONE gui=NONE
+            highlight SignifySignChange ctermfg=yellow guifg=#ffff00 cterm=NONE gui=NONE
+        endfunction
+        autocmd ColorScheme * call s:SetSignifyColors()
+    augroup END
+    let g:signify_sign_add = "•"
+    let g:signify_sign_delete = "•"
+    let g:signify_sign_delete_first_line = "•"
+    let g:signify_sign_change = "•"
 " }}
 
 " Fuzzy-find for files, buffers, tags!
@@ -722,7 +735,6 @@ Plug 'brentyi/ale'
     let g:ale_linters = {
         \ 'asciidoc': ['alex'],
         \ 'cpp': ['alex'],
-        \ 'help': ['alex'],
         \ 'html': ['alex'],
         \ 'javascript': ['alex'],
         \ 'markdown': ['alex'],
@@ -730,6 +742,23 @@ Plug 'brentyi/ale'
         \ 'rst': ['alex'],
         \ 'tex': ['alex'],
         \ }
+
+    " ALE sign column stuff
+    augroup ALEColors
+        autocmd!
+
+        function! s:SetALEColors()
+            highlight ALEErrorSign ctermfg=red ctermbg=NONE
+            highlight ALEWarningSign ctermfg=yellow ctermbg=NONE
+            highlight ALEInfoSign ctermfg=blue ctermbg=NONE
+        endfunction
+
+        autocmd ColorScheme * call s:SetALEColors()
+    augroup END
+
+    let g:ale_sign_error = '••'
+    let g:ale_sign_warning = '••'
+    let g:ale_sign_info = '••'
 " }}
 
 call plug#end()
@@ -781,28 +810,40 @@ if !s:fresh_install
 
     " Configuring colors
     set background=dark
+    augroup ColorschemeOverrides
+        autocmd!
+        function! s:ColorschemeOverrides()
+            if g:brent_colorscheme == 'legacy'
+                " Fallback colors for some legacy terminals
+                set t_Co=16
+                set foldcolumn=1
+                hi FoldColumn ctermbg=7
+                hi LineNr cterm=bold ctermfg=0 ctermbg=0
+                hi CursorLineNr ctermfg=0 ctermbg=7
+                hi Visual cterm=bold ctermbg=1
+                hi TrailingWhitespace ctermbg=1
+                hi Search ctermfg=4 ctermbg=7
+            else
+                " When we have 256 colors available
+                " (This is usually true)
+                set t_Co=256
+                hi LineNr ctermfg=241 ctermbg=234
+                hi CursorLineNr cterm=bold ctermfg=232 ctermbg=250
+                hi Visual cterm=bold ctermbg=238
+                hi TrailingWhitespace ctermbg=52
+                let g:indentLine_color_term=237
+            endif
+        endfunction
+        autocmd ColorScheme * call s:ColorschemeOverrides()
+    augroup END
+
     let g:brent_colorscheme = get(g:, 'brent_colorscheme', "xoria256")
-    if g:brent_colorscheme == 'legacy'
-        " Fallback colors for some legacy terminals
-        set t_Co=16
-        set foldcolumn=1
-        hi FoldColumn ctermbg=7
-        hi LineNr cterm=bold ctermfg=0 ctermbg=0
-        hi CursorLineNr ctermfg=0 ctermbg=7
-        hi Visual cterm=bold ctermbg=1
-        hi TrailingWhitespace ctermbg=1
-        hi Search ctermfg=4 ctermbg=7
-    else
-        " When we have 256 colors available
-        " (This is usually true)
-        set t_Co=256
+    if g:brent_colorscheme != 'legacy'
         execute "colorscheme " . g:brent_colorscheme
-        hi LineNr ctermfg=241 ctermbg=234
-        hi CursorLineNr cterm=bold ctermfg=232 ctermbg=250
-        hi Visual cterm=bold ctermbg=238
-        hi TrailingWhitespace ctermbg=52
-        let g:indentLine_color_term=237
+    else
+        execute "colorscheme peachpuff"
     endif
+
     hi MatchParen cterm=bold,underline ctermbg=none ctermfg=7
     hi VertSplit ctermfg=0 ctermbg=0
 
