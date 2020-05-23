@@ -22,19 +22,19 @@ let mapleader = "\<Space>"
 set shell=/bin/bash
 
 " Automatically install vim-plug plugin manager
-let s:vim_plug_folder = (has('nvim') ? "$HOME/.config/nvim" : "$HOME/.vim") . '/autoload/'
+let s:vim_plug_folder = (has('nvim') ? '$HOME/.config/nvim' : '$HOME/.vim') . '/autoload/'
 let s:vim_plug_path = s:vim_plug_folder . 'plug.vim'
 let s:fresh_install = 0
 if empty(glob(s:vim_plug_path))
-    if executable("curl")
-        execute "silent !curl -fLo " . s:vim_plug_path . " --create-dirs "
-            \ . "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-    elseif executable("wget")
-        execute "silent !mkdir -p " . s:vim_plug_folder
-        execute "silent !wget --output-document=" . s:vim_plug_path
-            \ . " https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    if executable('curl')
+        execute 'silent !curl -fLo ' . s:vim_plug_path . ' --create-dirs '
+            \ . 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    elseif executable('wget')
+        execute 'silent !mkdir -p ' . s:vim_plug_folder
+        execute 'silent !wget --output-document=' . s:vim_plug_path
+            \ . ' https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     else
-        echoerr "Need curl or wget to download vim-plug!"
+        echoerr 'Need curl or wget to download vim-plug!'
     endif
     autocmd VimEnter * PlugUpdate! --sync 32 | source $MYVIMRC
     let s:fresh_install = 1
@@ -47,7 +47,7 @@ endif
 
 " Use Vundle-style path for vim-plug
 let s:bundle_path = (has('nvim') ? '~/.config/nvim' : '~/.vim') . '/bundle'
-execute "call plug#begin('" . s:bundle_path . "')"
+execute 'call plug#begin("' . s:bundle_path . '")'
 
 " Navigation inside files
 Plug 'easymotion/vim-easymotion'
@@ -118,10 +118,10 @@ endif
         endfunction
         autocmd ColorScheme * call s:SetSignifyColors()
     augroup END
-    let g:signify_sign_add = "•"
-    let g:signify_sign_delete = "•"
-    let g:signify_sign_delete_first_line = "•"
-    let g:signify_sign_change = "•"
+    let g:signify_sign_add = '•'
+    let g:signify_sign_delete = '•'
+    let g:signify_sign_delete_first_line = '•'
+    let g:signify_sign_change = '•'
 " }}
 
 " Fuzzy-find for files, buffers, tags!
@@ -175,18 +175,18 @@ else
     Plug 'junegunn/fzf.vim'
     " {{
         function! s:smarter_fuzzy_file_search()
-            execute "Files " . b:repo_file_search_root
+            execute 'Files ' . b:repo_file_search_root
         endfunction
 
         " Use ag if available
         if executable('ag')
             let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
         else
-            echoerr "fzf enabled without ag!"
+            echoerr 'fzf enabled without ag!'
         endif
 
         " We want to use gutentags for tag generation
-        let g:fzf_tags_command = ""
+        let g:fzf_tags_command = ''
 
         " Preview for tag search
         " Note that line numbers must be included in tag files (see gutentags config)
@@ -218,7 +218,7 @@ else
                 return
             endif
 
-            execute "Ag " @@
+            execute 'Ag ' @@
 
             " Restore the unnamed register
             let @@ = l:save_tmp
@@ -289,16 +289,16 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'f4t-t0ny/nerdtree-hg-plugin'
 " {{
     let g:NERDTreeIndicatorMapCustom = {
-        \ 'Modified'  : "M",
-        \ 'Staged'    : "+",
-        \ 'Untracked' : "?",
-        \ 'Renamed'   : "renamed",
-        \ 'Unmerged'  : "unmerged",
-        \ 'Deleted'   : "X",
-        \ 'Dirty'     : "d",
-        \ 'Clean'     : "c",
-        \ 'Ignored'   : "-",
-        \ 'Unknown'   : "??"
+        \ 'Modified'  : 'M',
+        \ 'Staged'    : '+',
+        \ 'Untracked' : '?',
+        \ 'Renamed'   : 'renamed',
+        \ 'Unmerged'  : 'unmerged',
+        \ 'Deleted'   : 'X',
+        \ 'Dirty'     : 'd',
+        \ 'Clean'     : 'c',
+        \ 'Ignored'   : '-',
+        \ 'Unknown'   : '??'
         \ }
 " }}
 
@@ -423,10 +423,10 @@ Plug 'itchyny/lightline.vim'
     " Display human-readable path to file
     " This is generated in vim-repo-file-search
     function! s:lightline_filepath()
-        return get(b:, 'repo_file_search_display', "")
+        return get(b:, 'repo_file_search_display', '')
     endfunction
 
-    let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', "wombat")
+    let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', 'wombat')
     let g:lightline = {
         \ 'colorscheme': g:brent_lightline_colorscheme,
         \ 'active': {
@@ -467,8 +467,8 @@ Plug 'brentyi/github-complete.vim'
 Plug 'ajh17/VimCompletesMe'
 " {{
     " Use j, k for selecting autocompletion results & enter for selection
-    inoremap <expr> j ((pumvisible())?("\<C-n>"):("j"))
-    inoremap <expr> k ((pumvisible())?("\<C-p>"):("k"))
+    inoremap <expr> j ((pumvisible())?("\<C-n>"):('j'))
+    inoremap <expr> k ((pumvisible())?("\<C-p>"):('k'))
     inoremap <expr> <CR> ((pumvisible())?("\<C-y>"):("\<CR>"))
 
     augroup Autocompletion
@@ -837,7 +837,7 @@ if !s:fresh_install
         autocmd ColorScheme * call s:ColorschemeOverrides()
     augroup END
 
-    let g:brent_colorscheme = get(g:, 'brent_colorscheme', "xoria256")
+    let g:brent_colorscheme = get(g:, 'brent_colorscheme', 'xoria256')
     if g:brent_colorscheme != 'legacy'
         execute "colorscheme " . g:brent_colorscheme
     else
