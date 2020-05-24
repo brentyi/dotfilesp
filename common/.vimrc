@@ -431,7 +431,8 @@ Plug 'itchyny/lightline.vim'
         \ 'colorscheme': g:brent_lightline_colorscheme,
         \ 'active': {
         \   'left': [ [ 'mode', 'paste' ],
-        \             [ 'readonly', 'filename', 'modified' ] ],
+        \             [ 'readonly', 'filename', 'modified' ],
+        \             [ 'signify' ] ],
         \   'right': [ [ 'lineinfo' ],
         \              [ 'filetype', 'charvaluehex' ],
         \              [ 'gutentags' ],
@@ -448,12 +449,14 @@ Plug 'itchyny/lightline.vim'
         \ 'component': {
         \   'charvaluehex': '0x%B',
         \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "[ctags indexing]")}',
+        \   'signify': '%{sy#repo#get_stats_decorated()}',
         \   'truncate': '%<',
         \ },
         \ 'component_function': {
         \   'filepath': string(function('s:lightline_filepath')),
         \ },
         \ }
+
 " }}
 
 " Show instance # in statusline when we search
@@ -967,7 +970,7 @@ if !s:fresh_install
 
     " Bindings for switching between tabs
     nnoremap <Leader>tt :tabnew<CR>
-    nnoremap <Leader>n :tabn<CR>
+    nnoremap <Leader>tn :tabn<CR>
 
     " 'Force write' binding for writing with sudo
     " Helpful if we don't have permissions for a specific file
