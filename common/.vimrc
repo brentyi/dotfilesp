@@ -764,6 +764,12 @@ Plug 'brentyi/ale'
     let g:ale_sign_info = '••'
 " }}
 
+" Show unsaved changes to a file
+Plug 'jmcantrell/vim-diffchanges'
+" {{
+    nnoremap <Leader>dc :DiffChangesDiffToggle<CR>
+" }}
+
 call plug#end()
 
 " We only want to do the rest if our plugins are already installed :)
