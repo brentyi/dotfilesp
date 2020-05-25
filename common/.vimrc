@@ -449,7 +449,7 @@ Plug 'itchyny/lightline.vim'
         \ 'component': {
         \   'charvaluehex': '0x%B',
         \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "[ctags indexing]")}',
-        \   'signify': '%{sy#repo#get_stats_decorated()}',
+        \   'signify': has('patch-8.0.902') ? '%{sy#repo#get_stats_decorated()}' : '',
         \   'truncate': '%<',
         \ },
         \ 'component_function': {
