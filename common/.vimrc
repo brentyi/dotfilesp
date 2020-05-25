@@ -934,6 +934,7 @@ if !s:fresh_install
     nnoremap <Leader>q! :q!<CR>
     nnoremap <Leader>e :e<CR>
     nnoremap <Leader>e! :e!<CR>
+    nnoremap <Leader>e. :e .<CR>
 
     " Binding to switch into/out of PASTE mode
     nnoremap <Leader>ip :set invpaste<CR>
