@@ -200,7 +200,7 @@ else
 
         " Call Ag relative to repository root
         command! -bang -nargs=* Ag
-            \ call fzf#vim#ag(<q-args>, '--hidden', fzf#vim#with_preview({
+            \ call fzf#vim#ag(<q-args>, '--hidden --ignore .git', fzf#vim#with_preview({
             \     'dir': b:repo_file_search_root
             \ }), <bang>0)
 
