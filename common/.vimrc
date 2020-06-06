@@ -284,7 +284,9 @@ Plug 'scrooloose/nerdtree'
 " }}
 
 " NERDTree extensions: syntax highlighting, version control indicators
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+" > Our fork of vim-nerdtree-syntax-highlight suppresses some icon errors
+" > See: https://github.com/tiagofumo/vim-nerdtree-syntax-highlight/pull/39
+Plug 'brentyi/vim-nerdtree-syntax-highlight'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'f4t-t0ny/nerdtree-hg-plugin'
 " {{
