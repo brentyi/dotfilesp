@@ -701,6 +701,8 @@ Plug 'majutsushi/tagbar'
 " {{
     nmap <Leader>tbt :TagbarToggle<CR>
     let g:tagbar_show_linenumbers = 2
+    let g:tagbar_map_nexttag = "J"
+    let g:tagbar_map_prevtag = "K"
 " }}
 
 " Animations for fun?
