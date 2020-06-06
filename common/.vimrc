@@ -266,7 +266,6 @@ Plug 'scrooloose/nerdtree'
 " {{
     let g:NERDTreeShowHidden = 1
     let g:NERDTreeShowLineNumbers = 1
-    autocmd FileType nerdtree setlocal relativenumber
     let g:NERDTreeMinimalUI = 1
     let g:NERDTreeFileExtensionHighlightFullName = 1
     let g:NERDTreeExactMatchHighlightFullName = 1
@@ -275,9 +274,10 @@ Plug 'scrooloose/nerdtree'
     let g:NERDTreeMapJumpPrevSibling = '<Nop>'
     nnoremap <Leader>o :NERDTree<CR>
 
-    augroup NERDTreeBindings
-        " Match 'open in split' bindings of CtrlP and fzf
+    augroup NERDTreeSettings
         autocmd!
+        " Relative line numbering, match 'open in split' bindings of CtrlP and fzf
+        autocmd FileType nerdtree setlocal relativenumber
         autocmd FileType nerdtree nmap <buffer> <C-v> s
         autocmd FileType nerdtree nmap <buffer> <C-x> i
     augroup END
@@ -692,6 +692,13 @@ Plug 'brentyi/vim-gutentags'
         autocmd User GutentagsUpdating call lightline#update()
         autocmd User GutentagsUpdated call lightline#update()
     augroup END
+" }}
+
+" Summarize tags in current file
+Plug 'majutsushi/tagbar'
+" {{
+    nmap <Leader>tbt :TagbarToggle<CR>
+    let g:tagbar_show_linenumbers = 2
 " }}
 
 " Animations for fun?
