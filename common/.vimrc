@@ -1015,7 +1015,7 @@ if !s:fresh_install
 
         " Close Python docstring buffers (eg from jedi-vim)
         for l:b in filter(range(1, bufnr('$')), 'bufloaded(v:val)')
-            if bufname(l:b) == '__doc__'
+            if bufname(l:b)[-7:] ==# '__doc__'
                 execute "bd " . l:b
             endif
         endfor
