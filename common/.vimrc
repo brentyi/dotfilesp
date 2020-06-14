@@ -1014,9 +1014,11 @@ if !s:fresh_install
     " Helpful if we don't have permissions for a specific file
     cmap W! w !sudo tee >/dev/null %
 
-    " Some <Leader>direction movement bindings for quickfix windows + diffs
-    nnoremap <expr> <Leader>j (&diff ? "]c" : ":cnext\<CR>")
-    nnoremap <expr> <Leader>k (&diff ? "[c" : ":cprev\<CR>")
+    " Some <Leader>direction movement bindings for diffs + quickfix windows
+    " We also throw in a lightline update, to fix a statusline bug when a
+    " quickfix jump goes between files
+    nnoremap <expr> <Leader>j (&diff ? "]c" : ":cnext\<CR>:call lightline#update()<CR>")
+    nnoremap <expr> <Leader>k (&diff ? "[c" : ":cprev\<CR>:call lightline#update()<CR>")
 
     " Close preview/quickfix/location list/help windows with <Leader>c
     nnoremap <Leader>c :call <SID>window_cleanup()<CR>
