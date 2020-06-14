@@ -437,6 +437,7 @@ Plug 'itchyny/lightline.vim'
         \             [ 'signify' ] ],
         \   'right': [ [ 'lineinfo' ],
         \              [ 'filetype', 'charvaluehex' ],
+        \              [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
         \              [ 'gutentags' ],
         \              [ 'filepath' ],
         \              [ 'truncate' ]]
@@ -445,6 +446,7 @@ Plug 'itchyny/lightline.vim'
         \   'left': [ [ 'readonly', 'filename', 'modified' ] ],
         \   'right': [ [],
         \              [],
+        \              [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
         \              [ 'filepath', 'lineinfo' ],
         \              [ 'truncate' ]]
         \ },
@@ -457,6 +459,23 @@ Plug 'itchyny/lightline.vim'
         \ 'component_function': {
         \   'filepath': string(function('s:lightline_filepath')),
         \ },
+        \ }
+
+    " ALE components
+    let g:lightline.component_expand = {
+        \  'linter_checking': 'lightline#ale#checking',
+        \  'linter_infos': 'lightline#ale#infos',
+        \  'linter_warnings': 'lightline#ale#warnings',
+        \  'linter_errors': 'lightline#ale#errors',
+        \  'linter_ok': 'lightline#ale#ok',
+        \ }
+
+    let g:lightline.component_type = {
+        \     'linter_checking': 'right',
+        \     'linter_infos': 'right',
+        \     'linter_warnings': 'warning',
+        \     'linter_errors': 'error',
+        \     'linter_ok': 'ok',
         \ }
 
 " }}
@@ -717,6 +736,7 @@ Plug 'camspiers/animate.vim'
 " > Our fork expands support for alex, which is somewhat problematic but can
 "   still be helpful?
 Plug 'brentyi/ale'
+Plug 'maximbaz/lightline-ale'
 " {{
     " Bindings
     nnoremap <Leader>al :ALELint<CR>
