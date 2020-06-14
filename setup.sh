@@ -10,6 +10,7 @@ usage() {
     echo -e "\t-b\tBeaglebone libraries"
     echo -e "\t-m\tMiniconda"
     echo -e "\t-y\tYarn (+nodejs)"
+    echo -e "\t-v\tVim (from PPA)"
 }
 
 valid=0
@@ -20,8 +21,9 @@ install_chrome=0
 install_beaglebone=0
 install_zsh=0
 install_miniconda=0
+install_vim_ppa=0
 
-while getopts czdrgbmy flag; do
+while getopts czdrgbmyv flag; do
   case $flag in
     c)
       valid=1
@@ -54,6 +56,10 @@ while getopts czdrgbmy flag; do
     y)
       valid=1
       install_yarn=1
+      ;;
+    v)
+      valid=1
+      install_vim_ppa=1
       ;;
     ?)
       valid=0
@@ -123,6 +129,13 @@ if [[ $install_yarn = 1 ]]; then
     echo "Yarn"
     echo "---------"
     bash scripts/install_yarn.sh
+fi
+
+if [[ $install_vim_ppa = 1 ]]; then
+    echo -e "\n---------"
+    echo "Vim (from PPA)"
+    echo "---------"
+    bash scripts/install_vim_ppa.sh
 fi
 
 echo ""

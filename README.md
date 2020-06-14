@@ -16,6 +16,7 @@ Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y]
         -b      Beaglebone libraries
         -m      Miniconda
         -y      Yarn (+nodejs)
+        -v      Vim (from PPA)
 ```
 
 ## Structure
