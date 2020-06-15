@@ -842,8 +842,18 @@ if !s:fresh_install
     " Note we re-bind Ctrl+C in order for InsertLeave to be called
     augroup InsertModeCrossHairs
         autocmd!
-        autocmd InsertEnter * set cursorline
-        autocmd InsertLeave * set nocursorline
+        if exists("+cursorlineopt")
+            " Highlight current line in insertmode, line number always
+            " Unfixes this patch: https://github.com/vim/vim/issues/5017
+            set cursorline
+            set cursorlineopt=number
+            autocmd InsertEnter * set cursorlineopt=both
+            autocmd InsertLeave * set cursorlineopt=number
+        else
+            " Neovim + legacy
+            autocmd InsertEnter * set cursorline
+            autocmd InsertLeave * set nocursorline
+        endif
         autocmd InsertEnter * set cursorcolumn
         autocmd InsertLeave * set nocursorcolumn
     augroup END
