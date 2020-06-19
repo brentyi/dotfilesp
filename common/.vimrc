@@ -430,39 +430,40 @@ Plug 'itchyny/lightline.vim'
     endfunction
 
     let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', 'wombat')
-    let g:lightline = {
-        \ 'colorscheme': g:brent_lightline_colorscheme,
-        \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ],
-        \             [ 'readonly', 'filename', 'modified' ],
-        \             [ 'signify' ] ],
-        \   'right': [ [ 'lineinfo' ],
-        \              [ 'filetype', 'charvaluehex' ],
-        \              [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
-        \              [ 'gutentags' ],
-        \              [ 'filepath' ],
-        \              [ 'truncate' ]]
-        \ },
-        \ 'inactive': {
-        \   'left': [ [ 'readonly', 'filename', 'modified' ] ],
-        \   'right': [ [],
-        \              [],
-        \              [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
-        \              [ 'filepath', 'lineinfo' ],
-        \              [ 'truncate' ]]
-        \ },
-        \ 'component': {
+    let g:lightline = {}
+
+    " Lightline colors
+    let g:lightline.colorscheme = g:brent_lightline_colorscheme
+    let g:lightline.active = {
+        \ 'left': [ [ 'mode', 'paste' ],
+        \           [ 'readonly', 'filename', 'modified' ],
+        \           [ 'signify' ] ],
+        \ 'right': [ [ 'lineinfo' ],
+        \            [ 'filetype', 'charvaluehex' ],
+        \            [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
+        \            [ 'gutentags' ],
+        \            [ 'filepath' ],
+        \            [ 'truncate' ]]
+        \ }
+    let g:lightline.inactive = {
+        \ 'left': [ [ 'readonly', 'filename', 'modified' ] ],
+        \ 'right': [ [],
+        \            [],
+        \            [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
+        \            [ 'filepath', 'lineinfo' ],
+        \            [ 'truncate' ]]
+        \ }
+
+    " Components
+    let g:lightline.component = {
         \   'charvaluehex': '0x%B',
         \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "[ctags indexing]")}',
         \   'signify': has('patch-8.0.902') ? '%{sy#repo#get_stats_decorated()}' : '',
         \   'truncate': '%<',
-        \ },
-        \ 'component_function': {
-        \   'filepath': string(function('s:lightline_filepath')),
-        \ },
         \ }
-
-    " ALE components
+    let g:lightline.component_function = {
+        \   'filepath': string(function('s:lightline_filepath')),
+        \ }
     let g:lightline.component_expand = {
         \  'linter_checking': 'lightline#ale#checking',
         \  'linter_infos': 'lightline#ale#infos',
@@ -470,7 +471,6 @@ Plug 'itchyny/lightline.vim'
         \  'linter_errors': 'lightline#ale#errors',
         \  'linter_ok': 'lightline#ale#ok',
         \ }
-
     let g:lightline.component_type = {
         \     'linter_checking': 'right',
         \     'linter_infos': 'right',
@@ -501,10 +501,10 @@ Plug 'ajh17/VimCompletesMe'
 
         " Use omnicomplete by default for C++ (clang), Python (jedi), and
         " gitcommit (github-complete)
-        autocmd FileType cpp,c,python,gitcommit let b:vcm_tab_complete = "omni"
+        autocmd FileType cpp,c,python,gitcommit let b:vcm_tab_complete = 'omni'
 
         " Use vim-emoji for markdown
-        autocmd FileType markdown let b:vcm_tab_complete = "user"
+        autocmd FileType markdown let b:vcm_tab_complete = 'user'
     augroup END
 " }}
 
@@ -606,10 +606,10 @@ Plug 'brentyi/vim-codefmt'
 
         function! s:format_python_callback()
             if s:format_python_orig_line_count != line('$')
-                call codefmt#FormatBuffer('black') | execute "redraw!"
+                call codefmt#FormatBuffer('black') | execute 'redraw!'
                 call setpos('.', s:format_python_restore_pos)
             else
-                call codefmt#FormatBuffer('black') | execute "redraw!"
+                call codefmt#FormatBuffer('black') | execute 'redraw!'
             endif
         endfunction
 
@@ -624,7 +624,7 @@ Plug 'brentyi/vim-codefmt'
 
         " If clang-format is in PATH, we don't need to do anything
         if executable('clang-format')
-            echom "Found clang-format in $PATH"
+            echom 'Found clang-format in $PATH'
                 Glaive codefmt clang_format_executable='clang-format'
             return
         endif
@@ -642,14 +642,14 @@ Plug 'brentyi/vim-codefmt'
 
             if filereadable(l:path) && l:current_version > l:min_version
                 Glaive codefmt clang_format_executable=`l:path`
-                echom "Found clang-format: " . l:path
+                echom 'Found clang-format: ' . l:path
                 let l:min_version = l:current_version
             endif
         endfor
 
         " Failure message
         if g:clang_format_executable == ""
-            echom "Couldn't find clang-format!"
+            echom 'Couldn't find clang-format!'
         endif
     endfunction
 
@@ -721,8 +721,8 @@ Plug 'majutsushi/tagbar'
 " {{
     nmap <Leader>tbt :TagbarToggle<CR>
     let g:tagbar_show_linenumbers = 2
-    let g:tagbar_map_nexttag = "J"
-    let g:tagbar_map_prevtag = "K"
+    let g:tagbar_map_nexttag = 'J'
+    let g:tagbar_map_prevtag = 'K'
 " }}
 
 " Animations for fun?
@@ -763,8 +763,8 @@ Plug 'maximbaz/lightline-ale'
     "     D102: Missing docstring in public method
     "     D103: Missing docstring in public function
     "     W503: line break before binary operator
-    let g:ale_python_flake8_options = "--ignore=E501,D100,D101,D102,D103,W503"
-    let g:ale_python_mypy_options= "--ignore-missing-imports"
+    let g:ale_python_flake8_options = '--ignore=E501,D100,D101,D102,D103,W503'
+    let g:ale_python_mypy_options= '--ignore-missing-imports'
 
     " Alex stuff needs to be manually enabled
     let g:ale_linters = {
@@ -842,7 +842,7 @@ if !s:fresh_install
     " Note we re-bind Ctrl+C in order for InsertLeave to be called
     augroup InsertModeCrossHairs
         autocmd!
-        if exists("+cursorlineopt")
+        if exists('+cursorlineopt')
             " Highlight current line in insertmode, line number always
             " Unfixes this patch: https://github.com/vim/vim/issues/5017
             set cursorline
@@ -890,9 +890,9 @@ if !s:fresh_install
 
     let g:brent_colorscheme = get(g:, 'brent_colorscheme', 'xoria256')
     if g:brent_colorscheme != 'legacy'
-        execute "colorscheme " . g:brent_colorscheme
+        execute 'colorscheme ' . g:brent_colorscheme
     else
-        execute "colorscheme peachpuff"
+        execute 'colorscheme peachpuff'
     endif
 
     hi MatchParen cterm=bold,underline ctermbg=none ctermfg=7
@@ -1004,15 +1004,15 @@ if !s:fresh_install
     nnoremap <Leader>baa :call <SID>buffer_add_all()<CR>
     function! s:buffer_add_all()
         " Get a full path to the current file
-        let l:path = expand("%:p")
+        let l:path = expand('%:p')
 
         " Chop off the filename and add wildcard
-        let l:pattern = l:path[:-len(expand("%:t")) - 1] . "**/*." . expand("%:e")
-        echom "Loaded buffers matching pattern: " . l:pattern
+        let l:pattern = l:path[:-len(expand('%:t')) - 1] . '**/*.' . expand('%:e')
+        echom 'Loaded buffers matching pattern: ' . l:pattern
         for l:path in split(glob(l:pattern), '\n')
             let filesize = getfsize(l:path)
             if filesize > 0 && filesize < 80000
-                execute "badd " . l:path
+                execute 'badd ' . l:path
             endif
         endfor
     endfunction
@@ -1028,28 +1028,28 @@ if !s:fresh_install
     " Some <Leader>direction movement bindings for diffs + quickfix windows
     " We also throw in a lightline update, to fix a statusline bug when a
     " quickfix jump goes between files
-    nnoremap <expr> <Leader>j (&diff ? "]c" : ":cnext\<CR>:call lightline#update()<CR>")
-    nnoremap <expr> <Leader>k (&diff ? "[c" : ":cprev\<CR>:call lightline#update()<CR>")
+    nnoremap <expr> <Leader>j (&diff ? ']c' : ":cnext\<CR>:call lightline#update()<CR>")
+    nnoremap <expr> <Leader>k (&diff ? '[c' : ":cprev\<CR>:call lightline#update()<CR>")
 
     " Close preview/quickfix/location list/help windows with <Leader>c
     nnoremap <Leader>c :call <SID>window_cleanup()<CR>
     function! s:window_cleanup()
         " Close preview windows
-        execute "pclose"
+        execute 'pclose'
 
         " Close quickfix windows
-        execute "cclose"
+        execute 'cclose'
 
         " Close location list windows
-        execute "lclose"
+        execute 'lclose'
 
         " Close help windows
-        execute "helpclose"
+        execute 'helpclose'
 
         " Close Python docstring buffers (eg from jedi-vim)
         for l:b in filter(range(1, bufnr('$')), 'bufloaded(v:val)')
             if bufname(l:b)[-7:] ==# '__doc__'
-                execute "bd " . l:b
+                execute 'bd ' . l:b
             endif
         endfor
     endfun
@@ -1091,7 +1091,7 @@ if !s:fresh_install
             let s:friendly_mode = 0
 
             if a:verbose
-                echo "disabled friendly mode!"
+                echo 'disabled friendly mode!'
             endif
         else
             unmap <silent> <Up>
@@ -1102,7 +1102,7 @@ if !s:fresh_install
             let s:friendly_mode = 1
 
             if a:verbose
-                echo "enabled friendly mode!"
+                echo 'enabled friendly mode!'
             endif
         endif
     endfunction
@@ -1143,10 +1143,10 @@ if !s:fresh_install
         " (C/C++) Automatically insert header gates for h/hpp files
         autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
         function! s:insert_gates()
-            let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
-            execute "normal! i#ifndef " . gatename
-            execute "normal! o#define " . gatename . " "
-            execute "normal! Go#endif /* " . gatename . " */"
+            let gatename = substitute(toupper(expand('%:t')), '\\.', '_', 'g')
+            execute 'normal! i#ifndef ' . gatename
+            execute 'normal! o#define ' . gatename . ' '
+            execute 'normal! Go#endif /* ' . gatename . ' */'
             normal! kk
         endfunction
 
@@ -1163,7 +1163,7 @@ if !s:fresh_install
         augroup TmuxHelpers
           " TODO: fix strange behavior when we break-pane in tmux
             autocmd!
-            autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system("tmux rename-window 'vim " . expand("%:t") . "'")
+            autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system('tmux rename-window "vim ' . expand('%:t') . '"')
             autocmd VimLeave,FocusLost * call system("tmux set-window-option automatic-rename")
         augroup END
     endif
