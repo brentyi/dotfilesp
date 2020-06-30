@@ -39,4 +39,15 @@ let g:brent_lightline_colorscheme = 'jellybeans'
 " let g:pydocstring_formatter = 'numpy'
 " let g:pydocstring_formatter = 'sphinx'
 
+"""" Project root overrides
+
+" let g:repo_file_search_root = '/path'
+" let g:repo_file_search_type = 'hg'
+
+"""" Set LSP flag to 1 to enable language servers
+"""" Note that we also need to actually install some LSPs, eg:
+"""" > https://github.com/mattn/vim-lsp-settings
+
+" let g:brent_use_lsp = 1
+
 source ~/dotfilesp/common/.vimrc
