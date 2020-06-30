@@ -556,8 +556,8 @@ if g:brent_use_lsp == 0
 
                 if filereadable(l:path) && l:current_version > l:min_version
                     let g:clang_library_path=l:path
-                    echom "Found libclang: " . l:path . ", v" .
-                           \ string(l:current_version)
+                    " echom "Found libclang: " . l:path . ", v" .
+                    "        \ string(l:current_version)
                     let l:min_version = l:current_version
                 endif
             endfor
@@ -668,8 +668,7 @@ Plug 'brentyi/vim-codefmt'
 
         " If clang-format is in PATH, we don't need to do anything
         if executable('clang-format')
-            echom 'Found clang-format in $PATH'
-                Glaive codefmt clang_format_executable='clang-format'
+            Glaive codefmt clang_format_executable='clang-format'
             return
         endif
 
@@ -686,14 +685,14 @@ Plug 'brentyi/vim-codefmt'
 
             if filereadable(l:path) && l:current_version > l:min_version
                 Glaive codefmt clang_format_executable=`l:path`
-                echom 'Found clang-format: ' . l:path
+                " echom 'Found clang-format: ' . l:path
                 let l:min_version = l:current_version
             endif
         endfor
 
         " Failure message
         if g:clang_format_executable == ""
-            echom 'Couldn't find clang-format!'
+            echom 'Couldn''t find clang-format!'
         endif
     endfunction
 
