@@ -743,6 +743,11 @@ Plug 'brentyi/vim-gutentags'
           \ '--fields=+ailmnS',
           \ ]
 
+    " Disable tag generation if using an LSP
+    if g:brent_use_lsp
+        let g:gutentags_enabled = 0
+    endif
+
     " If we have a hardcoded repository root, use for gutentags
     if exists('g:repo_file_search_root')
         function! FindRepoRoot(path)
@@ -755,8 +760,6 @@ Plug 'brentyi/vim-gutentags'
     function! GutentagsStatus()
         if exists('g:gutentags_ctags_executable') && executable(expand(g:gutentags_ctags_executable, 1)) == 0
             return 'missing ctags'
-        elseif !g:gutentags_enabled
-            return 'ctags off'
         endif
         return ''
     endfunction
