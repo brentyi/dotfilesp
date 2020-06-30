@@ -700,6 +700,14 @@ Plug 'brentyi/vim-gutentags'
           \ '--fields=+ailmnS',
           \ ]
 
+    " If we have a hardcoded repository root, use for gutentags
+    if exists('g:repo_file_search_root')
+        function! FindRepoRoot(path)
+            return g:repo_file_search_root
+        endfunction
+        let g:gutentags_project_root_finder = "FindRepoRoot"
+    endif
+
     " Lightline integration
     function! GutentagsStatus()
         if exists('g:gutentags_ctags_executable') && executable(expand(g:gutentags_ctags_executable, 1)) == 0
