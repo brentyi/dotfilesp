@@ -241,7 +241,7 @@ else
 
         " Bindings: search lines in files with ag
         nnoremap <Leader>a :Ag<CR>
-        vnoremap <Leader>a :<c-u>call <SID>GrepVisual(visualmode())<cr>
+        vnoremap <Leader>a :<c-u>call <SID>GrepVisual(visualmode())<CR>
         nnoremap <Leader>ga :execute 'Ag ' . expand('<cword>')<CR>
 
         " Automatically change working directory to current file location
@@ -488,28 +488,28 @@ Plug 'henrik/vim-indexed-search'
 " > Our fork just adds more emojis :)
 Plug 'brentyi/github-complete.vim'
 
-" Lightweight autocompletion w/ tab key
-Plug 'ajh17/VimCompletesMe'
-" {{
-    " Use j, k for selecting autocompletion results & enter for selection
-    inoremap <expr> j ((pumvisible())?("\<C-n>"):('j'))
-    inoremap <expr> k ((pumvisible())?("\<C-p>"):('k'))
-    inoremap <expr> <CR> ((pumvisible())?("\<C-y>"):("\<CR>"))
-
-    augroup Autocompletion
-        autocmd!
-
-        " Use omnicomplete by default for C++ (clang), Python (jedi), and
-        " gitcommit (github-complete)
-        autocmd FileType cpp,c,python,gitcommit let b:vcm_tab_complete = 'omni'
-
-        " Use vim-emoji for markdown
-        autocmd FileType markdown let b:vcm_tab_complete = 'user'
-    augroup END
-" }}
-
 let g:brent_use_lsp = get(g:, 'brent_use_lsp', 0)
 if g:brent_use_lsp == 0
+    " Lightweight autocompletion w/ tab key
+    Plug 'ajh17/VimCompletesMe'
+    " {{
+        " Use j, k for selecting autocompletion results & enter for selection
+        inoremap <expr> j pumvisible() ? "\<C-n>" : "j"
+        inoremap <expr> k pumvisible() ? "\<C-p>" : "k"
+        inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
+
+        augroup Autocompletion
+            autocmd!
+
+            " Use omnicomplete by default for C++ (clang), Python (jedi), and
+            " gitcommit (github-complete)
+            autocmd FileType cpp,c,python,gitcommit let b:vcm_tab_complete = 'omni'
+
+            " Use vim-emoji for markdown
+            autocmd FileType markdown let b:vcm_tab_complete = 'user'
+        augroup END
+    " }}
+
     " If the LSP flag is set to 0 (default), we only install some
     " lighter-weight language plugins
 
@@ -590,6 +590,23 @@ else
 
     " {{
         " Bindings
+
+        " Open autocomplete with tab
+        function! s:check_back_space() abort
+            let col = col('.') - 1
+            return !col || getline('.')[col - 1]  =~ '\s'
+        endfunction
+        inoremap <silent><expr> <TAB>
+          \ pumvisible() ? "\<C-n>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ asyncomplete#force_refresh()
+
+        " Use j, k keys for selecting autocompletion results & enter for selection
+        let g:asyncomplete_auto_popup = 0
+        inoremap <expr> j pumvisible() ? "\<C-n>" : "j"
+        inoremap <expr> k pumvisible() ? "\<C-p>" : "k"
+        inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
+
         " TODO: these don't currently match the non-LSP jedi bindings
         function! s:on_lsp_buffer_enabled() abort
             setlocal omnifunc=lsp#complete
