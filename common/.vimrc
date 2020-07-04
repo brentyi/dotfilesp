@@ -491,28 +491,31 @@ Plug 'bronson/vim-visual-star-search'
 " > Our fork just adds more emojis :)
 Plug 'brentyi/github-complete.vim'
 
+" Lightweight autocompletion w/ tab key
+" > Use Tab, S-Tab to select, <CR> to confirm
+Plug 'ajh17/VimCompletesMe'
+" {{
+    if exists("*complete_info")
+        " Ignore <CR> when no autocomplete item is selected
+        inoremap <expr> <CR> complete_info()["selected"] != -1 ? "\<C-y>" : "<CR>"
+    else
+        " Ignore <CR> when autocomplete window is not open (legacy)
+        inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "<CR>"
+    endif
+    augroup Autocompletion
+        autocmd!
+
+        " Use omnicomplete by default for C++ (clang), Python (jedi), and
+        " gitcommit (github-complete)
+        autocmd FileType cpp,c,python,gitcommit let b:vcm_tab_complete = 'omni'
+
+        " Use vim-emoji for markdown
+        autocmd FileType markdown let b:vcm_tab_complete = 'user'
+    augroup END
+" }}
+
 let g:brent_use_lsp = get(g:, 'brent_use_lsp', 0)
 if g:brent_use_lsp == 0
-    " Lightweight autocompletion w/ tab key
-    Plug 'ajh17/VimCompletesMe'
-    " {{
-        " Use j, k for selecting autocompletion results & enter for selection
-        inoremap <expr> j pumvisible() ? "\<C-n>" : "j"
-        inoremap <expr> k pumvisible() ? "\<C-p>" : "k"
-        inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
-
-        augroup Autocompletion
-            autocmd!
-
-            " Use omnicomplete by default for C++ (clang), Python (jedi), and
-            " gitcommit (github-complete)
-            autocmd FileType cpp,c,python,gitcommit let b:vcm_tab_complete = 'omni'
-
-            " Use vim-emoji for markdown
-            autocmd FileType markdown let b:vcm_tab_complete = 'user'
-        augroup END
-    " }}
-
     " If the LSP flag is set to 0 (default), we only install some
     " lighter-weight language plugins
 
@@ -527,6 +530,16 @@ if g:brent_use_lsp == 0
 
         " Disable call signature popup
         let g:jedi#show_call_signatures=0
+
+        " Match vim-lsp bindings (see below)
+        let g:jedi#goto_command = "<Leader>gd"
+        let g:jedi#goto_assignments_command = "<Leader>ga"
+        let g:jedi#goto_stubs_command = "<Leader>gs"
+        let g:jedi#goto_definitions_command = ""
+        let g:jedi#documentation_command = "K"
+        let g:jedi#usages_command = "<Leader>gr" " go to references (see vim-lsp)
+        let g:jedi#completions_command = "" " not needed; we use VimCompletesMe
+        let g:jedi#rename_command = "<Leader>rn"
     " }}
 
     " C/C++ autocompletion
@@ -587,41 +600,22 @@ else
     Plug 'mattn/vim-lsp-settings'
 
     " Async 'appears as you type' autocompletion
-    " Functionality overlaps with VimCompletesMe (see above)
+    " > Use Tab, S-Tab to select, <CR> to confirm (see above for binding)
     Plug 'prabirshrestha/asyncomplete.vim'
     Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
     " {{
         " Bindings
-
-        " Open autocomplete with tab
-        function! s:check_back_space() abort
-            let col = col('.') - 1
-            return !col || getline('.')[col - 1]  =~ '\s'
-        endfunction
-        inoremap <silent><expr> <TAB>
-          \ pumvisible() ? "\<C-n>" :
-          \ <SID>check_back_space() ? "\<TAB>" :
-          \ asyncomplete#force_refresh()
-
-        " Use j, k keys for selecting autocompletion results & enter for selection
-        let g:asyncomplete_auto_popup = 0
-        inoremap <expr> j pumvisible() ? "\<C-n>" : "j"
-        inoremap <expr> k pumvisible() ? "\<C-p>" : "k"
-        inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<CR>"
-
-        " TODO: these don't currently match the non-LSP jedi bindings
         function! s:on_lsp_buffer_enabled() abort
             setlocal omnifunc=lsp#complete
-            setlocal signcolumn=yes
             if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-            nmap <buffer> gd <plug>(lsp-definition)
-            nmap <buffer> gr <plug>(lsp-references)
-            nmap <buffer> gi <plug>(lsp-implementation)
-            nmap <buffer> gt <plug>(lsp-type-definition)
-            nmap <buffer> <leader>rn <plug>(lsp-rename)
-            nmap <buffer> [g <Plug>(lsp-previous-diagnostic)
-            nmap <buffer> ]g <Plug>(lsp-next-diagnostic)
+            nmap <buffer> <Leader>gd <plug>(lsp-definition)
+            nmap <buffer> <Leader>gr <plug>(lsp-references)
+            nmap <buffer> <Leader>gi <plug>(lsp-implementation)
+            nmap <buffer> <Leader>gt <plug>(lsp-type-definition)
+            nmap <buffer> <Leader>rn <plug>(lsp-rename)
+            nmap <buffer> <Leader>[g <Plug>(lsp-previous-diagnostic)
+            nmap <buffer> <Leader>]g <Plug>(lsp-next-diagnostic)
             nmap <buffer> K <plug>(lsp-hover)
         endfunction
 
