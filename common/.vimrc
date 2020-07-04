@@ -481,8 +481,11 @@ Plug 'itchyny/lightline.vim'
 
 " }}
 
-" Show instance # in statusline when we search
+" Search plugins
+" > Show instance # in statusline when we search
+" > Use * to search visual mode selections
 Plug 'henrik/vim-indexed-search'
+Plug 'bronson/vim-visual-star-search'
 
 " Autocompletion for Github issues, users, etc
 " > Our fork just adds more emojis :)
@@ -1203,13 +1206,14 @@ if !s:fresh_install
         " (Python/C++/Markdown) Highlight lines that are too long
         " 88 for Python (to match black defaults)
         " 80 for Markdown (to match prettier defaults)
+        " 79 for reStructuredText
         " 100 for C++ (clang-format is 80 by default, but we've been overriding to 100)
         highlight OverLength ctermbg=darkgrey
         autocmd VimEnter,BufEnter,WinEnter *.py call matchadd('OverLength', '\%>88v.\+')
         autocmd VimEnter,BufEnter,WinEnter *.md call matchadd('OverLength', '\%>80v.\+')
+        autocmd VimEnter,BufEnter,WinEnter *.rst call matchadd('OverLength', '\%>80v.\+')
         autocmd VimEnter,BufEnter,WinEnter *.cpp call matchadd('OverLength', '\%>100v.\+')
-        autocmd VimLeave,BufLeave,WinLeave * call
-            \ clearmatches()
+        autocmd VimLeave,BufLeave,WinLeave * call clearmatches()
 
         " (C/C++) Automatically insert header gates for h/hpp files
         autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
