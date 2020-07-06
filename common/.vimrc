@@ -496,12 +496,19 @@ Plug 'brentyi/github-complete.vim'
 Plug 'ajh17/VimCompletesMe'
 " {{
     if exists("*complete_info")
-        " Ignore <CR> when no autocomplete item is selected
-        inoremap <expr> <CR> complete_info()["selected"] != -1 ? "\<C-y>" : "<CR>"
+        " Use <CR> for completion selection when we have a match selected
+        " Otherwise, just insert a line break
+        "
+        " <C-e> closes the completion window if it's open -- this is needed
+        " for the carriage return to go through
+        inoremap <expr> <CR> complete_info()["selected"] != -1 ? "<C-y>" : "<C-e><CR>"
     else
-        " Ignore <CR> when autocomplete window is not open (legacy)
-        inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "<CR>"
+        " (Legacy)
+        " Use <CR> for completion selection when the pop-up menu is visible
+        " Otherwise, just insert a line break
+        inoremap <expr> <CR> pumvisible() ? "<C-y>" : "<CR>"
     endif
+
     augroup Autocompletion
         autocmd!
 
