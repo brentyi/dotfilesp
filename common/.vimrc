@@ -495,18 +495,20 @@ Plug 'brentyi/github-complete.vim'
 " > Use Tab, S-Tab to select, <CR> to confirm
 Plug 'ajh17/VimCompletesMe'
 " {{
-    " Use <CR> for completion selection when we have a match selected
-    " Otherwise, just insert a line break
-    "
-    " <C-e> closes the completion window if it's open -- this is needed
-    " for the carriage return to go throughe
+    " Use <CR> for completion selection
     function! s:smart_carriage_return()
-        if exists("*complete_info") && complete_info()["selected"] != -1
-            return "\<C-y>"
-        elseif pumvisible()
-            return "\<C-e>\<CR>"
-        else
+        if !pumvisible()
+            " No completion window open -> insert line break
             return "\<CR>"
+        if exists("*complete_info") && complete_info()["selected"] == -1
+            " No element selected: close the completion window with Ctrl+E, then
+            " carriage return
+            "
+            " Requires Vim >8.1ish
+            return "\<C-e>\<CR>"
+
+        " Select completion
+        return "\<C-y>"
     endfunction
     inoremap <expr> <CR> <SID>smart_carriage_return()
 
