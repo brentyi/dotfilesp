@@ -1207,16 +1207,36 @@ if !s:fresh_install
         " (C++) Angle bracket matching for templates
         autocmd FileType cpp setlocal matchpairs+=<:>
 
-        " (Python/C++/Markdown) Highlight lines that are too long
+        " (Python/C++/Markdown/reST) Highlight lines that are too long
         " 88 for Python (to match black defaults)
         " 80 for Markdown (to match prettier defaults)
-        " 79 for reStructuredText
-        " 100 for C++ (clang-format is 80 by default, but we've been overriding to 100)
+        " 80 for reStructuredText
+        " Autodetect via clang-format for C++
         highlight OverLength ctermbg=darkgrey
+
+        let s:cpp_column_limit = 0
+        function! s:add_cpp_overlength()
+            " Try determining our column limit using clang-format
+            "
+            " Note: doesn't seem like a big deal, but our caching assumes all
+            " files have the same settings
+            if s:cpp_column_limit == 0
+                try
+                    let l:executable = maktaba#plugin#Get("vim-codefmt").Flag("clang_format_executable")
+                    let s:cpp_column_limit = system(l:executable . ' --dump-config'
+                                         \ . ' | grep ColumnLimit'
+                                         \ . ' | cut -d ":" -f 2'
+                                         \ . ' | tr -d " \n"')
+                catch
+                    let s:cpp_column_limit = 80
+                endtry
+            endif
+            call matchadd('OverLength', '\%>' . s:cpp_column_limit . 'v.\+')
+        endfunction
         autocmd VimEnter,BufEnter,WinEnter *.py call matchadd('OverLength', '\%>88v.\+')
         autocmd VimEnter,BufEnter,WinEnter *.md call matchadd('OverLength', '\%>80v.\+')
         autocmd VimEnter,BufEnter,WinEnter *.rst call matchadd('OverLength', '\%>80v.\+')
-        autocmd VimEnter,BufEnter,WinEnter *.cpp call matchadd('OverLength', '\%>100v.\+')
+        autocmd VimEnter,BufEnter,WinEnter *.cpp,*.cc call s:add_cpp_overlength()
         autocmd VimLeave,BufLeave,WinLeave * call clearmatches()
 
         " (C/C++) Automatically insert header gates for h/hpp files
