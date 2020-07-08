@@ -500,12 +500,14 @@ Plug 'ajh17/VimCompletesMe'
         if !pumvisible()
             " No completion window open -> insert line break
             return "\<CR>"
+        endif
         if exists("*complete_info") && complete_info()["selected"] == -1
             " No element selected: close the completion window with Ctrl+E, then
             " carriage return
             "
             " Requires Vim >8.1ish
             return "\<C-e>\<CR>"
+        endif
 
         " Select completion
         return "\<C-y>"
