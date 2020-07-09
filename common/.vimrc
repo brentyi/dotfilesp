@@ -307,8 +307,11 @@ Plug 'f4t-t0ny/nerdtree-hg-plugin'
 " Massive language pack for syntax highlighting, etc
 Plug 'sheerun/vim-polyglot'
 " {{
-    " Disable weird 'commas as pipes' feature in csv.vim
-    let g:csv_no_conceal = 1
+    " Disable csv.vim: this overrides a bunch of default vim bindings with
+    " csv-specific ones that looks high-effort to get used to
+    "
+    " For highlighting etc, we use rainbow_csv (see below)
+    let g:polyglot_disabled = ['csv']
 
     " Markdown configuration
     let g:vim_markdown_conceal = 0
