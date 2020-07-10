@@ -227,6 +227,7 @@ else
         " Bindings: search file names
         nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
         nnoremap <Leader>p :Buffers<CR>
+        nnoremap <Leader>ph :Files<CR>
         nnoremap <Leader>h :History<CR>
         nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, fzf#vim#with_preview({
             \ 'options': '--query ' . shellescape(expand('<cfile>'))}))<CR>
