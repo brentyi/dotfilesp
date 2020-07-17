@@ -1206,9 +1206,9 @@ if !s:fresh_install
         " (Makefile) Only tabs are supported
         autocmd FileType make setlocal noexpandtab | setlocal shiftwidth&
 
-        " (Buck) Highlight as python
-        autocmd BufNewFile,BufRead BUCK* set filetype=python
-        autocmd BufNewFile,BufRead TARGETS set filetype=python
+        " (Buck) Highlight & format as Bazel
+        autocmd BufNewFile,BufRead BUCK* set filetype=bzl
+        autocmd BufNewFile,BufRead TARGETS set filetype=bzl
 
         " (C++) Angle bracket matching for templates
         autocmd FileType cpp setlocal matchpairs+=<:>
