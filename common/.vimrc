@@ -285,9 +285,12 @@ Plug 'scrooloose/nerdtree'
 " }}
 
 " NERDTree extensions: syntax highlighting, version control indicators
+"
+" Our fork of nerdtree-hg-plugin fixes a compatability issue.
+" See: https://github.com/f4t-t0ny/nerdtree-hg-plugin/pull/2
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'f4t-t0ny/nerdtree-hg-plugin'
+Plug 'brentyi/nerdtree-hg-plugin'
 " {{
     let g:NERDTreeIndicatorMapCustom = {
         \ 'Modified'  : 'M',
