@@ -1245,10 +1245,10 @@ if !s:fresh_install
             endif
             call matchadd('OverLength', '\%>' . s:cpp_column_limit . 'v.\+')
         endfunction
-        autocmd VimEnter,BufEnter,WinEnter *.py call matchadd('OverLength', '\%>88v.\+')
-        autocmd VimEnter,BufEnter,WinEnter *.md call matchadd('OverLength', '\%>80v.\+')
-        autocmd VimEnter,BufEnter,WinEnter *.rst call matchadd('OverLength', '\%>80v.\+')
-        autocmd VimEnter,BufEnter,WinEnter *.cpp,*.cc call s:add_cpp_overlength()
+        autocmd FileType python call matchadd('OverLength', '\%>88v.\+')
+        autocmd FileType md call matchadd('OverLength', '\%>80v.\+')
+        autocmd FileType rst call matchadd('OverLength', '\%>80v.\+')
+        autocmd FileType cpp call s:add_cpp_overlength()
         autocmd VimLeave,BufLeave,WinLeave * call clearmatches()
 
         " (C/C++) Automatically insert header gates for h/hpp files
