@@ -649,7 +649,12 @@ endif
 " > This basically emulates the +clipboard vim feature flag
 " > Our fork contains important bug fixes, feature enhancements, etc from
 "    unmerged pull requests made to the upstream repository
+" > Also adds support for OSC 52 sequences
 Plug 'brentyi/vim-fakeclip'
+" {{
+    " Ignore has('clipboard')
+    let g:fakeclip_provide_clipboard_key_mappings = 1
+" }}
 
 " Google's code format plugin + dependencies
 " > Our vim-codefmt fork adds support for black, tweaks some autopep8/yapf
