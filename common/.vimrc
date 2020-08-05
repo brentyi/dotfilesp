@@ -531,119 +531,91 @@ Plug 'ajh17/VimCompletesMe'
     augroup END
 " }}
 
-let g:brent_use_lsp = get(g:, 'brent_use_lsp', 0)
-if g:brent_use_lsp == 0
-    " If the LSP flag is set to 0 (default), we only install some
-    " lighter-weight language plugins
+" LSP plugins for autocompletion, jump to def, etc
+"
+" Note that we also need to actually install some LSPs, eg:
+" > https://github.com/mattn/vim-lsp-settings
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
 
-    " Python magic (auto-completion, definition jumping, etc)
-    Plug 'davidhalter/jedi-vim'
-    " {{
-        " Disable automatic autocomplete popup
-        let g:jedi#popup_on_dot=0
+" Async 'appears as you type' autocompletion
+" > Use Tab, S-Tab to select, <CR> to confirm (see above for binding)
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 
-        " Leave docs open (close binding below)
-        let g:jedi#auto_close_doc=0
+" {{
+    " Bindings
+    function! s:on_lsp_buffer_enabled() abort
+        setlocal omnifunc=lsp#complete
+        if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+        nmap <buffer> <Leader>gd <plug>(lsp-definition)
+        nmap <buffer> <Leader>gr <plug>(lsp-references)
+        nmap <buffer> <Leader>gi <plug>(lsp-implementation)
+        " This conflicts with a CtrlP/fzf binding
+        "" nmap <buffer> <Leader>gt <plug>(lsp-type-definition)
+        nmap <buffer> <Leader>rn <plug>(lsp-rename)
+        nmap <buffer> <Leader>[g <Plug>(lsp-previous-diagnostic)
+        nmap <buffer> <Leader>]g <Plug>(lsp-next-diagnostic)
+        nmap <buffer> K <plug>(lsp-hover)
+    endfunction
 
-        " Disable call signature popup
-        let g:jedi#show_call_signatures=0
+    " Call s:on_lsp_buffer_enabled only for languages with registered
+    " servers
+    augroup lsp_install
+        autocmd!
+        autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+    augroup END
+" }}
 
-        " Match vim-lsp bindings (see below)
-        let g:jedi#goto_command = "<Leader>gd"
-        let g:jedi#goto_assignments_command = "<Leader>ga"
-        let g:jedi#goto_stubs_command = "<Leader>gs"
-        let g:jedi#goto_definitions_command = ""
-        let g:jedi#documentation_command = "K"
-        let g:jedi#usages_command = "<Leader>gr" " go to references (see vim-lsp)
-        let g:jedi#completions_command = "" " not needed; we use VimCompletesMe
-        let g:jedi#rename_command = "<Leader>rn"
-    " }}
+" LSP-free C/C++ autocompletion
+Plug 'xavierd/clang_complete'
+" {{
+    " Automatically find all installed versions of libclang, for when clang isn't
+    " in the system search path
+    function! s:find_libclang()
+        " Delete the autocmd: we only need to find libclang once
+        autocmd! FindLibclang
 
-    " C/C++ autocompletion
-    Plug 'xavierd/clang_complete'
-    " {{
-        " Automatically find all installed versions of libclang, for when clang isn't
-        " in the system search path
-        function! s:find_libclang()
-            " Delete the autocmd: we only need to find libclang once
-            autocmd! FindLibclang
+        " List all possible paths
+        let l:clang_paths =
+            \ glob('/usr/lib/llvm-*/lib/libclang.so.1', 0, 1)
+            \ + glob('/usr/lib64/llvm-*/lib/libclang.so.1', 0, 1)
+            \ + glob('/usr/lib/libclang.so.*', 0, 1)
+            \ + glob('/usr/lib64/libclang.so.*', 0, 1)
 
-            " List all possible paths
-            let l:clang_paths =
-                \ glob('/usr/lib/llvm-*/lib/libclang.so.1', 0, 1)
-                \ + glob('/usr/lib64/llvm-*/lib/libclang.so.1', 0, 1)
-                \ + glob('/usr/lib/libclang.so.*', 0, 1)
-                \ + glob('/usr/lib64/libclang.so.*', 0, 1)
+        " Find the newest version and set g:clang_library_path
+        let l:min_version = 0.0
+        for l:path in l:clang_paths
+            try
+                " Figure out version from filename
+                let l:current_version = str2float(
+                    \ split(split(l:path, '-')[1], '/')[0])
+            catch
+                " No version in filename, let's just use pi...
+                let l:current_version = 3.14159265
+            endtry
 
-            " Find the newest version and set g:clang_library_path
-            let l:min_version = 0.0
-            for l:path in l:clang_paths
-                try
-                    " Figure out version from filename
-                    let l:current_version = str2float(
-                        \ split(split(l:path, '-')[1], '/')[0])
-                catch
-                    " No version in filename, let's just use pi...
-                    let l:current_version = 3.14159265
-                endtry
-
-                if filereadable(l:path) && l:current_version > l:min_version
-                    let g:clang_library_path=l:path
-                    " echom "Found libclang: " . l:path . ", v" .
-                    "        \ string(l:current_version)
-                    let l:min_version = l:current_version
-                endif
-            endfor
-
-            " Failure message
-            if !exists('g:clang_library_path')
-                echom "Couldn't find libclang!"
+            if filereadable(l:path) && l:current_version > l:min_version
+                let g:clang_library_path=l:path
+                " echom "Found libclang: " . l:path . ", v" .
+                "        \ string(l:current_version)
+                let l:min_version = l:current_version
             endif
-        endfunction
+        endfor
 
-        " Search for libclang when we open a C/C++ file
-        augroup FindLibclang
-            autocmd!
-            autocmd Filetype c,cpp call s:find_libclang()
-        augroup END
-    " }}
-else
-    " LSP plugins for autocompletion, jump to def, etc
-    "
-    " Note that we also need to actually install some LSPs, eg:
-    " > https://github.com/mattn/vim-lsp-settings
-    Plug 'prabirshrestha/async.vim'
-    Plug 'prabirshrestha/vim-lsp'
-    Plug 'mattn/vim-lsp-settings'
+        " Failure message
+        if !exists('g:clang_library_path')
+            echom "Couldn't find libclang!"
+        endif
+    endfunction
 
-    " Async 'appears as you type' autocompletion
-    " > Use Tab, S-Tab to select, <CR> to confirm (see above for binding)
-    Plug 'prabirshrestha/asyncomplete.vim'
-    Plug 'prabirshrestha/asyncomplete-lsp.vim'
-
-    " {{
-        " Bindings
-        function! s:on_lsp_buffer_enabled() abort
-            setlocal omnifunc=lsp#complete
-            if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-            nmap <buffer> <Leader>gd <plug>(lsp-definition)
-            nmap <buffer> <Leader>gr <plug>(lsp-references)
-            nmap <buffer> <Leader>gi <plug>(lsp-implementation)
-            nmap <buffer> <Leader>gt <plug>(lsp-type-definition)
-            nmap <buffer> <Leader>rn <plug>(lsp-rename)
-            nmap <buffer> <Leader>[g <Plug>(lsp-previous-diagnostic)
-            nmap <buffer> <Leader>]g <Plug>(lsp-next-diagnostic)
-            nmap <buffer> K <plug>(lsp-hover)
-        endfunction
-
-        " Call s:on_lsp_buffer_enabled only for languages with registered
-        " servers
-        augroup lsp_install
-            autocmd!
-            autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-        augroup END
-    " }}
-endif
+    " Search for libclang when we open a C/C++ file
+    augroup FindLibclang
+        autocmd!
+        autocmd Filetype c,cpp call s:find_libclang()
+    augroup END
+" }}
 
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
 " > This basically emulates the +clipboard vim feature flag
@@ -778,11 +750,6 @@ Plug 'brentyi/vim-gutentags'
     let g:gutentags_ctags_extra_args = [
           \ '--fields=+ailmnS',
           \ ]
-
-    " Disable tag generation if using an LSP
-    if g:brent_use_lsp
-        let g:gutentags_enabled = 0
-    endif
 
     " If we have a hardcoded repository root, use for gutentags
     if exists('g:repo_file_search_root')
