@@ -1,6 +1,6 @@
 "
-" brent yi
-
+" brentyi@berkeley.edu
+"
 
 " #############################################
 " > Initial setup <
@@ -79,9 +79,9 @@ endif
     " Keybinding for opening diffs
     nnoremap <Leader>vcd :call <SID>vc_diff()<CR>
     function! s:vc_diff()
-        if b:repo_file_search_type == 'hg'
+        if b:repo_file_search_type ==# 'hg'
             Hgvdiff
-        elseif b:repo_file_search_type == 'git'
+        elseif b:repo_file_search_type ==# 'git'
             Gdiff
         endif
     endfunction
@@ -89,9 +89,9 @@ endif
     " Keybinding for printing repo status
     nnoremap <Leader>vcs :call <SID>vc_status()<CR>
     function! s:vc_status()
-        if b:repo_file_search_type == 'hg'
+        if b:repo_file_search_type ==# 'hg'
             Hgstatus
-        elseif b:repo_file_search_type == 'git'
+        elseif b:repo_file_search_type ==# 'git'
             Gstatus
         endif
     endfunction
@@ -99,9 +99,9 @@ endif
     " Keybinding for blame/annotate
     nnoremap <Leader>vcb :call <SID>vc_blame()<CR>
     function! s:vc_blame()
-        if b:repo_file_search_type == 'hg'
+        if b:repo_file_search_type ==# 'hg'
             Hgannotate
-        elseif b:repo_file_search_type == 'git'
+        elseif b:repo_file_search_type ==# 'git'
             Gblame
         endif
     endfunction
@@ -506,7 +506,7 @@ Plug 'ajh17/VimCompletesMe'
             " No completion window open -> insert line break
             return "\<CR>"
         endif
-        if exists("*complete_info") && complete_info()["selected"] == -1
+        if exists('*complete_info') && complete_info()['selected'] == -1
             " No element selected: close the completion window with Ctrl+E, then
             " carriage return
             "
@@ -699,7 +699,7 @@ Plug 'brentyi/vim-codefmt'
         endfor
 
         " Failure message
-        if g:clang_format_executable == ""
+        if g:clang_format_executable ==# ''
             echom 'Couldn''t find clang-format!'
         endif
     endfunction
@@ -756,7 +756,7 @@ Plug 'brentyi/vim-gutentags'
         function! FindRepoRoot(path)
             return g:repo_file_search_root
         endfunction
-        let g:gutentags_project_root_finder = "FindRepoRoot"
+        let g:gutentags_project_root_finder = 'FindRepoRoot'
     endif
 
     " Lightline integration
@@ -921,7 +921,7 @@ if !s:fresh_install
     augroup ColorschemeOverrides
         autocmd!
         function! s:ColorschemeOverrides()
-            if g:brent_colorscheme == 'legacy'
+            if g:brent_colorscheme ==# 'legacy'
                 " Fallback colors for some legacy terminals
                 set t_Co=16
                 set foldcolumn=1
@@ -946,7 +946,7 @@ if !s:fresh_install
     augroup END
 
     let g:brent_colorscheme = get(g:, 'brent_colorscheme', 'xoria256')
-    if g:brent_colorscheme != 'legacy'
+    if g:brent_colorscheme !=# 'legacy'
         execute 'colorscheme ' . g:brent_colorscheme
     else
         execute 'colorscheme peachpuff'
@@ -1209,7 +1209,7 @@ if !s:fresh_install
             " files have the same settings
             if s:cpp_column_limit == 0
                 try
-                    let l:executable = maktaba#plugin#Get("vim-codefmt").Flag("clang_format_executable")
+                    let l:executable = maktaba#plugin#Get('vim-codefmt').Flag('clang_format_executable')
                     let s:cpp_column_limit = system(l:executable . ' --dump-config'
                                          \ . ' | grep ColumnLimit'
                                          \ . ' | cut -d ":" -f 2'
