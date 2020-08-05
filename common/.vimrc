@@ -568,55 +568,6 @@ Plug 'prabirshrestha/asyncomplete-lsp.vim'
     augroup END
 " }}
 
-" LSP-free C/C++ autocompletion
-Plug 'xavierd/clang_complete'
-" {{
-    " Automatically find all installed versions of libclang, for when clang isn't
-    " in the system search path
-    function! s:find_libclang()
-        " Delete the autocmd: we only need to find libclang once
-        autocmd! FindLibclang
-
-        " List all possible paths
-        let l:clang_paths =
-            \ glob('/usr/lib/llvm-*/lib/libclang.so.1', 0, 1)
-            \ + glob('/usr/lib64/llvm-*/lib/libclang.so.1', 0, 1)
-            \ + glob('/usr/lib/libclang.so.*', 0, 1)
-            \ + glob('/usr/lib64/libclang.so.*', 0, 1)
-
-        " Find the newest version and set g:clang_library_path
-        let l:min_version = 0.0
-        for l:path in l:clang_paths
-            try
-                " Figure out version from filename
-                let l:current_version = str2float(
-                    \ split(split(l:path, '-')[1], '/')[0])
-            catch
-                " No version in filename, let's just use pi...
-                let l:current_version = 3.14159265
-            endtry
-
-            if filereadable(l:path) && l:current_version > l:min_version
-                let g:clang_library_path=l:path
-                " echom "Found libclang: " . l:path . ", v" .
-                "        \ string(l:current_version)
-                let l:min_version = l:current_version
-            endif
-        endfor
-
-        " Failure message
-        if !exists('g:clang_library_path')
-            echom "Couldn't find libclang!"
-        endif
-    endfunction
-
-    " Search for libclang when we open a C/C++ file
-    augroup FindLibclang
-        autocmd!
-        autocmd Filetype c,cpp call s:find_libclang()
-    augroup END
-" }}
-
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
 " > This basically emulates the +clipboard vim feature flag
 " > Our fork contains important bug fixes, feature enhancements, etc from
