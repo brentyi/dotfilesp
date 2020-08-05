@@ -1193,6 +1193,14 @@ if !s:fresh_install
         " Autodetect via clang-format for C++
         highlight OverLength ctermbg=darkgrey
 
+        " Getting this to work robustly with FileType autocommands is surprisingly
+        " difficult, so we just use BufEnter and WinEnter events
+        autocmd BufEnter,WinEnter *.py call matchadd('OverLength', '\%>88v.\+')
+        autocmd BufEnter,WinEnter *.md call matchadd('OverLength', '\%>80v.\+')
+        autocmd BufEnter,WinEnter *.rst call matchadd('OverLength', '\%>80v.\+')
+        autocmd BufEnter,WinEnter *.cpp,*.cc,*.h call s:add_cpp_overlength()
+        autocmd BufLeave,WinLeave * call clearmatches()
+
         let s:cpp_column_limit = 0
         function! s:add_cpp_overlength()
             " Try determining our column limit using clang-format
@@ -1212,11 +1220,6 @@ if !s:fresh_install
             endif
             call matchadd('OverLength', '\%>' . s:cpp_column_limit . 'v.\+')
         endfunction
-        autocmd FileType python call matchadd('OverLength', '\%>88v.\+')
-        autocmd FileType md call matchadd('OverLength', '\%>80v.\+')
-        autocmd FileType rst call matchadd('OverLength', '\%>80v.\+')
-        autocmd FileType cpp call s:add_cpp_overlength()
-        autocmd VimLeave,BufLeave,WinLeave * call clearmatches()
 
         " (C/C++) Automatically insert header gates for h/hpp files
         autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
