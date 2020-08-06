@@ -575,6 +575,7 @@ Plug 'mattn/vim-lsp-settings'
 
     " Use flake8 configs for pyls, configure mypy (currently disabled)
     let g:lsp_settings = {}
+    let g:lsp_settings['efm-langserver'] = {'disabled': v:false}
     let g:lsp_settings['pyls-all'] = {
         \     'workspace_config': { 'pyls': {
         \         'configurationSources': ['flake8'],
