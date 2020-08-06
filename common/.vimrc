@@ -539,6 +539,56 @@ Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 
+" {{
+    " Move servers into .vim directory
+    let g:lsp_settings_servers_dir = expand("~/.vim/vim-lsp-settings/servers")
+
+    " Jump through some hoops to auto-install pyls-mypy whenever we call :LspInstallServer
+    function! s:check_for_pyls_mypy()
+        if filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/pyls"))
+            \ && !filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/mypy"))
+
+            " Install from source because pypi version of pyls-mypy is broken
+            " for Python 3 (as of 8/6/2020)
+            let l:cmd =  g:lsp_settings_servers_dir .
+                \ "/pyls-all/venv/bin/pip3 install " .
+                \ "git+https://github.com/tomv564/pyls-mypy.git"
+
+            if has('nvim')
+                split new
+                call termopen(l:cmd, {'cwd': g:lsp_settings_servers_dir})
+            else
+                let l:bufnr = term_start(l:cmd)
+            endif
+        endif
+    endfunction
+
+    augroup CheckForPylsMypy
+        autocmd!
+        autocmd User lsp_setup call s:check_for_pyls_mypy()
+    augroup END
+
+    " Use flake8 configs for pyls, configure mypy
+    let g:lsp_settings = {}
+    let g:lsp_settings['pyls-all'] = {
+        \     'workspace_config': { 'pyls': {
+        \         'configurationSources': ['flake8'],
+        \         'plugins': {
+        \             'pyls_mypy': {
+        \                 'enabled': v:true,
+        \                 'live_mode': v:false
+        \             }
+        \         }
+        \     }}
+        \ }
+
+    " Show error messages below statusbar
+    let g:lsp_diagnostics_echo_cursor = 1
+
+    " Binding for showing loclist with all errors
+    nnoremap <Leader>lspdd :LspDocumentDiagnostics<CR>
+" }}
+
 " Async 'appears as you type' autocompletion
 " > Use Tab, S-Tab to select, <CR> to confirm (see above for binding)
 Plug 'prabirshrestha/asyncomplete.vim'
@@ -756,23 +806,12 @@ Plug 'maximbaz/lightline-ale'
     let g:ale_lint_on_text_changed = 'never'
     let g:ale_lint_on_insert_leave = 0
     let g:ale_lint_on_enter = 0
-    let g:ale_lint_on_save = 0
+    let g:ale_lint_on_save = 1
 
     " Populate errors in a quickfix window, and open it automatically
     let g:ale_set_loclist = 0
     let g:ale_set_quickfix = 1
     let g:ale_open_list = 1
-
-    " Python specific options
-    " Flake8 ignore list:
-    "     E501: line too long (<n> characters)
-    "     D100: Missing docstring in public module
-    "     D101: Missing docstring in public class
-    "     D102: Missing docstring in public method
-    "     D103: Missing docstring in public function
-    "     W503: line break before binary operator
-    let g:ale_python_flake8_options = '--ignore=E501,D100,D101,D102,D103,W503'
-    let g:ale_python_mypy_options= '--ignore-missing-imports'
 
     " Alex stuff needs to be manually enabled
     let g:ale_linters = {
@@ -781,7 +820,7 @@ Plug 'maximbaz/lightline-ale'
         \ 'html': ['alex'],
         \ 'javascript': ['alex'],
         \ 'markdown': ['alex'],
-        \ 'python': ['alex', 'flake8', 'mypy', 'pylint'],
+        \ 'python': ['alex'],
         \ 'rst': ['alex'],
         \ 'tex': ['alex'],
         \ }
@@ -799,9 +838,9 @@ Plug 'maximbaz/lightline-ale'
         autocmd ColorScheme * call s:SetALEColors()
     augroup END
 
-    let g:ale_sign_error = '••'
-    let g:ale_sign_warning = '••'
-    let g:ale_sign_info = '••'
+    let g:ale_sign_error = '▲'
+    let g:ale_sign_warning = '▲'
+    let g:ale_sign_info = '▲'
 " }}
 
 " Show unsaved changes to a file
@@ -1126,6 +1165,9 @@ if !s:fresh_install
 
         " (ROS) Launch files should be highlighted as xml
         autocmd BufNewFile,BufRead *.launch set filetype=xml
+
+        " (flake8) Highlight as ini
+        autocmd BufNewFile,BufRead .flake8 set filetype=dosini
 
         " (Makefile) Only tabs are supported
         autocmd FileType make setlocal noexpandtab | setlocal shiftwidth&

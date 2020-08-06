@@ -44,4 +44,8 @@ let g:brent_lightline_colorscheme = 'jellybeans'
 " let g:repo_file_search_root = '/path'
 " let g:repo_file_search_type = 'hg'
 
+
+"""" Set to debug LSP
+" let g:lsp_log_file = $HOME . "/lsp_log_file"
+
 source ~/dotfilesp/common/.vimrc
