@@ -7,7 +7,7 @@ A collection of config files & setup scripts
 Cloned to `$HOME/dotfilesp`:
 
 ```
-Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y]
+Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-l]
         -c      common utilities: vim, tmux, htop, python
         -z      zsh
         -d      dotfiles
@@ -17,12 +17,12 @@ Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y]
         -m      Miniconda
         -y      Yarn (+nodejs)
         -v      Vim (from PPA)
+        -l      golang (1.14.6)
 ```
 
-## Structure
+## Symlink structure
 
-Dotfile linking is handled by `scripts/linker.sh`, which is set up to enable
-system-specific configuration.
+Dotfile linking is handled by `scripts/linker.sh`.
 
 Linking goes something like this:
 
