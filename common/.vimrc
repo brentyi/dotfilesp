@@ -543,39 +543,44 @@ Plug 'mattn/vim-lsp-settings'
     " Move servers into .vim directory
     let g:lsp_settings_servers_dir = expand("~/.vim/vim-lsp-settings/servers")
 
-    " Jump through some hoops to auto-install pyls-mypy whenever we call :LspInstallServer
-    function! s:check_for_pyls_mypy()
-        if filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/pyls"))
-            \ && !filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/mypy"))
+    " It'd be nice to use pyls-mypy for type-checking, but mypy is not super
+    " useful when installed in an isolated virtual env
+    "
+    " Might be possible to port this over if we don't use a venv for pyls and pyls-mypy
+    "
+    " " Jump through some hoops to auto-install pyls-mypy whenever we call :LspInstallServer
+    " function! s:check_for_pyls_mypy()
+    "     if filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/pyls"))
+    "         \ && !filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/mypy"))
+    "
+    "         " Install from source because pypi version of pyls-mypy is broken
+    "         " for Python 3 (as of 8/6/2020)
+    "         let l:cmd =  g:lsp_settings_servers_dir .
+    "             \ "/pyls-all/venv/bin/pip3 install " .
+    "             \ "git+https://github.com/tomv564/pyls-mypy.git"
+    "
+    "         if has('nvim')
+    "             split new
+    "             call termopen(l:cmd, {'cwd': g:lsp_settings_servers_dir})
+    "         else
+    "             let l:bufnr = term_start(l:cmd)
+    "         endif
+    "     endif
+    " endfunction
+    "
+    " augroup CheckForPylsMypy
+    "     autocmd!
+    "     autocmd User lsp_setup call s:check_for_pyls_mypy()
+    " augroup END
 
-            " Install from source because pypi version of pyls-mypy is broken
-            " for Python 3 (as of 8/6/2020)
-            let l:cmd =  g:lsp_settings_servers_dir .
-                \ "/pyls-all/venv/bin/pip3 install " .
-                \ "git+https://github.com/tomv564/pyls-mypy.git"
-
-            if has('nvim')
-                split new
-                call termopen(l:cmd, {'cwd': g:lsp_settings_servers_dir})
-            else
-                let l:bufnr = term_start(l:cmd)
-            endif
-        endif
-    endfunction
-
-    augroup CheckForPylsMypy
-        autocmd!
-        autocmd User lsp_setup call s:check_for_pyls_mypy()
-    augroup END
-
-    " Use flake8 configs for pyls, configure mypy
+    " Use flake8 configs for pyls, configure mypy (currently disabled)
     let g:lsp_settings = {}
     let g:lsp_settings['pyls-all'] = {
         \     'workspace_config': { 'pyls': {
         \         'configurationSources': ['flake8'],
         \         'plugins': {
         \             'pyls_mypy': {
-        \                 'enabled': v:true,
+        \                 'enabled': v:false,
         \                 'live_mode': v:false
         \             }
         \         }
@@ -806,24 +811,23 @@ Plug 'maximbaz/lightline-ale'
     let g:ale_lint_on_text_changed = 'never'
     let g:ale_lint_on_insert_leave = 0
     let g:ale_lint_on_enter = 0
-    let g:ale_lint_on_save = 1
+    let g:ale_lint_on_save = 0
 
-    " Populate errors in a quickfix window, and open it automatically
-    let g:ale_set_loclist = 0
-    let g:ale_set_quickfix = 1
+    " Open loclist automatically
     let g:ale_open_list = 1
 
-    " Alex stuff needs to be manually enabled
+    " Configure linters
     let g:ale_linters = {
         \ 'asciidoc': ['alex'],
         \ 'cpp': ['alex'],
         \ 'html': ['alex'],
         \ 'javascript': ['alex'],
         \ 'markdown': ['alex'],
-        \ 'python': ['alex'],
+        \ 'python': ['alex', 'mypy'],
         \ 'rst': ['alex'],
         \ 'tex': ['alex'],
         \ }
+    let g:ale_python_mypy_options= '--ignore-missing-imports'
 
     " ALE sign column stuff
     augroup ALEColors
@@ -1072,11 +1076,11 @@ if !s:fresh_install
     " Helpful if we don't have permissions for a specific file
     cmap W! w !sudo tee >/dev/null %
 
-    " Some <Leader>direction movement bindings for diffs + quickfix windows
+    " Some <Leader>direction movement bindings for diffs + location fix windows
     " We also throw in a lightline update, to fix a statusline bug when a
     " quickfix jump goes between files
-    nnoremap <expr> <Leader>j (&diff ? ']c' : ":cnext\<CR>:call lightline#update()<CR>")
-    nnoremap <expr> <Leader>k (&diff ? '[c' : ":cprev\<CR>:call lightline#update()<CR>")
+    nnoremap <expr> <Leader>j (&diff ? ']c' : ":lnext\<CR>:call lightline#update()<CR>")
+    nnoremap <expr> <Leader>k (&diff ? '[c' : ":lprev\<CR>:call lightline#update()<CR>")
 
     " Close preview/quickfix/location list/help windows with <Leader>c
     nnoremap <Leader>c :call <SID>window_cleanup()<CR>
