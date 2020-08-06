@@ -1219,6 +1219,39 @@ if !s:fresh_install
             call matchadd('OverLength', '\%>' . s:cpp_column_limit . 'v.\+')
         endfunction
 
+        " (C/C++) Source/header toggle
+        function! s:extension_open_helper(extensions)
+            " Helper for source/header toggle: opens file with same name, but
+            " different extension. Accepts a list of possible extensions.
+            for l:extension in a:extensions
+                let l:path = expand('%:r') . "." . l:extension
+                if filereadable(l:path)
+                    execute "e " . l:path
+                    break
+                endif
+            endfor
+        endfunction
+
+        function! s:source_header_toggle()
+            " Toggle between C/C++ source and header files. Assumes they're in
+            " the same directory.
+            let l:extension = expand('%:e')
+
+            let l:source_extensions = ["cpp", "cc", "c"]
+            let l:header_extensions = ["h", "hpp"]
+
+            if index(l:source_extensions, l:extension) >= 0
+                call s:extension_open_helper(l:header_extensions)
+            elseif index(l:header_extensions, l:extension) >= 0
+                call s:extension_open_helper(l:source_extensions)
+            else
+                echoerr "Invalid file extension for source/header toggle,"
+                      \ "must in " . string(l:source_extensions + l:header_extensions)
+            endif
+        endfunction
+
+        nnoremap <Leader>sht :call <SID>source_header_toggle()<CR>
+
         " (C/C++) Automatically insert header gates for h/hpp files
         autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
         function! s:insert_gates()
