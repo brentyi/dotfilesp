@@ -543,6 +543,29 @@ Plug 'mattn/vim-lsp-settings'
     " Move servers into .vim directory
     let g:lsp_settings_servers_dir = expand("~/.vim/vim-lsp-settings/servers")
 
+    " Make colors a bit less distracting
+    augroup LspColors
+        autocmd!
+
+        function! s:SetLspColors()
+            highlight LspErrorText ctermfg=red ctermbg=NONE
+            highlight LspErrorHighlight ctermbg=238
+
+            highlight LspWarningText ctermfg=yellow ctermbg=NONE
+            highlight LspWarningHighlight ctermbg=238
+
+            highlight LspHintText ctermfg=blue ctermbg=NONE
+            highlight LspHintHighlight ctermbg=238
+        endfunction
+
+        autocmd ColorScheme * call s:SetLspColors()
+    augroup END
+
+    " Set sign column symbols
+    let g:lsp_signs_error = {'text': '▲'}
+    let g:lsp_signs_warning = {'text': '▲'}
+    let g:lsp_signs_hint = {'text': '▲'}
+
     " It'd be nice to use pyls-mypy for type-checking, but mypy is not super
     " useful when installed in an isolated virtual env
     "
