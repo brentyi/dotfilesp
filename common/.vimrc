@@ -1207,7 +1207,10 @@ if !s:fresh_install
         " (C++) Angle bracket matching for templates
         autocmd FileType cpp setlocal matchpairs+=<:>
 
-        " (Python/C++/Markdown/reST) Highlight lines that are too long
+        " (Python/C++/Markdown/reST) Set textwidth + line overlength
+        " indicators: makes text wrap after we hit our length limit, and `gq`
+        " useful for formatting
+        "
         " 88 for Python (to match black defaults)
         " 80 for Markdown (to match prettier defaults)
         " 80 for reStructuredText
@@ -1217,8 +1220,11 @@ if !s:fresh_install
         " Getting this to work robustly with FileType autocommands is surprisingly
         " difficult, so we just use BufEnter and WinEnter events
         autocmd BufEnter,WinEnter *.py call matchadd('OverLength', '\%>88v.\+')
+            \ | setlocal textwidth=88
         autocmd BufEnter,WinEnter *.md call matchadd('OverLength', '\%>80v.\+')
+            \ | setlocal textwidth=80
         autocmd BufEnter,WinEnter *.rst call matchadd('OverLength', '\%>80v.\+')
+            \ | setlocal textwidth=80
         autocmd BufEnter,WinEnter *.cpp,*.cc,*.h call s:add_cpp_overlength()
         autocmd BufLeave,WinLeave * call clearmatches()
 
@@ -1240,6 +1246,7 @@ if !s:fresh_install
                 endtry
             endif
             call matchadd('OverLength', '\%>' . s:cpp_column_limit . 'v.\+')
+            setlocal textwidth=s:cpp_column_limit
         endfunction
 
         " (C/C++) Source/header toggle
