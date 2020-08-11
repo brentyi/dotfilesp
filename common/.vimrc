@@ -1019,6 +1019,10 @@ if !s:fresh_install
     " Passive FTP mode for remote netrw
     let g:netrw_ftp_cmd = 'ftp -p'
 
+    " By default, disable automatic text wrapping
+    " This will often be overrided locally based on filetype
+    set formatoptions-=t
+
 
     " #############################################
     " > Key mappings for usability <
