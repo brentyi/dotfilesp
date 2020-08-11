@@ -242,7 +242,7 @@ else
 
         " Bindings: search lines in files with ag
         nnoremap <Leader>a :Ag<CR>
-        vnoremap <Leader>a :<c-u>call <SID>GrepVisual(visualmode())<CR>
+        vnoremap <Leader>a :<C-U>call <SID>GrepVisual(visualmode())<CR>
         nnoremap <Leader>ga :execute 'Ag ' . expand('<cword>')<CR>
 
         " Automatically change working directory to current file location
@@ -1100,11 +1100,48 @@ if !s:fresh_install
     " Helpful if we don't have permissions for a specific file
     cmap W! w !sudo tee >/dev/null %
 
-    " Some <Leader>direction movement bindings for diffs + location fix windows
-    " We also throw in a lightline update, to fix a statusline bug when a
-    " quickfix jump goes between files
-    nnoremap <expr> <Leader>j (&diff ? ']c' : ":lnext\<CR>:call lightline#update()<CR>")
-    nnoremap <expr> <Leader>k (&diff ? '[c' : ":lprev\<CR>:call lightline#update()<CR>")
+    " Some <Leader>direction movement bindings for diffs + loclist + quickfix windows
+    function! s:adaptive_motion(key)
+        " Check if diff is open
+        if &diff
+            if a:key == 'j'
+                execute 'normal ]c'
+            elseif a:key == 'k'
+                execute 'normal [c'
+            endif
+            return
+        endif
+
+        " Check for loclist windows
+        let l:loclist_windows = getloclist(winnr())
+        if len(l:loclist_windows) > 0
+            if a:key == 'j'
+                lnext
+            elseif a:key == 'k'
+                lprev
+            endif
+            return
+        endif
+
+        " Check for quickfix windows
+        let l:quickfix_windows = filter(getwininfo(), 'v:val.quickfix && !v:val.loclist')
+        if len(l:quickfix_windows) > 0
+            if a:key == 'j'
+                cnext
+            elseif a:key == 'k'
+                cprev
+            endif
+
+            " Quickfix goes between files, and sometimes doesn't trigger a
+            " statusline update
+            call lightline#update()
+            return
+        endif
+
+        echom "Adaptive motion: no window found"
+    endfunction
+    nnoremap <Leader>j :call <SID>adaptive_motion('j')<CR>
+    nnoremap <Leader>k :call <SID>adaptive_motion('k')<CR>
 
     " Close preview/quickfix/location list/help windows with <Leader>c
     nnoremap <Leader>c :call <SID>window_cleanup()<CR>
