@@ -1283,7 +1283,7 @@ if !s:fresh_install
                 endtry
             endif
             call matchadd('OverLength', '\%>' . s:cpp_column_limit . 'v.\+')
-            setlocal textwidth=s:cpp_column_limit
+            execute "setlocal textwidth=" . s:cpp_column_limit
         endfunction
 
         " (C/C++) Source/header toggle
