@@ -418,6 +418,11 @@ Plug 'brentyi/vim-emoji'
         \ }
 " }}
 
+" Add syntax for liquid
+" This needs to happen _after_ all our markdown stuff in order to override
+" properly
+Plug 'tpope/vim-liquid'
+
 " Display markers to signify different indentation levels
 Plug 'Yggdroot/indentLine'
 " {{
