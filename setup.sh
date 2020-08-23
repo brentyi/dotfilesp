@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-l]"
+    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-l] [-j]"
     echo -e "\t-c\tcommon utilities: vim, ctags, tmux, htop, xclip, ag, ..."
     echo -e "\t-z\tzsh"
     echo -e "\t-d\tdotfiles"
@@ -12,6 +12,7 @@ usage() {
     echo -e "\t-y\tYarn (+nodejs)"
     echo -e "\t-v\tVim (from PPA)"
     echo -e "\t-l\tgolang (1.14.6)"
+    echo -e "\t-j\tJekyll + Ruby"
 }
 
 valid=0
@@ -24,8 +25,9 @@ install_zsh=0
 install_miniconda=0
 install_vim_ppa=0
 install_golang=0
+install_jekyll=0
 
-while getopts czdrgbmyv flag; do
+while getopts czdrgbmyvlj flag; do
   case $flag in
     c)
       valid=1
@@ -63,9 +65,13 @@ while getopts czdrgbmyv flag; do
       valid=1
       install_vim_ppa=1
       ;;
-    v)
+    l)
       valid=1
       install_golang=1
+      ;;
+    j)
+      valid=1
+      install_jekyll=1
       ;;
     ?)
       valid=0
@@ -149,6 +155,13 @@ if [[ $install_golang = 1 ]]; then
     echo "Golang"
     echo "---------"
     bash scripts/install_golang.sh
+fi
+
+if [[ $install_jekyll = 1 ]]; then
+    echo -e "\n---------"
+    echo "Jekyll"
+    echo "---------"
+    bash scripts/install_jekyll.sh
 fi
 
 echo ""
