@@ -8,7 +8,7 @@ Cloned to `$HOME/dotfilesp`:
 
 ```
 Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-l]
-        -c      common utilities: vim, tmux, htop, python
+        -c      common utilities: vim, ctags, tmux, htop, xclip, ag, ...
         -z      zsh
         -d      dotfiles
         -r      ROS
