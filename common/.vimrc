@@ -171,7 +171,7 @@ if !g:brent_use_fzf
 else
     " FZF + ag is _much_ faster & actually useful when working with big repos
     "
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all', 'tag': '0.19.0' }
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
     Plug 'junegunn/fzf.vim'
     " {{
         function! s:smarter_fuzzy_file_search()
@@ -292,7 +292,7 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'brentyi/nerdtree-hg-plugin'
 " {{
-    let g:NERDTreeIndicatorMapCustom = {
+    let g:NERDTreeGitStatusIndicatorMapCustom = {
         \ 'Modified'  : 'M',
         \ 'Staged'    : '+',
         \ 'Untracked' : '?',
