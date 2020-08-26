@@ -554,13 +554,13 @@ Plug 'mattn/vim-lsp-settings'
 
         function! s:SetLspColors()
             highlight LspErrorText ctermfg=red ctermbg=NONE
-            highlight LspErrorHighlight ctermbg=238
+            highlight LspErrorHighlight ctermbg=236
 
             highlight LspWarningText ctermfg=yellow ctermbg=NONE
-            highlight LspWarningHighlight ctermbg=238
+            highlight LspWarningHighlight ctermbg=236
 
             highlight LspHintText ctermfg=blue ctermbg=NONE
-            highlight LspHintHighlight ctermbg=238
+            highlight LspHintHighlight ctermbg=236
         endfunction
 
         autocmd ColorScheme * call s:SetLspColors()
@@ -1261,7 +1261,7 @@ if !s:fresh_install
         " 80 for Markdown (to match prettier defaults)
         " 80 for reStructuredText
         " Autodetect via clang-format for C++
-        highlight OverLength ctermbg=darkgrey
+        highlight OverLength ctermbg=236
 
         " Getting this to work robustly with FileType autocommands is surprisingly
         " difficult, so we just use BufEnter and WinEnter events
