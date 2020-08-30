@@ -1121,17 +1121,6 @@ if !s:fresh_install
             return
         endif
 
-        " Check for loclist windows
-        let l:loclist_windows = getloclist(winnr())
-        if len(l:loclist_windows) > 0
-            if a:key == 'j'
-                lnext
-            elseif a:key == 'k'
-                lprev
-            endif
-            return
-        endif
-
         " Check for quickfix windows
         let l:quickfix_windows = filter(getwininfo(), 'v:val.quickfix && !v:val.loclist')
         if len(l:quickfix_windows) > 0
@@ -1144,6 +1133,17 @@ if !s:fresh_install
             " Quickfix goes between files, and sometimes doesn't trigger a
             " statusline update
             call lightline#update()
+            return
+        endif
+
+        " Check for loclist windows
+        let l:loclist_windows = getloclist(winnr())
+        if len(l:loclist_windows) > 0
+            if a:key == 'j'
+                lnext
+            elseif a:key == 'k'
+                lprev
+            endif
             return
         endif
 
