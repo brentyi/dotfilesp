@@ -722,7 +722,7 @@ Plug 'brentyi/vim-codefmt'
 
         " Find the newest version and set clang_format_executable
         let l:min_version = 0.0
-        for l:path in split(l:clang_paths, '\n')
+        for l:path in l:clang_paths
             let l:current_version = str2float(
                 \ split(split(l:path, '-')[1], '/')[0])
 
@@ -734,7 +734,7 @@ Plug 'brentyi/vim-codefmt'
         endfor
 
         " Failure message
-        if g:clang_format_executable ==# ''
+        if maktaba#plugin#Get('vim-codefmt').Flag('clang_format_executable') ==# ''
             echom 'Couldn''t find clang-format!'
         endif
     endfunction
@@ -1281,15 +1281,15 @@ if !s:fresh_install
             " Note: doesn't seem like a big deal, but our caching assumes all
             " files have the same settings
             if s:cpp_column_limit == 0
-                try
-                    let l:executable = maktaba#plugin#Get('vim-codefmt').Flag('clang_format_executable')
-                    let s:cpp_column_limit = system(l:executable . ' --dump-config'
-                                         \ . ' | grep ColumnLimit'
-                                         \ . ' | cut -d ":" -f 2'
-                                         \ . ' | tr -d " \n"')
-                catch
+                let l:executable = maktaba#plugin#Get('vim-codefmt').Flag('clang_format_executable')
+                if !executable(l:executable)
                     let s:cpp_column_limit = 80
-                endtry
+                    return
+                endif
+                let s:cpp_column_limit = system(l:executable . ' --dump-config'
+                                     \ . ' | grep ColumnLimit'
+                                     \ . ' | cut -d ":" -f 2'
+                                     \ . ' | tr -d " \n"')
             endif
             call matchadd('OverLength', '\%>' . s:cpp_column_limit . 'v.\+')
             execute "setlocal textwidth=" . s:cpp_column_limit
