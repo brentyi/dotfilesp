@@ -33,4 +33,18 @@ elif [[ `lsb_release -rs` == "18.04" ]]; then # melodic
 
     echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
     echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
+
+elif [[ `lsb_release -rs` == "20.04" ]]; then # noetic
+    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+    wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | sudo apt-key add -
+    sudo apt-get update
+    sudo apt-get install ros-noetic-desktop-full -y
+
+    # Need to manually install rosdep
+    sudo apt-get install python3-rosdep
+    sudo rosdep init
+    rosdep update
+
+    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+    echo "source /opt/ros/noetic/setup.zsh" >> ~/.zshrc
 fi
