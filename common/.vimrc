@@ -259,6 +259,11 @@ else
             autocmd!
             autocmd BufReadPost * silent! lcd %:p:h
         augroup END
+
+        " Use Vim colors for fzf
+        let g:fzf_layout = {
+            \ 'window': 'new'
+            \ }
     " }}
 endif
 
