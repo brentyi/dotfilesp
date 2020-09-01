@@ -1173,10 +1173,12 @@ if !s:fresh_install
         execute 'helpclose'
 
         " Close Python docstring buffers (eg from jedi-vim)
-        for l:b in filter(range(1, bufnr('$')), 'bufloaded(v:val)')
-            if bufname(l:b)[-7:] ==# '__doc__'
-                execute 'bd ' . l:b
-            endif
+        " -> We don't use jedi-vim anymore? May want to remove this?
+        let l:doc_buffers = range(1, bufnr('$'))
+        let l:doc_buffers = filter(l:doc_buffers, 'bufloaded(v:val)')
+        let l:doc_buffers = filter(l:doc_buffers, 'bufname(v:val)[-7:] ==# "__doc__"')
+        for l:b in l:doc_buffers
+            execute 'bd ' . l:b
         endfor
     endfun
 
