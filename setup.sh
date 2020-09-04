@@ -91,77 +91,77 @@ if [[ $install_common = 1 ]]; then
     echo -e "\n---------"
     echo "Installing common utilities"
     echo "---------"
-    bash scripts/install_common.sh
+    bash setup/install_common.sh
 fi
 
 if [[ $install_zsh = 1 ]]; then
     echo -e "\n---------"
     echo "Installing ZSH"
     echo "---------"
-    bash scripts/install_zsh.sh
+    bash setup/install_zsh.sh
 fi
 
 if [[ $install_dotfiles = 1 ]]; then
     echo -e "\n---------"
     echo "Linking dotfiles"
     echo "---------"
-    bash scripts/linker.sh
+    bash setup/linker.sh
 fi
 
 if [[ $install_ros = 1 ]]; then
     echo -e "\n---------"
     echo "Installing ROS"
     echo "---------"
-    bash scripts/install_ros_desktop.sh
+    bash setup/install_ros_desktop.sh
 fi
 
 if [[ $install_chrome = 1 ]]; then
     echo -e "\n---------"
     echo "Installing Chrome"
     echo "---------"
-    bash scripts/install_chrome.sh
+    bash setup/install_chrome.sh
 fi
 
 if [[ $install_beaglebone = 1 ]]; then
     echo -e "\n---------"
     echo "Beaglebone-specific installations"
     echo "---------"
-    bash scripts/install_beaglebone.sh
+    bash setup/install_beaglebone.sh
 fi
 
 if [[ $install_miniconda = 1 ]]; then
     echo -e "\n---------"
     echo "Miniconda"
     echo "---------"
-    bash scripts/install_miniconda.sh $HOME
+    bash setup/install_miniconda.sh $HOME
 fi
 
 if [[ $install_yarn = 1 ]]; then
     echo -e "\n---------"
     echo "Yarn"
     echo "---------"
-    bash scripts/install_yarn.sh
+    bash setup/install_yarn.sh
 fi
 
 if [[ $install_vim_ppa = 1 ]]; then
     echo -e "\n---------"
     echo "Vim (from PPA)"
     echo "---------"
-    bash scripts/install_vim_ppa.sh
+    bash setup/install_vim_ppa.sh
 fi
 
 if [[ $install_golang = 1 ]]; then
     echo -e "\n---------"
     echo "Golang"
     echo "---------"
-    bash scripts/install_golang.sh
+    bash setup/install_golang.sh
 fi
 
 if [[ $install_jekyll = 1 ]]; then
     echo -e "\n---------"
     echo "Jekyll"
     echo "---------"
-    bash scripts/install_jekyll.sh
+    bash setup/install_jekyll.sh
 fi
 
 echo ""

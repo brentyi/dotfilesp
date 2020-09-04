@@ -23,11 +23,11 @@ Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-l] [-j]
 
 ## Symlink structure
 
-Dotfile linking is handled by `scripts/linker.sh`.
+Dotfile linking is handled by `setup/linker.sh`.
 
 Linking goes something like this:
 
-1. `scripts/linker.sh` is run from `setup.sh`
+1. `setup/linker.sh` is run from `setup.sh`
 2. Current configuration files (if they exist) are moved to a timestamped
    directory in `~/dotfilesp/backup/`
 3. A copy of `~/dotfilesp/template/` is made to `~/dotfilesp/local/`
