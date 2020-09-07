@@ -361,6 +361,7 @@ Plug 'tpope/vim-sleuth'
 " {{
     " Default to 4 spaces
     set shiftwidth=4
+    set tabstop=4
     set expandtab
 
     " Load plugin early so user-defined autocmds override it
@@ -968,6 +969,7 @@ if !s:fresh_install
                 hi Visual cterm=bold ctermbg=238
                 hi TrailingWhitespace ctermbg=52
                 let g:indentLine_color_term=237
+                hi SpecialKey ctermfg=238
             endif
         endfunction
         autocmd ColorScheme * call s:ColorschemeOverrides()
@@ -990,7 +992,7 @@ if !s:fresh_install
 
     " Visually different markers for various types of whitespace
     " (for distinguishing tabs vs spaces)
-    set list listchars=tab:❘-,trail:\ ,extends:»,precedes:«,nbsp:×
+    set list listchars=tab:>·,trail:\ ,extends:»,precedes:«,nbsp:×
 
     " Show the statusline, always!
     set laststatus=2
@@ -1303,30 +1305,48 @@ if !s:fresh_install
         endfunction
 
         " (C/C++) Source/header toggle
-        function! s:extension_open_helper(extensions)
+        function! s:extension_open_helper(extensions, dir)
             " Helper for source/header toggle: opens file with same name, but
             " different extension. Accepts a list of possible extensions.
             for l:extension in a:extensions
-                let l:path = expand('%:r') . "." . l:extension
-                if filereadable(l:path)
-                    execute "e " . l:path
+                let l:pattern = a:dir . "/" . expand('%:r') . "." . l:extension
+                let l:paths = glob(l:pattern, 0, 1)
+                if len(l:paths) > 0
+                    execute "e " . l:paths[0]
                     break
                 endif
             endfor
         endfunction
 
         function! s:source_header_toggle()
-            " Toggle between C/C++ source and header files. Assumes they're in
-            " the same directory.
+            " Toggle between C/C++ source and header files.
+            " Assumes one of directory structures:
+            " - Header and source in the same directory.
+            " - Header in `/somepath/include/packagename`, and source in `/somepath/src`.
+
             let l:extension = expand('%:e')
 
-            let l:source_extensions = ["cpp", "cc", "c"]
-            let l:header_extensions = ["h", "hpp"]
+            let l:source_extensions = ['cpp', 'cc', 'c']
+            let l:header_extensions = ['h', 'hpp']
+
+            let l:dir = expand("%:p:h")
 
             if index(l:source_extensions, l:extension) >= 0
-                call s:extension_open_helper(l:header_extensions)
+                call s:extension_open_helper(l:header_extensions, l:dir)
+                if l:dir =~ '/src$'
+                    " If directory ends with '/src', try replacing with
+                    " 'include/*'
+                    let l:dir = l:dir[:-4] . 'include/*'
+                    call s:extension_open_helper(l:header_extensions, l:dir)
+                endif
             elseif index(l:header_extensions, l:extension) >= 0
-                call s:extension_open_helper(l:source_extensions)
+                call s:extension_open_helper(l:source_extensions, l:dir)
+                if l:dir =~ '/include/.\+$'
+                    " If directory ends with '/include/something/', try replacing with
+                    " 'src/*'
+                    let l:dir = substitute(l:dir[:-4], '/include/.\+$', '/src', '')
+                    call s:extension_open_helper(l:source_extensions, l:dir)
+                endif
             else
                 echoerr "Invalid file extension for source/header toggle,"
                       \ "must in " . string(l:source_extensions + l:header_extensions)
