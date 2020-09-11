@@ -899,7 +899,7 @@ if !s:fresh_install
     " Files for ctrlp + gutentags to ignore!
     set wildignore=*.swp,*.o,*.pyc,*.pb
     " Linux/MacOSX
-    set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*,*/.venv/*,*/site-packages/*
+    set wildignore+=*/.git/*,,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*,*/.venv/*,*/site-packages/*
     " Windows ('noshellslash')
     set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\*,*\\.venv\\*,*\\site-packages\\*
 
@@ -1154,7 +1154,7 @@ if !s:fresh_install
             return
         endif
 
-        echom "Adaptive motion: no window found"
+        echom 'Adaptive motion: no window found'
     endfunction
     nnoremap <Leader>j :call <SID>adaptive_motion('j')<CR>
     nnoremap <Leader>k :call <SID>adaptive_motion('k')<CR>
@@ -1173,15 +1173,6 @@ if !s:fresh_install
 
         " Close help windows
         execute 'helpclose'
-
-        " Close Python docstring buffers (eg from jedi-vim)
-        " -> We don't use jedi-vim anymore? May want to remove this?
-        let l:doc_buffers = range(1, bufnr('$'))
-        let l:doc_buffers = filter(l:doc_buffers, 'bufloaded(v:val)')
-        let l:doc_buffers = filter(l:doc_buffers, 'bufname(v:val)[-7:] ==# "__doc__"')
-        for l:b in l:doc_buffers
-            execute 'bd ' . l:b
-        endfor
     endfun
 
 
@@ -1379,7 +1370,7 @@ if !s:fresh_install
           " TODO: fix strange behavior when we break-pane in tmux
             autocmd!
             autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system('tmux rename-window "vim ' . expand('%:t') . '"')
-            autocmd VimLeave,FocusLost * call system("tmux set-window-option automatic-rename")
+            autocmd VimLeave,FocusLost * call system('tmux set-window-option automatic-rename')
         augroup END
     endif
 
