@@ -178,10 +178,25 @@ else
             execute 'Files ' . b:repo_file_search_root
         endfunction
 
-        " Use ag if available
-        if executable('ag')
-            let $FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
-        else
+        " Helpers for using &wildignore with fzf
+        let s:fzf_ignore_options = ''
+
+        function! s:update_fzf_with_wildignore()
+            let s:fzf_ignore_options = ' '.join(map(split(&wildignore, ','), '"--ignore \"" . v:val . "\""'))
+            if executable('ag')
+                let $FZF_DEFAULT_COMMAND='ag --hidden ' . s:fzf_ignore_options . ' -g ""'
+            endif
+        endfunction
+
+        augroup ConfigureFzf
+            autocmd!
+            " Configure fzf after wildignore is set later in vimrc
+            autocmd VimEnter * call s:update_fzf_with_wildignore()
+        augroup END
+
+
+        " Show error if ag is unavailable
+        if !executable('ag')
             echoerr 'fzf enabled without ag!'
         endif
 
@@ -200,7 +215,7 @@ else
 
         " Call Ag relative to repository root
         command! -bang -nargs=* Ag
-            \ call fzf#vim#ag(<q-args>, '--hidden --ignore .git', fzf#vim#with_preview({
+            \ call fzf#vim#ag(<q-args>, '--hidden ' . s:fzf_ignore_options, fzf#vim#with_preview({
             \     'dir': b:repo_file_search_root
             \ }), <bang>0)
 
@@ -336,6 +351,11 @@ Plug 'mechatroner/rainbow_csv'
 
 " Tag matching for HTML
 Plug 'gregsexton/MatchTag'
+" {{
+    " Use % to jump between matching tags
+    " (this ships with Vim and is not part of MatchTag)
+    packadd matchit
+" }}
 
 " ~~ Color schemes ~~
 Plug 'vim-scripts/xoria256.vim'
@@ -706,7 +726,9 @@ Plug 'brentyi/vim-codefmt'
             endif
         endfunction
 
-        " Use prettier for Javascript
+        " Use prettier for HTML, CSS, Javascript
+        autocmd FileType html let b:codefmt_formatter='prettier'
+        autocmd FileType css let b:codefmt_formatter='prettier'
         autocmd FileType javascript let b:codefmt_formatter='prettier'
     augroup END
 
@@ -896,12 +918,18 @@ if !s:fresh_install
     call glaive#Install()
     Glaive codefmt plugin[mappings]
 
-    " Files for ctrlp + gutentags to ignore!
+    " Ignore patterns for Python
     set wildignore=*.swp,*.o,*.pyc,*.pb
-    " Linux/MacOSX
-    set wildignore+=*/.git/*,,*/.hg/*,*/.svn/*,*/.castle/*,*/.buckd/*,*/.venv/*,*/site-packages/*
-    " Windows ('noshellslash')
-    set wildignore+=*\\.git\\*,*\\.hg\\*,*\\.svn\\*,*\\.castle\\*,*\\.buckd\\*,*\\.venv\\*,*\\site-packages\\*
+    set wildignore+=.venv/*,site-packages/*
+
+    " Ignore patterns for version control systems
+    set wildignore+=.git/*,.hg/*,.svn/*
+
+    " Ignore patterns for Buck
+    set wildignore+=.castle/*,.buckd/*
+
+    " Ignore patterns for Jekyll
+    set wildignore+=_site/*,.jekyll-cache/*
 
     " Set up the wild menu
     set wildmenu
