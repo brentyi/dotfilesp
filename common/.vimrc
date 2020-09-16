@@ -346,6 +346,17 @@ Plug 'sheerun/vim-polyglot'
 " Fancy colors for CSS
 Plug 'ap/vim-css-color'
 
+" Dev Docs for web development
+Plug 'romainl/vim-devdocs'
+" {{
+    augroup DevDocsBindings
+        " Use `K` to lookup keyword
+        autocmd!
+        autocmd FileType css setl isk+=-
+        autocmd FileType html,css,javascript setlocal keywordprg=:DD
+    augroup END
+" }}
+
 " Rainbow highlighting + SQL-esque queries in CSV files
 Plug 'mechatroner/rainbow_csv'
 
@@ -726,10 +737,8 @@ Plug 'brentyi/vim-codefmt'
             endif
         endfunction
 
-        " Use prettier for HTML, CSS, Javascript
-        autocmd FileType html let b:codefmt_formatter='prettier'
-        autocmd FileType css let b:codefmt_formatter='prettier'
-        autocmd FileType javascript let b:codefmt_formatter='prettier'
+        " Use prettier for HTML, CSS, Javascript, Markdown, Liquid
+        autocmd FileType html,css,javascript,markdown,liquid let b:codefmt_formatter='prettier'
     augroup END
 
     " Automatically find the newest installed version of clang-format
