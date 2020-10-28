@@ -14,7 +14,7 @@ Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-l] [-j]
         -r      ROS
         -g      Google Chrome
         -b      Beaglebone libraries
-        -m      Miniconda
+        -m      Miniconda (or Miniforge)
         -y      Yarn (+nodejs)
         -v      Vim (from PPA)
         -l      golang (1.14.6)

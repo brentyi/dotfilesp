@@ -8,7 +8,7 @@ usage() {
     echo -e "\t-r\tROS"
     echo -e "\t-g\tGoogle Chrome"
     echo -e "\t-b\tBeaglebone libraries"
-    echo -e "\t-m\tMiniconda"
+    echo -e "\t-m\tMiniconda (or Miniforge)"
     echo -e "\t-y\tYarn (+nodejs)"
     echo -e "\t-v\tVim (from PPA)"
     echo -e "\t-l\tgolang (1.14.6)"
