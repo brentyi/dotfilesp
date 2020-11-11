@@ -795,7 +795,7 @@ Plug 'brentyi/isort.vim'
 " }}
 
 " Automated docstring template generation
-Plug 'brentyi/vim-pydocstring', { 'do': 'make install' }
+Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 " {{
     " (Python) Docstring bindings
     let g:pydocstring_formatter = get(g:, 'pydocstring_formatter', 'google')
