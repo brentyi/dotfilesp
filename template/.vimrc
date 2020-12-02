@@ -18,7 +18,7 @@ let g:brent_lightline_colorscheme = 'jellybeans'
 
 """" Faster fuzzy find
 
-" let g:brent_use_fzf = 1
+let g:brent_use_fzf = 1
 
 
 """" Ignore patterns for gutentags
