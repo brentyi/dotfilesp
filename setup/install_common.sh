@@ -10,7 +10,7 @@ if [[ `lsb_release -is` == "Ubuntu" ]]; then
     # sudo pip3 install --upgrade pip
 
     # install common utilities
-    sudo apt install vim ctags tmux htop build-essential xclip bc silversearcher-ag -y
+    sudo apt install vim ctags tmux htop build-essential xclip bc silversearcher-ag curl -y
 
 elif [[ `lsb_release -is` == "Fedora" ]]; then
     # install common utilities
