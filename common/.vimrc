@@ -786,6 +786,17 @@ Plug 'brentyi/vim-codefmt'
 " Automated import sorting
 Plug 'brentyi/isort.vim'
 " {{
+    " Ported from:
+    " > https://black.readthedocs.io/en/stable/compatible_configs.html#isort
+    let g:isort_vim_options = join([
+        \ '--multi-line 3',
+        \ '--trailing-comma',
+        \ '--force-grid-wrap 0',
+        \ '--use-parentheses',
+        \ '--ensure-newline-before-comments',
+        \ '--line-length 88',
+        \ ], ' ')
+
     " (Python) isort bindings
     augroup IsortMappings
         autocmd!
