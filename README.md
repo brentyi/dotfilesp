@@ -16,6 +16,7 @@ Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-l] [-j]
         -b      Beaglebone libraries
         -m      Miniconda (or Miniforge)
         -y      Yarn (+nodejs)
+        -n      NPM (+nodejs, 12.x)
         -v      Vim (from PPA)
         -l      golang (1.14.6)
         -j      Jekyll + Ruby

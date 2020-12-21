@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-l] [-j]"
+    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-l] [-j]"
     echo -e "\t-c\tcommon utilities: vim, ctags, tmux, htop, xclip, ag, ..."
     echo -e "\t-z\tzsh"
     echo -e "\t-d\tdotfiles"
@@ -10,6 +10,7 @@ usage() {
     echo -e "\t-b\tBeaglebone libraries"
     echo -e "\t-m\tMiniconda (or Miniforge)"
     echo -e "\t-y\tYarn (+nodejs)"
+    echo -e "\t-n\tNPM (+nodejs)"
     echo -e "\t-v\tVim (from PPA)"
     echo -e "\t-l\tgolang (1.14.6)"
     echo -e "\t-j\tJekyll + Ruby"
@@ -23,11 +24,13 @@ install_chrome=0
 install_beaglebone=0
 install_zsh=0
 install_miniconda=0
+install_yarn=0
+install_npm=0
 install_vim_ppa=0
 install_golang=0
 install_jekyll=0
 
-while getopts czdrgbmyvlj flag; do
+while getopts czdrgbmynvlj flag; do
   case $flag in
     c)
       valid=1
@@ -60,6 +63,10 @@ while getopts czdrgbmyvlj flag; do
     y)
       valid=1
       install_yarn=1
+      ;;
+    n)
+      valid=1
+      install_npm=1
       ;;
     v)
       valid=1
@@ -141,6 +148,13 @@ if [[ $install_yarn = 1 ]]; then
     echo "Yarn"
     echo "---------"
     bash setup/install_yarn.sh
+fi
+
+if [[ $install_npm = 1 ]]; then
+    echo -e "\n---------"
+    echo "NPM"
+    echo "---------"
+    bash setup/install_npm.sh
 fi
 
 if [[ $install_vim_ppa = 1 ]]; then
