@@ -1180,12 +1180,12 @@ if !s:fresh_install
     cmap W! w !sudo tee >/dev/null %
 
     " Some <Leader>direction movement bindings for diffs + loclist + quickfix windows
-    function! s:adaptive_motion(key)
+    function! s:adaptive_motion(next_flag)
         " Check if diff is open
         if &diff
-            if a:key == 'j'
+            if a:next_flag
                 execute 'normal ]c'
-            elseif a:key == 'k'
+            else
                 execute 'normal [c'
             endif
             return
@@ -1194,10 +1194,11 @@ if !s:fresh_install
         " Check for quickfix windows
         let l:quickfix_windows = filter(getwininfo(), 'v:val.quickfix && !v:val.loclist')
         if len(l:quickfix_windows) > 0
-            if a:key == 'j'
-                cnext
-            elseif a:key == 'k'
-                cprev
+            if a:next_flag
+                " Note that we use try/catch blocks for wrapping
+                try | cnext | catch | cfirst | endtry
+            else
+                try | cprev | catch | clast | endtry
             endif
 
             " Quickfix goes between files, and sometimes doesn't trigger a
@@ -1209,18 +1210,18 @@ if !s:fresh_install
         " Check for loclist windows
         let l:loclist_windows = getloclist(winnr())
         if len(l:loclist_windows) > 0
-            if a:key == 'j'
-                lnext
-            elseif a:key == 'k'
-                lprev
+            if a:next_flag
+                try | lnext | catch | lfirst | endtry
+            else
+                try | lprev | catch | llast | endtry
             endif
             return
         endif
 
         echom 'Adaptive motion: no window found'
     endfunction
-    nnoremap <Leader>j :call <SID>adaptive_motion('j')<CR>
-    nnoremap <Leader>k :call <SID>adaptive_motion('k')<CR>
+    nnoremap <Tab> :call <SID>adaptive_motion(1)<CR>
+    nnoremap <S-Tab> :call <SID>adaptive_motion(0)<CR>
 
     " Close preview/quickfix/location list/help windows with <Leader>c
     nnoremap <Leader>c :call <SID>window_cleanup()<CR>
