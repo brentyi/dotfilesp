@@ -1002,23 +1002,38 @@ if !s:fresh_install
                 " Fallback colors for some legacy terminals
                 set t_Co=16
                 set foldcolumn=1
-                hi FoldColumn ctermbg=7
-                hi LineNr cterm=bold ctermfg=0 ctermbg=0
-                hi CursorLineNr ctermfg=0 ctermbg=7
-                hi Visual cterm=bold ctermbg=1
-                hi TrailingWhitespace ctermbg=1
-                hi Search ctermfg=4 ctermbg=7
+                highlight FoldColumn ctermbg=7
+                highlight LineNr cterm=bold ctermfg=0 ctermbg=0
+                highlight CursorLineNr ctermfg=0 ctermbg=7
+                highlight Visual cterm=bold ctermbg=1
+                highlight TrailingWhitespace ctermbg=1
+                highlight Search ctermfg=4 ctermbg=7
+                let l:todo_color = 7
             else
                 " When we have 256 colors available
                 " (This is usually true)
                 set t_Co=256
-                hi LineNr ctermfg=241 ctermbg=234
-                hi CursorLineNr cterm=bold ctermfg=232 ctermbg=250
-                hi Visual cterm=bold ctermbg=238
-                hi TrailingWhitespace ctermbg=52
+                highlight LineNr ctermfg=241 ctermbg=234
+                highlight CursorLineNr cterm=bold ctermfg=232 ctermbg=250
+                highlight Visual cterm=bold ctermbg=238
+                highlight TrailingWhitespace ctermbg=52
                 let g:indentLine_color_term=237
-                hi SpecialKey ctermfg=238
+                highlight SpecialKey ctermfg=238
+                let l:todo_color = 247
             endif
+
+            " Todo note highlighting
+            " Copy the comment highlighting, then override (a bit superfluous)
+            redir => l:comment_highlight
+            silent highlight Comment
+            redir END
+            " Process from:
+            " > Comment        xxx term=bold ctermfg=244 guifg=#808080"
+            " To produce:
+            " > term=bold ctermfg=244 guifg=#808080"
+            let l:comment_highlight = trim(split(l:comment_highlight, 'xxx')[1])
+            highlight clear Todo
+            execute 'highlight Todo ' . l:comment_highlight . ' cterm=bold ctermfg=' . l:todo_color
         endfunction
         autocmd ColorScheme * call s:ColorschemeOverrides()
     augroup END
@@ -1030,8 +1045,8 @@ if !s:fresh_install
         execute 'colorscheme peachpuff'
     endif
 
-    hi MatchParen cterm=bold,underline ctermbg=none ctermfg=7
-    hi VertSplit ctermfg=0 ctermbg=0
+    highlight MatchParen cterm=bold,underline ctermbg=none ctermfg=7
+    highlight VertSplit ctermfg=0 ctermbg=0
 
     augroup MatchTrailingWhitespace
         autocmd!
@@ -1429,8 +1444,8 @@ if !s:fresh_install
 
     map <F5> :setlocal spell! spelllang=en_us<CR>
     inoremap <F5> <C-\><C-O>:setlocal spelllang=en_us spell! spell?<CR>
-    hi clear SpellBad
-    hi SpellBad cterm=bold,italic ctermfg=red
+    highlight clear SpellBad
+    highlight SpellBad cterm=bold,italic ctermfg=red
 
 
     " #############################################
