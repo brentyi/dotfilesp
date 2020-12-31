@@ -1237,6 +1237,14 @@ if !s:fresh_install
 
         " Close help windows
         execute 'helpclose'
+
+        " Close fugitive diffs
+        let l:diff_buffers = range(1, bufnr('$'))
+        let l:diff_buffers = filter(l:diff_buffers, 'bufname(v:val) =~# "^fugitive://"')
+        for l:b in l:diff_buffers
+            execute 'bd ' . l:b
+        endfor
+        diffoff " Generally not needed, but handles some edge cases when multiple diffs are opened
     endfun
 
 
