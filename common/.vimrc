@@ -341,6 +341,22 @@ Plug 'sheerun/vim-polyglot'
     let g:vim_markdown_auto_insert_bullets = 0
     let g:vim_markdown_new_list_item_indent = 0
     let g:vim_markdown_math = 1
+
+    augroup SyntaxSettings
+        autocmd!
+        " For Python, bold TODO keyword in strings (for docstrings)
+        function! s:HighlightDocstringTodo()
+            syn keyword DocstringTodo TODO FIXME XXX containedin=pythonString,pythonRawString
+
+            redir => l:python_string_highlight
+            silent highlight Constant
+            redir END
+            let l:python_string_highlight = trim(split(l:python_string_highlight, 'xxx')[1])
+            highlight clear DocstringTodo
+            execute 'highlight DocstringTodo ' . l:python_string_highlight . ' cterm=bold'
+        endfunction
+        autocmd BufEnter,WinEnter *.py  call s:HighlightDocstringTodo()
+    augroup END
 " }}
 
 " Fancy colors for CSS
