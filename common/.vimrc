@@ -657,7 +657,7 @@ Plug 'mattn/vim-lsp-settings'
     let g:lsp_diagnostics_echo_cursor = 1
 
     " Binding for showing loclist with all errors
-    nnoremap <Leader>lspdd :LspDocumentDiagnostics<CR>
+    nnoremap <Leader><Tab> :LspDocumentDiagnostics<CR>
 " }}
 
 " Async 'appears as you type' autocompletion
