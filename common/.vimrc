@@ -1234,7 +1234,21 @@ if !s:fresh_install
             return
         endif
 
-        echom 'Adaptive motion: no window found'
+        " Tab through LSP diagnostics without loclist
+        let l:diagnostic_count_total = 0
+        for l:count in values(lsp#get_buffer_diagnostics_counts())
+            let l:diagnostic_count_total += l:count
+        endfor
+        if l:diagnostic_count_total > 0
+            if a:next_flag
+                LspNextDiagnostic
+            else
+                LspPreviousDiagnostic
+            endif
+            return
+        endif
+
+        echom 'Adaptive motion: no target found'
     endfunction
     nnoremap <Tab> :call <SID>adaptive_motion(1)<CR>
     nnoremap <S-Tab> :call <SID>adaptive_motion(0)<CR>
