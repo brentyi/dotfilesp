@@ -333,7 +333,13 @@ Plug 'sheerun/vim-polyglot'
     " csv-specific ones that looks high-effort to get used to
     "
     " For highlighting etc, we use rainbow_csv (see below)
-    let g:polyglot_disabled = ['csv']
+    if !has("nvim")
+        let g:polyglot_disabled = ['csv']
+    else
+        " Use Semshi for Python
+        let g:polyglot_disabled = ['csv', 'python']
+        Plug 'numirias/semshi'
+    endif
 
     " Markdown configuration
     let g:vim_markdown_conceal = 0
@@ -614,15 +620,20 @@ Plug 'mattn/vim-lsp-settings'
 
             highlight LspHintText ctermfg=blue ctermbg=NONE
             highlight LspHintHighlight ctermbg=236
+
+            highlight LspErrorVirtualText ctermfg=238
+            highlight LspWarningVirtualText ctermfg=238
+            highlight LspInformationVirtualText ctermfg=238
+            highlight LspHintVirtualText ctermfg=238
         endfunction
 
         autocmd ColorScheme * call s:SetLspColors()
     augroup END
 
     " Set sign column symbols
-    let g:lsp_signs_error = {'text': '▲'}
-    let g:lsp_signs_warning = {'text': '▲'}
-    let g:lsp_signs_hint = {'text': '▲'}
+    let g:lsp_diagnostics_signs_error = {'text': '▲'}
+    let g:lsp_diagnostics_signs_warning = {'text': '▲'}
+    let g:lsp_diagnostics_signs_hint = {'text': '▲'}
 
     " It'd be nice to use pyls-mypy for type-checking, but mypy is not super
     " useful when installed in an isolated virtual env
