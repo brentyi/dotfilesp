@@ -14,6 +14,16 @@ if !has('nvim')
     set encoding=utf-8
 endif
 
+" Backport for trim()
+" https://github.com/Cimbali/vim-better-whitespace/commit/855bbef863418a36bc10e5a51ac8ce78bcbdcef8
+function! s:trim(s)
+    if exists('*trim')
+        return trim(a:s)
+    else
+        return substitute(a:s, '^\s*\(.\{-}\)\s*$', '\1', '')
+    endif
+endfunction
+
 " Remap <Leader> to <Space>
 " This needs to be done before any leader-containing bindings happen
 let mapleader = "\<Space>"
@@ -357,7 +367,8 @@ Plug 'sheerun/vim-polyglot'
             redir => l:python_string_highlight
             silent highlight Constant
             redir END
-            let l:python_string_highlight = trim(split(l:python_string_highlight, 'xxx')[1])
+
+            let l:python_string_highlight = s:trim(split(l:python_string_highlight, 'xxx')[1])
             highlight clear DocstringTodo
             execute 'highlight DocstringTodo ' . l:python_string_highlight . ' cterm=bold'
         endfunction
@@ -1058,7 +1069,7 @@ if !s:fresh_install
             " > Comment        xxx term=bold ctermfg=244 guifg=#808080"
             " To produce:
             " > term=bold ctermfg=244 guifg=#808080"
-            let l:comment_highlight = trim(split(l:comment_highlight, 'xxx')[1])
+            let l:comment_highlight = s:trim(split(l:comment_highlight, 'xxx')[1])
             highlight clear Todo
             execute 'highlight Todo ' . l:comment_highlight . ' cterm=bold ctermfg=' . l:todo_color
         endfunction
