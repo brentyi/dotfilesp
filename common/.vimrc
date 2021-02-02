@@ -727,6 +727,33 @@ Plug 'prabirshrestha/asyncomplete-lsp.vim'
     augroup END
 " }}
 
+" Snippets & LSP integration
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
+" {{
+    let g:UltiSnipsSnippetDirectories=[$HOME . '/dotfilesp/snippets']
+
+    let g:UltiSnipsExpandTrigger='<Leader>et'
+    let g:UltiSnipsJumpForwardTrigger='<Tab>'
+    let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
+
+    function! s:register_ultisnips() abort
+        call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
+            \ 'name': 'ultisnips',
+            \ 'allowlist': ['*'],
+            \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
+            \ }))
+    endfunction
+
+    augroup ultisnips_helpers
+        au!
+        " Disable autotrigger
+        au VimEnter * au! UltiSnips_AutoTrigger
+        au VimEnter * call s:register_ultisnips()
+    augroup END
+" }}
+
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
 " > This basically emulates the +clipboard vim feature flag
 " > Our fork contains important bug fixes, feature enhancements, etc from
