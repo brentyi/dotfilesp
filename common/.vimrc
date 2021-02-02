@@ -696,6 +696,9 @@ Plug 'mattn/vim-lsp-settings'
 
     " Binding for showing loclist with all errors
     nnoremap <Leader><Tab> :LspDocumentDiagnostics<CR>
+
+    " Disable tex.vim errors; texlab is far more useful
+    let g:tex_no_error=1
 " }}
 
 " Async 'appears as you type' autocompletion
@@ -728,30 +731,24 @@ Plug 'prabirshrestha/asyncomplete-lsp.vim'
 " }}
 
 " Snippets & LSP integration
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
 " {{
-    let g:UltiSnipsSnippetDirectories=[$HOME . '/dotfilesp/snippets']
+    let g:vsnip_snippet_dir = expand('~/dotfilesp/snippets/')
 
-    let g:UltiSnipsExpandTrigger='<Leader>et'
-    let g:UltiSnipsJumpForwardTrigger='<Tab>'
-    let g:UltiSnipsJumpBackwardTrigger='<S-Tab>'
+    " Jump forward or backward
+    imap <expr> <Leader>j vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : 'j'
+    smap <expr> <Leader>j vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : 'j'
+    imap <expr> <Leader>k vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : 'k'
+    smap <expr> <Leader>k vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : 'k'
 
-    function! s:register_ultisnips() abort
-        call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
-            \ 'name': 'ultisnips',
-            \ 'allowlist': ['*'],
-            \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
-            \ }))
-    endfunction
+    " Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
+    " See https://github.com/hrsh7th/vim-vsnip/pull/50
+    nmap <Leader>s <Plug>(vsnip-select-text)
+    xmap <Leader>s <Plug>(vsnip-select-text)
+    nmap <Leader>S <Plug>(vsnip-cut-text)
+    xmap <Leader>S <Plug>(vsnip-cut-text)
 
-    augroup ultisnips_helpers
-        au!
-        " Disable autotrigger
-        au VimEnter * au! UltiSnips_AutoTrigger
-        au VimEnter * call s:register_ultisnips()
-    augroup END
 " }}
 
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
