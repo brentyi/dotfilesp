@@ -455,13 +455,9 @@ Plug 'vim-scripts/restore_view.vim'
 " 1) Directly paste images
 " 2) Live preview
 " 3) Table of contents generation
-" 4) Emoji autocompletion
-"    > Our fork removes emojis not found in common markdown parsers (Github,
-"      markdown-it), and adds ones that are
 Plug 'ferrine/md-img-paste.vim'
 Plug 'iamcco/markdown-preview.nvim', { 'do': ':call mkdp#util#install()', 'for': ['markdown', 'vim-plug']}
 Plug 'mzlogin/vim-markdown-toc'
-Plug 'brentyi/vim-emoji'
 " {{
     augroup MarkdownBindings
         autocmd!
@@ -471,7 +467,6 @@ Plug 'brentyi/vim-emoji'
         " Markdown toggle preview
         autocmd FileType markdown nmap <buffer>
             \ <Leader>mdtp <Plug>MarkdownPreviewToggle
-        autocmd FileType markdown setlocal completefunc=emoji#complete
         " Markdown generate TOC
         autocmd FileType markdown nnoremap <buffer>
             \ <Leader>mdtoc :GenTocGFM<CR>
@@ -567,45 +562,6 @@ Plug 'itchyny/lightline.vim'
 Plug 'henrik/vim-indexed-search'
 Plug 'bronson/vim-visual-star-search'
 
-" Autocompletion for Github issues, users, etc
-" > Our fork just adds more emojis :)
-Plug 'brentyi/github-complete.vim'
-
-" Lightweight autocompletion w/ tab key
-" > Use Tab, S-Tab to select, <CR> to confirm
-Plug 'ajh17/VimCompletesMe'
-" {{
-    " Use <CR> for completion selection
-    function! s:smart_carriage_return()
-        if !pumvisible()
-            " No completion window open -> insert line break
-            return "\<CR>"
-        endif
-        if exists('*complete_info') && complete_info()['selected'] == -1
-            " No element selected: close the completion window with Ctrl+E, then
-            " carriage return
-            "
-            " Requires Vim >8.1ish
-            return "\<C-e>\<CR>"
-        endif
-
-        " Select completion
-        return "\<C-y>"
-    endfunction
-    inoremap <expr> <CR> <SID>smart_carriage_return()
-
-    augroup Autocompletion
-        autocmd!
-
-        " Use omnicomplete by default for C++ (clang), Python (jedi), and
-        " gitcommit (github-complete)
-        autocmd FileType cpp,c,python,gitcommit let b:vcm_tab_complete = 'omni'
-
-        " Use vim-emoji for markdown
-        autocmd FileType markdown let b:vcm_tab_complete = 'user'
-    augroup END
-" }}
-
 " LSP plugins for autocompletion, jump to def, etc
 "
 " Note that we also need to actually install some LSPs, eg:
@@ -616,7 +572,29 @@ Plug 'mattn/vim-lsp-settings'
 
 " {{
     " Move servers into .vim directory
-    let g:lsp_settings_servers_dir = expand("~/.vim/vim-lsp-settings/servers")
+    let g:lsp_settings_servers_dir = expand(s:vim_plug_folder . "/../vim-lsp-settings/servers")
+
+    " Global LSP config
+    function! s:on_lsp_buffer_enabled() abort
+        setlocal omnifunc=lsp#complete
+        if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+        nmap <buffer> <Leader>gd <plug>(lsp-definition)
+        nmap <buffer> <Leader>gr <plug>(lsp-references)
+        nmap <buffer> <Leader>gi <plug>(lsp-implementation)
+        " This conflicts with a CtrlP/fzf binding
+        "" nmap <buffer> <Leader>gt <plug>(lsp-type-definition)
+        nmap <buffer> <Leader>rn <plug>(lsp-rename)
+        nmap <buffer> <Leader>[g <Plug>(lsp-previous-diagnostic)
+        nmap <buffer> <Leader>]g <Plug>(lsp-next-diagnostic)
+        nmap <buffer> K <plug>(lsp-hover)
+    endfunction
+
+    " Call s:on_lsp_buffer_enabled only for languages with registered
+    " servers
+    augroup lsp_install
+        autocmd!
+        autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+    augroup END
 
     " Make colors a bit less distracting
     augroup LspColors
@@ -705,29 +683,84 @@ Plug 'mattn/vim-lsp-settings'
 " > Use Tab, S-Tab to select, <CR> to confirm (see above for binding)
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
+Plug 'prabirshrestha/asyncomplete-file.vim'
+Plug 'prabirshrestha/asyncomplete-tags.vim'
+Plug 'prabirshrestha/asyncomplete-emoji.vim'
+Plug 'thecontinium/asyncomplete-buffer.vim'
 
 " {{
     " Bindings
-    function! s:on_lsp_buffer_enabled() abort
-        setlocal omnifunc=lsp#complete
-        if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-        nmap <buffer> <Leader>gd <plug>(lsp-definition)
-        nmap <buffer> <Leader>gr <plug>(lsp-references)
-        nmap <buffer> <Leader>gi <plug>(lsp-implementation)
-        " This conflicts with a CtrlP/fzf binding
-        "" nmap <buffer> <Leader>gt <plug>(lsp-type-definition)
-        nmap <buffer> <Leader>rn <plug>(lsp-rename)
-        nmap <buffer> <Leader>[g <Plug>(lsp-previous-diagnostic)
-        nmap <buffer> <Leader>]g <Plug>(lsp-next-diagnostic)
-        nmap <buffer> K <plug>(lsp-hover)
+    " Use <CR> for completion confirmation, <Tab> and <S-Tab> for selection
+    function! s:smart_carriage_return()
+        if !pumvisible()
+            " No completion window open -> insert line break
+            return "\<CR>"
+        endif
+        if exists('*complete_info') && complete_info()['selected'] == -1
+            " No element selected: close the completion window with Ctrl+E, then
+            " carriage return
+            "
+            " Requires Vim >8.1ish
+            return "\<C-e>\<CR>"
+        endif
+
+        " Select completion
+        return "\<C-y>"
+    endfunction
+    inoremap <expr> <CR> <SID>smart_carriage_return()
+
+    function! s:check_back_space() abort
+        let col = col('.') - 1
+        return !col || getline('.')[col - 1]  =~ '\s'
     endfunction
 
-    " Call s:on_lsp_buffer_enabled only for languages with registered
-    " servers
-    augroup lsp_install
-        autocmd!
-        autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-    augroup END
+    " Jump forward or backward
+    inoremap <silent><expr> <TAB>
+        \ vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' :
+        \ pumvisible() ? "\<C-n>" :
+        \ <SID>check_back_space() ? "\<TAB>" :
+        \ asyncomplete#force_refresh()
+    inoremap <expr><S-TAB>
+        \ vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' :
+        \ pumvisible() ? "\<C-p>" : "\<C-h>"
+
+    " Register path completer
+    function! s:register_asyncomplete_sources() abort
+        call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+            \ 'name': 'file',
+            \ 'allowlist': ['*'],
+            \ 'priority': 10,
+            \ 'completor': function('asyncomplete#sources#file#completor')
+            \ }))
+
+        call asyncomplete#register_source(asyncomplete#sources#tags#get_source_options({
+            \ 'name': 'tags',
+            \ 'allowlist': ['c'],
+            \ 'completor': function('asyncomplete#sources#tags#completor'),
+            \ 'config': {
+            \    'max_file_size': 50000000,
+            \  },
+            \ }))
+
+        call asyncomplete#register_source(asyncomplete#sources#emoji#get_source_options({
+            \ 'name': 'emoji',
+            \ 'allowlist': ['gitcommit', 'markdown'],
+            \ 'completor': function('asyncomplete#sources#emoji#completor'),
+            \ }))
+
+        call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+            \ 'name': 'buffer',
+            \ 'allowlist': ['*'],
+            \ 'blocklist': ['go'],
+            \ 'completor': function('asyncomplete#sources#buffer#completor'),
+            \ 'config': {
+            \    'max_buffer_size': 5000000,
+            \  },
+            \ }))
+    endfunction
+
+    autocmd User asyncomplete_setup call s:register_asyncomplete_sources()
+
 " }}
 
 " Snippets & LSP integration
@@ -736,11 +769,7 @@ Plug 'hrsh7th/vim-vsnip-integ'
 " {{
     let g:vsnip_snippet_dir = expand('~/dotfilesp/snippets/')
 
-    " Jump forward or backward
-    imap <expr> <Leader>j vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : 'j'
-    smap <expr> <Leader>j vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' : 'j'
-    imap <expr> <Leader>k vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : 'k'
-    smap <expr> <Leader>k vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : 'k'
+    " <Tab>/<S-Tab> are bound under asyncomplete
 
     " Select or cut text to use as $TM_SELECTED_TEXT in the next snippet.
     " See https://github.com/hrsh7th/vim-vsnip/pull/50
@@ -880,6 +909,7 @@ Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 
 " Gutentags, for generating tag files
 " > Our fork suppresses some errors for machines without ctags installed
+" > TODO: do we even use tags anymore? maybe for barebones C code?
 Plug 'brentyi/vim-gutentags'
 " {{
     " Set cache location
