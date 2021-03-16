@@ -2,7 +2,7 @@
 
 usage() {
     echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-l] [-j]"
-    echo -e "\t-c\tcommon utilities: vim, ctags, tmux, htop, xclip, ag, ..."
+    echo -e "\t-c\tcommon utilities: neovim, ctags, tmux, htop, xclip, ag, ..."
     echo -e "\t-z\tzsh"
     echo -e "\t-d\tdotfiles"
     echo -e "\t-r\tROS"

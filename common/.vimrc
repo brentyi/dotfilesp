@@ -376,6 +376,9 @@ Plug 'sheerun/vim-polyglot'
     augroup END
 " }}
 
+" G-code highlighting
+Plug 'wilriker/gcode.vim'
+
 " Fancy colors for CSS
 Plug 'ap/vim-css-color'
 
@@ -754,7 +757,7 @@ Plug 'thecontinium/asyncomplete-buffer.vim'
             \ 'blocklist': ['go'],
             \ 'completor': function('asyncomplete#sources#buffer#completor'),
             \ 'config': {
-            \    'max_buffer_size': 5000000,
+            \    'max_buffer_size': 1000000,
             \  },
             \ }))
     endfunction
