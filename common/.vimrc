@@ -518,7 +518,6 @@ Plug 'itchyny/lightline.vim'
         \           [ 'signify' ] ],
         \ 'right': [ [ 'lineinfo' ],
         \            [ 'filetype', 'charvaluehex' ],
-        \            [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
         \            [ 'gutentags' ],
         \            [ 'filepath' ],
         \            [ 'truncate' ]]
@@ -527,7 +526,6 @@ Plug 'itchyny/lightline.vim'
         \ 'left': [ [ 'readonly', 'filename', 'modified' ] ],
         \ 'right': [ [],
         \            [],
-        \            [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
         \            [ 'filepath', 'lineinfo' ],
         \            [ 'truncate' ]]
         \ }
@@ -541,20 +539,6 @@ Plug 'itchyny/lightline.vim'
         \ }
     let g:lightline.component_function = {
         \   'filepath': string(function('s:lightline_filepath')),
-        \ }
-    let g:lightline.component_expand = {
-        \  'linter_checking': 'lightline#ale#checking',
-        \  'linter_infos': 'lightline#ale#infos',
-        \  'linter_warnings': 'lightline#ale#warnings',
-        \  'linter_errors': 'lightline#ale#errors',
-        \  'linter_ok': 'lightline#ale#ok',
-        \ }
-    let g:lightline.component_type = {
-        \     'linter_checking': 'right',
-        \     'linter_infos': 'right',
-        \     'linter_warnings': 'warning',
-        \     'linter_errors': 'error',
-        \     'linter_ok': 'ok',
         \ }
 
 " }}
@@ -627,46 +611,45 @@ Plug 'mattn/vim-lsp-settings'
     let g:lsp_diagnostics_signs_warning = {'text': '▲'}
     let g:lsp_diagnostics_signs_hint = {'text': '▲'}
 
-    " It'd be nice to use pyls-mypy for type-checking, but mypy is not super
-    " useful when installed in an isolated virtual env
-    "
-    " Might be possible to port this over if we don't use a venv for pyls and pyls-mypy
-    "
-    " " Jump through some hoops to auto-install pyls-mypy whenever we call :LspInstallServer
-    " function! s:check_for_pyls_mypy()
-    "     if filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/pyls"))
-    "         \ && !filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/mypy"))
-    "
-    "         " Install from source because pypi version of pyls-mypy is broken
-    "         " for Python 3 (as of 8/6/2020)
-    "         let l:cmd =  g:lsp_settings_servers_dir .
-    "             \ "/pyls-all/venv/bin/pip3 install " .
-    "             \ "git+https://github.com/tomv564/pyls-mypy.git"
-    "
-    "         if has('nvim')
-    "             split new
-    "             call termopen(l:cmd, {'cwd': g:lsp_settings_servers_dir})
-    "         else
-    "             let l:bufnr = term_start(l:cmd)
-    "         endif
-    "     endif
-    " endfunction
-    "
-    " augroup CheckForPylsMypy
-    "     autocmd!
-    "     autocmd User lsp_setup call s:check_for_pyls_mypy()
-    " augroup END
+    " Jump through some hoops to auto-install pyls-mypy whenever we call :LspInstallServer
+    function! s:check_for_pyls_mypy()
+        if filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/pyls"))
+            \ && !filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/mypy"))
 
-    " Use flake8 configs for pyls, configure mypy (currently disabled)
+            " Install from source because pypi version of pyls-mypy is broken
+            " for Python 3. Our fork includes support for various settings and
+            " flags that aren't available upstream.
+            let l:cmd =  g:lsp_settings_servers_dir .
+                \ '/pyls-all/venv/bin/pip3 install ' .
+                \ 'git+https://github.com/brentyi/mypy-ls.git'
+
+            if has('nvim')
+                split new
+                call termopen(l:cmd, {'cwd': g:lsp_settings_servers_dir})
+            else
+                let l:bufnr = term_start(l:cmd)
+            endif
+        endif
+    endfunction
+
+    augroup CheckForPylsMypy
+        autocmd!
+        autocmd User lsp_setup call s:check_for_pyls_mypy()
+    augroup END
+
+    " Use flake8 configs for pyls, configure mypy
     let g:lsp_settings = {}
     let g:lsp_settings['efm-langserver'] = {'disabled': v:false}
     let g:lsp_settings['pyls-all'] = {
         \     'workspace_config': { 'pyls': {
         \         'configurationSources': ['flake8'],
         \         'plugins': {
-        \             'pyls_mypy': {
-        \                 'enabled': v:false,
-        \                 'live_mode': v:false
+        \             'mypy-ls': {
+        \                 'enabled': v:true,
+        \                 'live_mode': v:false,
+        \                 'dmypy': v:true,
+        \                 'strict': v:false,
+        \                 'prepend': ['--python-executable', s:trim(system('which python'))]
         \             }
         \         }
         \     }}
@@ -966,57 +949,6 @@ Plug 'camspiers/animate.vim'
 " {{
     let g:animate#duration = 150.0
     let g:animate#easing_func = 'animate#ease_out_quad'
-" }}
-
-" Linting
-" > Our fork expands support for alex, which is somewhat problematic but can
-"   still be helpful?
-Plug 'brentyi/ale'
-Plug 'maximbaz/lightline-ale'
-" {{
-    " Bindings
-    nnoremap <Leader>al :ALELint<CR>
-    nnoremap <Leader>ar :ALEReset<CR>
-    nnoremap <Leader>arb :ALEResetBuffer<CR>
-
-    " Disable ALE by default
-    let g:ale_lint_on_text_changed = 'never'
-    let g:ale_lint_on_insert_leave = 0
-    let g:ale_lint_on_enter = 0
-    let g:ale_lint_on_save = 0
-
-    " Open loclist automatically
-    let g:ale_open_list = 1
-
-    " Configure linters
-    let g:ale_linters = {
-        \ 'asciidoc': ['alex'],
-        \ 'cpp': ['alex'],
-        \ 'html': ['alex'],
-        \ 'javascript': ['alex'],
-        \ 'markdown': ['alex'],
-        \ 'python': ['alex', 'mypy'],
-        \ 'rst': ['alex'],
-        \ 'tex': ['alex'],
-        \ }
-    let g:ale_python_mypy_options= '--ignore-missing-imports'
-
-    " ALE sign column stuff
-    augroup ALEColors
-        autocmd!
-
-        function! s:SetALEColors()
-            highlight ALEErrorSign ctermfg=red ctermbg=NONE
-            highlight ALEWarningSign ctermfg=yellow ctermbg=NONE
-            highlight ALEInfoSign ctermfg=blue ctermbg=NONE
-        endfunction
-
-        autocmd ColorScheme * call s:SetALEColors()
-    augroup END
-
-    let g:ale_sign_error = '▲'
-    let g:ale_sign_warning = '▲'
-    let g:ale_sign_info = '▲'
 " }}
 
 " Show unsaved changes to a file
