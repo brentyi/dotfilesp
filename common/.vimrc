@@ -128,10 +128,11 @@ endif
         endfunction
         autocmd ColorScheme * call s:SetSignifyColors()
     augroup END
-    let g:signify_sign_add = '•'
-    let g:signify_sign_delete = '•'
-    let g:signify_sign_delete_first_line = '•'
-    let g:signify_sign_change = '•'
+    let g:signify_sign_add = '+'
+    let g:signify_sign_delete = '-'
+    let g:signify_sign_delete_first_line = '-'
+    let g:signify_sign_change = '◦'
+    let g:signify_priority = 5
 " }}
 
 " Fuzzy-find for files, buffers, tags!
@@ -500,6 +501,7 @@ Plug 'Yggdroot/indentLine'
 
 " Status line
 Plug 'itchyny/lightline.vim'
+Plug 'halkn/lightline-lsp'
 " {{
     " Display human-readable path to file
     " This is generated in vim-repo-file-search
@@ -518,6 +520,7 @@ Plug 'itchyny/lightline.vim'
         \           [ 'signify' ] ],
         \ 'right': [ [ 'lineinfo' ],
         \            [ 'filetype', 'charvaluehex' ],
+        \            [ 'lsp_errors', 'lsp_warnings', 'lsp_ok' ],
         \            [ 'gutentags' ],
         \            [ 'filepath' ],
         \            [ 'truncate' ]]
@@ -525,7 +528,7 @@ Plug 'itchyny/lightline.vim'
     let g:lightline.inactive = {
         \ 'left': [ [ 'readonly', 'filename', 'modified' ] ],
         \ 'right': [ [],
-        \            [],
+        \            [ 'lsp_errors', 'lsp_warnings', 'lsp_ok', 'lineinfo' ],
         \            [ 'filepath', 'lineinfo' ],
         \            [ 'truncate' ]]
         \ }
@@ -539,6 +542,16 @@ Plug 'itchyny/lightline.vim'
         \ }
     let g:lightline.component_function = {
         \   'filepath': string(function('s:lightline_filepath')),
+        \ }
+    let g:lightline.component_expand = {
+        \   'lsp_warnings': 'lightline_lsp#warnings',
+        \   'lsp_errors': 'lightline_lsp#errors',
+        \   'lsp_ok': 'lightline_lsp#ok',
+        \ }
+    let g:lightline.component_type = {
+        \   'lsp_warnings': 'warning',
+        \   'lsp_errors': 'error',
+        \   'lsp_ok': 'middle',
         \ }
 
 " }}
@@ -607,9 +620,10 @@ Plug 'mattn/vim-lsp-settings'
     augroup END
 
     " Set sign column symbols
-    let g:lsp_diagnostics_signs_error = {'text': '▲'}
-    let g:lsp_diagnostics_signs_warning = {'text': '▲'}
-    let g:lsp_diagnostics_signs_hint = {'text': '▲'}
+    let g:lsp_diagnostics_signs_error = {'text': '▴'}
+    let g:lsp_diagnostics_signs_warning = {'text': '▴'}
+    let g:lsp_diagnostics_signs_hint = {'text': '▴'}
+    let g:lsp_diagnostics_signs_priority = 10
 
     " Jump through some hoops to auto-install pyls-mypy whenever we call :LspInstallServer
     function! s:check_for_pyls_mypy()
