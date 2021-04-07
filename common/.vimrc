@@ -661,7 +661,7 @@ Plug 'mattn/vim-lsp-settings'
         \             'mypy-ls': {
         \                 'enabled': v:true,
         \                 'live_mode': v:false,
-        \                 'dmypy': v:true,
+        \                 'dmypy': v:false,
         \                 'strict': v:false,
         \                 'prepend': ['--python-executable', s:trim(system('which python'))]
         \             }
