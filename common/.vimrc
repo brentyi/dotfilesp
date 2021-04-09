@@ -715,12 +715,13 @@ Plug 'thecontinium/asyncomplete-buffer.vim'
     endfunction
 
     " Jump forward or backward
-    inoremap <silent><expr> <TAB>
+    " Note: inoremap will not work here, since we need to call vsnip-jump-*
+    imap <expr> <TAB>
         \ vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' :
         \ pumvisible() ? "\<C-n>" :
         \ <SID>check_back_space() ? "\<TAB>" :
         \ asyncomplete#force_refresh()
-    inoremap <expr><S-TAB>
+    imap <expr><S-TAB>
         \ vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' :
         \ pumvisible() ? "\<C-p>" : "\<C-h>"
 
