@@ -860,8 +860,10 @@ Plug 'brentyi/vim-codefmt'
                 \ split(split(l:path, '-')[1], '/')[0])
 
             if filereadable(l:path) && l:current_version > l:min_version
-                Glaive codefmt clang_format_executable=`l:path`
-                " echom 'Found clang-format: ' . l:path
+                " In Vim 8.1, Glaive is throwing an error when we configure
+                " with a local variable
+                let g:clang_format_executable_path = l:path
+                Glaive codefmt clang_format_executable=`g:clang_format_executable_path`
                 let l:min_version = l:current_version
             endif
         endfor
