@@ -377,6 +377,9 @@ Plug 'sheerun/vim-polyglot'
     augroup END
 " }}
 
+" Highlighting for flex and bison
+Plug 'calincru/flex-bison-syntax'
+
 " G-code highlighting
 Plug 'wilriker/gcode.vim'
 
