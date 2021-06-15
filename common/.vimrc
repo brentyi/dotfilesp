@@ -797,8 +797,7 @@ Plug 'brentyi/vim-fakeclip'
 " }}
 
 " Google's code format plugin + dependencies
-" > Our vim-codefmt fork adds support for black, tweaks some autopep8/yapf
-"   settings (these aren't used with black enabled, though)
+" > Our vim-codefmt fork enables --prose-wrap for markdown formatting
 Plug 'google/vim-maktaba'
 Plug 'google/vim-glaive'
 Plug 'brentyi/vim-codefmt'
