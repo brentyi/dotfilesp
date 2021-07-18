@@ -14,7 +14,7 @@ antigen bundle vi-mode
 antigen bundle zsh-users/zsh-autosuggestions
 antigen bundle history-substring-search
 antigen theme brentyi/brent-zsh-theme brent
-antigen bundle brentyi/zsh-ros
+# antigen bundle brentyi/zsh-ros
 antigen apply
 
 HYPHEN_INSENSITIVE="true"
