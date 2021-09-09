@@ -49,3 +49,7 @@ let g:brent_use_fzf = 1
 " let g:lsp_log_file = $HOME . "/lsp_log_file"
 
 source ~/dotfilesp/common/.vimrc
+
+
+"""" Disable pycodestyle (eg for reading other people's code)
+" let g:lsp_settings['pyls-all']['workspace_config']['pyls']['plugins']['pycodestyle'] = {'enabled': v:false}
