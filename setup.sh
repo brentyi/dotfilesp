@@ -12,7 +12,7 @@ usage() {
     echo -e "\t-y\tYarn (+nodejs)"
     echo -e "\t-n\tNPM (+nodejs)"
     echo -e "\t-v\tVim (from PPA)"
-    echo -e "\t-l\tgolang (1.14.6)"
+    echo -e "\t-l\tgolang (1.17.1)"
     echo -e "\t-j\tJekyll + Ruby"
 }
 
