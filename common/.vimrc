@@ -271,21 +271,6 @@ else
         vnoremap <Leader>a :<C-U>call <SID>GrepVisual(visualmode())<CR>
         nnoremap <Leader>ga :execute 'Ag ' . expand('<cword>')<CR>
 
-        " Automatically change working directory to current file location
-        " Emulates `set autochdir`, which appears to have some issues w/ fzf
-        "
-        " Reproducing the error without this hack:
-        "     (1) set autochdir
-        "     (2) Open a file
-        "     (3) Open another file w/ fzf
-        "     (4) :edit .  # <= this should show some errors
-        "     (5) Run `pwd` and `echo getcwd()` -- these will no longer match
-        "
-        augroup AutochdirFix
-            autocmd!
-            autocmd BufReadPost * silent! lcd %:p:h
-        augroup END
-
         " Use Vim colors for fzf
         let g:fzf_layout = {
             \ 'window': 'new'
@@ -984,6 +969,9 @@ if !s:fresh_install
     " Initialize Glaive + codefmt
     call glaive#Install()
     Glaive codefmt plugin[mappings]
+
+    " Automatically change working directory to current file's parent
+    set autochdir
 
     " Ignore patterns for Python
     set wildignore=*.swp,*.o,*.pyc,*.pb
