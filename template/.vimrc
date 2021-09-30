@@ -52,4 +52,4 @@ source ~/dotfilesp/common/.vimrc
 
 
 """" Disable pycodestyle (eg for reading other people's code)
-" let g:lsp_settings['pyls-all']['workspace_config']['pyls']['plugins']['pycodestyle'] = {'enabled': v:false}
+" let g:lsp_settings['pylsp-all']['workspace_config']['pylsp']['plugins']['pycodestyle'] = {'enabled': v:false}

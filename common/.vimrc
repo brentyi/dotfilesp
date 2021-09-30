@@ -614,17 +614,17 @@ Plug 'mattn/vim-lsp-settings'
     let g:lsp_diagnostics_signs_hint = {'text': '▴'}
     let g:lsp_diagnostics_signs_priority = 10
 
-    " Jump through some hoops to auto-install pyls-mypy whenever we call :LspInstallServer
-    function! s:check_for_pyls_mypy()
-        if filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/pyls"))
-            \ && !filereadable(expand(g:lsp_settings_servers_dir . "/pyls-all/venv/bin/mypy"))
+    " Jump through some hoops to auto-install pylsp-mypy whenever we call :LspInstallServer
+    function! s:check_for_pylsp_mypy()
+        if filereadable(expand(g:lsp_settings_servers_dir . "/pylsp-all/venv/bin/pylsp"))
+            \ && !filereadable(expand(g:lsp_settings_servers_dir . "/pylsp-all/venv/bin/mypy"))
 
-            " Install from source because pypi version of pyls-mypy is broken
+            " Install from source because pypi version of pylsp-mypy is broken
             " for Python 3. Our fork includes support for various settings and
             " flags that aren't available upstream.
             let l:cmd =  g:lsp_settings_servers_dir .
-                \ '/pyls-all/venv/bin/pip3 install ' .
-                \ 'git+https://github.com/brentyi/mypy-ls.git'
+                \ '/pylsp-all/venv/bin/pip3 install ' .
+                \ 'git+https://github.com/brentyi/pylsp-mypy.git'
 
             if has('nvim')
                 split new
@@ -635,24 +635,25 @@ Plug 'mattn/vim-lsp-settings'
         endif
     endfunction
 
-    augroup CheckForPylsMypy
+    augroup CheckForPylspMypy
         autocmd!
-        autocmd User lsp_setup call s:check_for_pyls_mypy()
+        autocmd User lsp_setup call s:check_for_pylsp_mypy()
     augroup END
 
     " Use flake8 configs for pyls, configure mypy
     let g:lsp_settings = {}
     let g:lsp_settings['efm-langserver'] = {'disabled': v:false}
-    let g:lsp_settings['pyls-all'] = {
-        \     'workspace_config': { 'pyls': {
+    let g:lsp_settings['pylsp-all'] = {
+        \     'workspace_config': { 'pylsp': {
         \         'configurationSources': ['flake8'],
         \         'plugins': {
-        \             'mypy-ls': {
+        \             'pylsp_mypy': {
         \                 'enabled': v:true,
         \                 'live_mode': v:false,
         \                 'dmypy': v:false,
         \                 'strict': v:false,
-        \                 'prepend': ['--python-executable', s:trim(system('which python'))]
+        \                 'prepend': ['--python-executable', s:trim(system('which python'))],
+        \                 'colocate_cache_with_config': v:true
         \             }
         \         }
         \     }}
