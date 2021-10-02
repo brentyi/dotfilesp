@@ -136,62 +136,21 @@ endif
 " }}
 
 " Fuzzy-find for files, buffers, tags!
-let g:brent_use_fzf = get(g:, 'brent_use_fzf', 0)
-if !g:brent_use_fzf
-    " Default to ctrlp, which is really nice & portable!
-    " Note: we've experimented with ctrlp-py-matcher, cpsm, etc, but support
-    " across systems + vim versions has been shaky for all of them
-    "
-    Plug 'ctrlpvim/ctrlp.vim'
-    " {{
-        let g:ctrlp_extensions = ['tag', 'line']
-        let g:ctrlp_show_hidden = 1
-        let g:ctrlp_follow_symlinks=1
-        let g:ctrlp_max_files=300000
-        let g:ctrlp_switch_buffer = '0'
-        let g:ctrlp_reuse_window = 1
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+" {{
+    " Show error if ag is unavailable and should be installed
+    function! AgMissingStatus()
+        if !executable('ag')
+            return '[missing ag]'
+        endif
+        return ''
+    endfunction
 
-        " Bindings
-        nnoremap <Leader>p :CtrlPBuffer<CR>
-        nnoremap <Leader>h :CtrlPMRUFiles<CR>
-        nnoremap <Leader>t :CtrlPTag<CR>
-        nnoremap <Leader>gt :call <SID>ctrlp_tag_under_cursor()<CR>
-        nnoremap <Leader>l :CtrlPLine<CR>
-        nnoremap <Leader>gl :call <SID>ctrlp_line_under_cursor()<CR>
-        nnoremap <Leader>gf :call <SID>ctrlp_file_under_cursor()<CR>
-
-        " Binding implementations
-        function! s:ctrlp_file_under_cursor()
-            let g:ctrlp_default_input = expand('<cfile>')
-            CtrlP
-            let g:ctrlp_default_input = ''
-        endfunction
-
-        function! s:ctrlp_tag_under_cursor()
-            let g:ctrlp_default_input = expand('<cword>')
-            CtrlPTag
-            let g:ctrlp_default_input = ''
-        endfunction
-
-        function! s:ctrlp_line_under_cursor()
-            let g:ctrlp_default_input = expand('<cword>')
-            CtrlPLine
-            let g:ctrlp_default_input = ''
-        endfunction
-    " }}
-else
-    " FZF + ag is _much_ faster & actually useful when working with big repos
-    "
-    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-    Plug 'junegunn/fzf.vim'
-    " {{
-        function! s:smarter_fuzzy_file_search()
-            execute 'Files ' . b:repo_file_search_root
-        endfunction
-
-        " Helpers for using &wildignore with fzf
-        let s:fzf_ignore_options = ''
-
+    if !executable('ag')
+        let $FZF_DEFAULT_COMMAND='find .'
+    else
+        " Configure ag
         function! s:update_fzf_with_wildignore()
             let s:fzf_ignore_options = ' '.join(map(split(&wildignore, ','), '"--ignore \"" . v:val . "\""'))
             if executable('ag')
@@ -204,25 +163,6 @@ else
             " Configure fzf after wildignore is set later in vimrc
             autocmd VimEnter * call s:update_fzf_with_wildignore()
         augroup END
-
-
-        " Show error if ag is unavailable
-        if !executable('ag')
-            echoerr 'fzf enabled without ag!'
-        endif
-
-        " We want to use gutentags for tag generation
-        let g:fzf_tags_command = ''
-
-        " Preview for tag search
-        " Note that line numbers must be included in tag files (see gutentags config)
-        let s:preview_script = s:bundle_path . '/fzf.vim/bin/preview.sh '
-            \ . '{2}:$(echo {} | cut -f 5 | sed -r ''s/line://g'')'
-        command! -bang -nargs=* TagsWithPreview
-            \ call fzf#vim#tags(<q-args>, {
-            \      'options': '
-            \         --preview ''' . s:preview_script . ''''
-            \ }, <bang>0)
 
         " Call Ag relative to repository root
         command! -bang -nargs=* Ag
@@ -249,34 +189,55 @@ else
             " Restore the unnamed register
             let @@ = l:save_tmp
         endfunction
+    endif
 
-        " Bindings: search file names
-        nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
-        nnoremap <Leader>p :Buffers<CR>
-        nnoremap <Leader>ph :Files<CR>
-        nnoremap <Leader>h :History<CR>
-        nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, fzf#vim#with_preview({
-            \ 'options': '--query ' . shellescape(expand('<cfile>'))}))<CR>
+    function! s:smarter_fuzzy_file_search()
+        execute 'Files ' . b:repo_file_search_root
+    endfunction
 
-        " Bindings: search tags
-        nnoremap <Leader>t :TagsWithPreview<CR>
-        nnoremap <Leader>gt :execute 'TagsWithPreview ' . expand('<cword>')<CR>
+    " Helpers for using &wildignore with fzf
+    let s:fzf_ignore_options = ''
 
-        " Bindings: search lines in open buffers
-        nnoremap <Leader>l :Lines<CR>
-        nnoremap <Leader>gl :call fzf#vim#lines(expand('<cword>'))<CR>
+    " We want to use gutentags for tag generation
+    let g:fzf_tags_command = ''
 
-        " Bindings: search lines in files with ag
-        nnoremap <Leader>a :Ag<CR>
-        vnoremap <Leader>a :<C-U>call <SID>GrepVisual(visualmode())<CR>
-        nnoremap <Leader>ga :execute 'Ag ' . expand('<cword>')<CR>
+    " Preview for tag search
+    " Note that line numbers must be included in tag files (see gutentags config)
+    let s:preview_script = s:bundle_path . '/fzf.vim/bin/preview.sh '
+        \ . '{2}:$(echo {} | cut -f 5 | sed -r ''s/line://g'')'
+    command! -bang -nargs=* TagsWithPreview
+        \ call fzf#vim#tags(<q-args>, {
+        \      'options': '
+        \         --preview ''' . s:preview_script . ''''
+        \ }, <bang>0)
 
-        " Use Vim colors for fzf
-        let g:fzf_layout = {
-            \ 'window': 'new'
-            \ }
-    " }}
-endif
+
+    " Bindings: search file names
+    nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
+    nnoremap <Leader>p :Buffers<CR>
+    nnoremap <Leader>ph :Files<CR>
+    nnoremap <Leader>h :History<CR>
+    nnoremap <Leader>gf :call fzf#vim#files(b:repo_file_search_root, fzf#vim#with_preview({
+        \ 'options': '--query ' . shellescape(expand('<cfile>'))}))<CR>
+
+    " Bindings: search tags
+    nnoremap <Leader>t :TagsWithPreview<CR>
+    nnoremap <Leader>gt :execute 'TagsWithPreview ' . expand('<cword>')<CR>
+
+    " Bindings: search lines in open buffers
+    nnoremap <Leader>l :Lines<CR>
+    nnoremap <Leader>gl :call fzf#vim#lines(expand('<cword>'))<CR>
+
+    " Bindings: search lines in files with ag
+    nnoremap <Leader>a :Ag<CR>
+    vnoremap <Leader>a :<C-U>call <SID>GrepVisual(visualmode())<CR>
+    nnoremap <Leader>ga :execute 'Ag ' . expand('<cword>')<CR>
+
+    " Use Vim colors for fzf
+    let g:fzf_layout = {
+        \ 'window': 'new'
+        \ }
+" }}
 
 " NERDTree for filesystem navigation/manipulation
 Plug 'scrooloose/nerdtree'
@@ -487,63 +448,6 @@ Plug 'Yggdroot/indentLine'
     let g:indentLine_fileTypeExclude = ['json', 'markdown', 'tex']
 " }}
 
-" Status line
-Plug 'itchyny/lightline.vim'
-Plug 'halkn/lightline-lsp'
-" {{
-    " Display human-readable path to file
-    " This is generated in vim-repo-file-search
-    function! s:lightline_filepath()
-        return get(b:, 'repo_file_search_display', '')
-    endfunction
-
-    let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', 'wombat')
-    let g:lightline = {}
-
-    " Lightline colors
-    let g:lightline.colorscheme = g:brent_lightline_colorscheme
-    let g:lightline.active = {
-        \ 'left': [ [ 'mode', 'paste' ],
-        \           [ 'readonly', 'filename', 'modified' ],
-        \           [ 'signify' ] ],
-        \ 'right': [ [ 'lineinfo' ],
-        \            [ 'filetype', 'charvaluehex' ],
-        \            [ 'lsp_errors', 'lsp_warnings', 'lsp_ok' ],
-        \            [ 'gutentags' ],
-        \            [ 'filepath' ],
-        \            [ 'truncate' ]]
-        \ }
-    let g:lightline.inactive = {
-        \ 'left': [ [ 'readonly', 'filename', 'modified' ] ],
-        \ 'right': [ [],
-        \            [ 'lsp_errors', 'lsp_warnings', 'lsp_ok', 'lineinfo' ],
-        \            [ 'filepath', 'lineinfo' ],
-        \            [ 'truncate' ]]
-        \ }
-
-    " Components
-    let g:lightline.component = {
-        \   'charvaluehex': '0x%B',
-        \   'gutentags': '%{GutentagsStatus()}%{gutentags#statusline("", "", "[ctags indexing]")}',
-        \   'signify': has('patch-8.0.902') ? '%{sy#repo#get_stats_decorated()}' : '',
-        \   'truncate': '%<',
-        \ }
-    let g:lightline.component_function = {
-        \   'filepath': string(function('s:lightline_filepath')),
-        \ }
-    let g:lightline.component_expand = {
-        \   'lsp_warnings': 'lightline_lsp#warnings',
-        \   'lsp_errors': 'lightline_lsp#errors',
-        \   'lsp_ok': 'lightline_lsp#ok',
-        \ }
-    let g:lightline.component_type = {
-        \   'lsp_warnings': 'warning',
-        \   'lsp_errors': 'error',
-        \   'lsp_ok': 'middle',
-        \ }
-
-" }}
-
 " Search plugins
 " > Show instance # in statusline when we search
 " > Use * to search visual mode selections
@@ -569,7 +473,7 @@ Plug 'mattn/vim-lsp-settings'
         nmap <buffer> <Leader>gd <plug>(lsp-definition)
         nmap <buffer> <Leader>gr <plug>(lsp-references)
         nmap <buffer> <Leader>gi <plug>(lsp-implementation)
-        " This conflicts with a CtrlP/fzf binding
+        " This conflicts with an fzf binding
         "" nmap <buffer> <Leader>gt <plug>(lsp-type-definition)
         nmap <buffer> <Leader>rn <plug>(lsp-rename)
         nmap <buffer> <Leader>[g <Plug>(lsp-previous-diagnostic)
@@ -927,9 +831,9 @@ Plug 'brentyi/vim-gutentags'
     endif
 
     " Lightline integration
-    function! GutentagsStatus()
+    function! GutentagsMissingStatus()
         if exists('g:gutentags_ctags_executable') && executable(expand(g:gutentags_ctags_executable, 1)) == 0
-            return 'missing ctags'
+            return '[missing ctags]'
         endif
         return ''
     endfunction
@@ -938,6 +842,63 @@ Plug 'brentyi/vim-gutentags'
         autocmd User GutentagsUpdating call lightline#update()
         autocmd User GutentagsUpdated call lightline#update()
     augroup END
+" }}
+
+" Status line
+Plug 'itchyny/lightline.vim'
+Plug 'halkn/lightline-lsp'
+" {{
+    " Display human-readable path to file
+    " This is generated in vim-repo-file-search
+    function! s:lightline_filepath()
+        return get(b:, 'repo_file_search_display', '')
+    endfunction
+
+    let g:brent_lightline_colorscheme = get(g:, 'brent_lightline_colorscheme', 'wombat')
+    let g:lightline = {}
+
+    " Lightline colors
+    let g:lightline.colorscheme = g:brent_lightline_colorscheme
+    let g:lightline.active = {
+        \ 'left': [ [ 'mode', 'paste' ],
+        \           [ 'readonly', 'filename', 'modified' ],
+        \           [ 'signify' ] ],
+        \ 'right': [ [ 'lineinfo' ],
+        \            [ 'filetype', 'charvaluehex' ],
+        \            [ 'lsp_errors', 'lsp_warnings', 'lsp_ok' ],
+        \            [ 'ag_and_gutentags' ],
+        \            [ 'filepath' ],
+        \            [ 'truncate' ]]
+        \ }
+    let g:lightline.inactive = {
+        \ 'left': [ [ 'readonly', 'filename', 'modified' ] ],
+        \ 'right': [ [],
+        \            [ 'lsp_errors', 'lsp_warnings', 'lsp_ok', 'lineinfo' ],
+        \            [ 'filepath', 'lineinfo' ],
+        \            [ 'truncate' ]]
+        \ }
+
+    " Components
+    let g:lightline.component = {
+        \   'charvaluehex': '0x%B',
+        \   'ag_and_gutentags': '%{"' . AgMissingStatus() . '"}%{"' . GutentagsMissingStatus() . '"}%{gutentags#statusline("", "", "[ctags indexing]")}',
+        \   'signify': has('patch-8.0.902') ? '%{sy#repo#get_stats_decorated()}' : '',
+        \   'truncate': '%<',
+        \ }
+    let g:lightline.component_function = {
+        \   'filepath': string(function('s:lightline_filepath')),
+        \ }
+    let g:lightline.component_expand = {
+        \   'lsp_warnings': 'lightline_lsp#warnings',
+        \   'lsp_errors': 'lightline_lsp#errors',
+        \   'lsp_ok': 'lightline_lsp#ok',
+        \ }
+    let g:lightline.component_type = {
+        \   'lsp_warnings': 'warning',
+        \   'lsp_errors': 'error',
+        \   'lsp_ok': 'middle',
+        \ }
+
 " }}
 
 " Summarize tags in current file

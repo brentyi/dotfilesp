@@ -15,12 +15,6 @@ let g:brent_lightline_colorscheme = 'jellybeans'
 "" Set colorscheme to 'legacy' for non-256-color terminals
 " let g:brent_colorscheme = 'legacy'
 
-
-"""" Faster fuzzy find
-
-let g:brent_use_fzf = 1
-
-
 """" Ignore patterns for gutentags
 
 " let g:gutentags_ctags_exclude = [
