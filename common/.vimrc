@@ -1325,6 +1325,10 @@ if !s:fresh_install
         autocmd BufNewFile,BufRead BUCK* set filetype=bzl
         autocmd BufNewFile,BufRead TARGETS set filetype=bzl
 
+        " (OpenGL) Additional shader extensions
+        autocmd BufNewFile,BufRead *.vertexshader set filetype=glsl
+        autocmd BufNewFile,BufRead *.fragmentshader set filetype=glsl
+
         " (C++) Angle bracket matching for templates
         autocmd FileType cpp setlocal matchpairs+=<:>
 
