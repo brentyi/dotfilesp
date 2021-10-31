@@ -290,11 +290,10 @@ Plug 'sheerun/vim-polyglot'
     " csv-specific ones that looks high-effort to get used to
     "
     " For highlighting etc, we use rainbow_csv (see below)
-    if !has("nvim")
-        let g:polyglot_disabled = ['csv']
-    else
-        " Use Semshi for Python
-        let g:polyglot_disabled = ['csv', 'python']
+    let g:polyglot_disabled = ['csv']
+
+    " Use Semshi for Python
+    if has("nvim")
         Plug 'numirias/semshi'
     endif
 
@@ -655,7 +654,6 @@ Plug 'thecontinium/asyncomplete-buffer.vim'
     endfunction
 
     autocmd User asyncomplete_setup call s:register_asyncomplete_sources()
-
 " }}
 
 " Snippets & LSP integration
@@ -672,7 +670,6 @@ Plug 'hrsh7th/vim-vsnip-integ'
     xmap <Leader>s <Plug>(vsnip-select-text)
     nmap <Leader>S <Plug>(vsnip-cut-text)
     xmap <Leader>S <Plug>(vsnip-cut-text)
-
 " }}
 
 " Add pseudo-registers for copying to system clipboard (example usage: "+Y)
