@@ -7,7 +7,7 @@ A collection of config files & setup scripts
 Cloned to `$HOME/dotfilesp`:
 
 ```
-Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-l] [-j]
+Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-N] [-l] [-j]
         -c      common utilities: vim, ctags, tmux, htop, xclip, ag, ...
         -z      zsh
         -d      dotfiles
@@ -18,6 +18,7 @@ Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-l] [-j]
         -y      Yarn (+nodejs)
         -n      NPM (+nodejs, 12.x)
         -v      Vim (from PPA)
+        -N      Neovim (unstable, from PPA)
         -l      golang (1.14.6)
         -j      Jekyll + Ruby
 ```

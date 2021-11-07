@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-l] [-j]"
+    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-N] [-l] [-j]"
     echo -e "\t-c\tcommon utilities: neovim, ctags, tmux, htop, xclip, ag, ..."
     echo -e "\t-z\tzsh"
     echo -e "\t-d\tdotfiles"
@@ -12,6 +12,7 @@ usage() {
     echo -e "\t-y\tYarn (+nodejs)"
     echo -e "\t-n\tNPM (+nodejs)"
     echo -e "\t-v\tVim (from PPA)"
+    echo -e "\t-N\tNeovim (unstable, from PPA)"
     echo -e "\t-l\tgolang (1.17.1)"
     echo -e "\t-j\tJekyll + Ruby"
 }
@@ -27,10 +28,11 @@ install_miniconda=0
 install_yarn=0
 install_npm=0
 install_vim_ppa=0
+install_neovim_unstable=0
 install_golang=0
 install_jekyll=0
 
-while getopts czdrgbmynvlj flag; do
+while getopts czdrgbmynvNlj flag; do
   case $flag in
     c)
       valid=1
@@ -71,6 +73,10 @@ while getopts czdrgbmynvlj flag; do
     v)
       valid=1
       install_vim_ppa=1
+      ;;
+    N)
+      valid=1
+      install_neovim_unstable=1
       ;;
     l)
       valid=1
@@ -162,6 +168,13 @@ if [[ $install_vim_ppa = 1 ]]; then
     echo "Vim (from PPA)"
     echo "---------"
     bash setup/install_vim_ppa.sh
+fi
+
+if [[ $install_neovim_unstable = 1 ]]; then
+    echo -e "\n---------"
+    echo "Neovim (unstable, from PPA)"
+    echo "---------"
+    bash setup/install_neovim_unstable.sh
 fi
 
 if [[ $install_golang = 1 ]]; then
