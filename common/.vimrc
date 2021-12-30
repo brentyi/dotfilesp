@@ -306,8 +306,8 @@ Plug 'sheerun/vim-polyglot'
 
     augroup SyntaxSettings
         autocmd!
-        " For Python, bold TODO keyword in strings (for docstrings)
-        function! s:HighlightDocstringTodo()
+        function! s:HighlightPythonSpecial()
+            " For Python, bold TODO keyword in strings (for docstrings)
             syn keyword DocstringTodo TODO FIXME XXX containedin=pythonString,pythonRawString
 
             redir => l:python_string_highlight
@@ -318,7 +318,7 @@ Plug 'sheerun/vim-polyglot'
             highlight clear DocstringTodo
             execute 'highlight DocstringTodo ' . l:python_string_highlight . ' cterm=bold'
         endfunction
-        autocmd BufEnter,WinEnter *.py  call s:HighlightDocstringTodo()
+        autocmd Filetype python call s:HighlightPythonSpecial()
     augroup END
 " }}
 
@@ -543,7 +543,6 @@ Plug 'mattn/vim-lsp-settings'
         autocmd User lsp_setup call s:check_for_pylsp_mypy()
     augroup END
 
-    " Use flake8 configs for pyls, configure mypy
     let g:lsp_settings = {}
     let g:lsp_settings['efm-langserver'] = {'disabled': v:false}
     let g:lsp_settings['pylsp-all'] = {
@@ -561,6 +560,7 @@ Plug 'mattn/vim-lsp-settings'
         \         }
         \     }}
         \ }
+    let g:lsp_settings['clangd'] = {'allowlist': ['c', 'cpp', 'objc', 'objcpp', 'cuda']}
 
     " Show error messages below statusbar
     let g:lsp_diagnostics_echo_cursor = 1
@@ -721,6 +721,9 @@ Plug 'brentyi/vim-codefmt'
 
         " Use prettier for HTML, CSS, Javascript, Markdown, Liquid
         autocmd FileType html,css,javascript,markdown,liquid let b:codefmt_formatter='prettier'
+
+        " CUDA => C++
+        autocmd FileType cuda let b:codefmt_formatter='clang-format'
     augroup END
 
     " Automatically find the newest installed version of clang-format
@@ -763,7 +766,7 @@ Plug 'brentyi/vim-codefmt'
     " Search for clang-format when we open a C/C++ file
     augroup FindClangFormat
         autocmd!
-        autocmd Filetype c,cpp call s:find_clang_format()
+        autocmd Filetype c,cpp,cuda call s:find_clang_format()
     augroup END
 " }}
 
