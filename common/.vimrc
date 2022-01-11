@@ -307,7 +307,8 @@ Plug 'sheerun/vim-polyglot'
     augroup SyntaxSettings
         autocmd!
         function! s:HighlightPythonSpecial()
-            " For Python, bold TODO keyword in strings (for docstrings)
+            " For Python, bold TODO keyword in strings/docstrings
+            " Copy the docstring highlighting, then override (a bit superfluous)
             syn keyword DocstringTodo TODO FIXME XXX containedin=pythonString,pythonRawString
 
             redir => l:python_string_highlight
@@ -318,7 +319,9 @@ Plug 'sheerun/vim-polyglot'
             highlight clear DocstringTodo
             execute 'highlight DocstringTodo ' . l:python_string_highlight . ' cterm=bold'
         endfunction
-        autocmd Filetype python call s:HighlightPythonSpecial()
+
+        " Due to trigger ordering, `autocmd Filetype python` here doesn't work!
+        autocmd BufEnter,WinEnter *.py call s:HighlightPythonSpecial()
     augroup END
 " }}
 
@@ -1009,6 +1012,27 @@ if !s:fresh_install
                 let g:indentLine_color_term=237
                 highlight SpecialKey ctermfg=238
                 let l:todo_color = 247
+
+                " The rest of this block is doing some colors for popups, eg
+                " autocomplete or floating help windows.
+
+                " The main purpose here is to make the Pmenu color
+                " darker than the default, as a light Pmenu can cause display
+                " issues for syntax highlighting applied within popups.
+                highlight Pmenu ctermfg=252 ctermbg=235
+                highlight PmenuSel cterm=bold ctermfg=255 ctermbg=238
+
+                " We also darken the scrollbar to increase contrast:
+                highlight PmenuSbar ctermbg=237
+
+                " Some newer builds of Neovim add a distinct highlight group
+                " for borders of floating windows.
+                highlight FloatBorder ctermfg=242 ctermbg=235
+
+                " And, to be explicit, we (unnecessarily) link the
+                " Neovim-specific 'normal' floating text highlight group. Like
+                " FloatBorder, this is unused in Vim8.
+                highlight link NormalFloat Pmenu
             endif
 
             " Todo note highlighting
