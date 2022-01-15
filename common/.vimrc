@@ -201,17 +201,6 @@ Plug 'junegunn/fzf.vim'
     " We want to use gutentags for tag generation
     let g:fzf_tags_command = ''
 
-    " Preview for tag search
-    " Note that line numbers must be included in tag files (see gutentags config)
-    let s:preview_script = s:bundle_path . '/fzf.vim/bin/preview.sh '
-        \ . '{2}:$(echo {} | cut -f 5 | sed -r ''s/line://g'')'
-    command! -bang -nargs=* TagsWithPreview
-        \ call fzf#vim#tags(<q-args>, {
-        \      'options': '
-        \         --preview ''' . s:preview_script . ''''
-        \ }, <bang>0)
-
-
     " Bindings: search file names
     nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
     nnoremap <Leader>p :Buffers<CR>
@@ -221,8 +210,8 @@ Plug 'junegunn/fzf.vim'
         \ 'options': '--query ' . shellescape(expand('<cfile>'))}))<CR>
 
     " Bindings: search tags
-    nnoremap <Leader>t :TagsWithPreview<CR>
-    nnoremap <Leader>gt :execute 'TagsWithPreview ' . expand('<cword>')<CR>
+    nnoremap <Leader>t :Tags<CR>
+    nnoremap <Leader>gt :execute 'Tags ' . expand('<cword>')<CR>
 
     " Bindings: search lines in open buffers
     nnoremap <Leader>l :Lines<CR>
@@ -929,6 +918,18 @@ if !s:fresh_install
 
     " Automatically change working directory to current file's parent
     set autochdir
+    augroup AutochdirHack
+        " Hack: for whatever reason, autochdir has begun to fail for files
+        " opened with FZF in splits in Neovim >=0.6.1. This is reproducible
+        " across systems and I've tried fudging with various stable/unstable
+        " plugin + Neovim versions without luck, so we instead just
+        " redundantly repeat the behavior of autochdir with an autocmd.
+        "
+        " Note that this is not required (but should be harmless) for Vim 8.2.
+        autocmd!
+        autocmd BufEnter * silent! lcd %:p:h
+    augroup END
+
 
     " Ignore patterns for Python
     set wildignore=*.swp,*.o,*.pyc,*.pb
