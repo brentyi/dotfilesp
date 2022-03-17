@@ -1232,7 +1232,7 @@ if !s:fresh_install
             return
         endif
 
-        " Tab through LSP diagnostics without loclist
+        " Step through LSP diagnostics without loclist
         let l:diagnostic_count_total = 0
         for l:count in values(lsp#get_buffer_diagnostics_counts())
             let l:diagnostic_count_total += l:count
@@ -1248,8 +1248,9 @@ if !s:fresh_install
 
         echom 'Adaptive motion: no target found'
     endfunction
-    nnoremap <Tab> :call <SID>adaptive_motion(1)<CR>
-    nnoremap <S-Tab> :call <SID>adaptive_motion(0)<CR>
+    " We used to use <Tab> and <S-Tab> here, but <Tab> interferes with <C-i>
+    nnoremap <Leader>j :call <SID>adaptive_motion(1)<CR>
+    nnoremap <Leader>k :call <SID>adaptive_motion(0)<CR>
 
     " Close preview/quickfix/location list/help windows with <Leader>c
     nnoremap <Leader>c :call <SID>window_cleanup()<CR>
