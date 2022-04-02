@@ -1,14 +1,14 @@
 # Dotfiles+other useful things
 
-A collection of config files & setup scripts
+A collection of config files & setup scripts.
 
 ## Setup
 
-Cloned to `$HOME/dotfilesp`:
+Install scripts rely on `apt`. After cloning to `$HOME/dotfilesp`:
 
 ```
-Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-N] [-l] [-j]
-        -c      common utilities: vim, ctags, tmux, htop, xclip, ag, ...
+Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-N] [-l] [-j] [-p]
+        -c      common utilities: neovim, ctags, tmux, htop, xclip, ag, ...
         -z      zsh
         -d      dotfiles
         -r      ROS
@@ -16,16 +16,19 @@ Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-v] [-N] [-l] [-j]
         -b      Beaglebone libraries
         -m      Miniconda (or Miniforge)
         -y      Yarn (+nodejs)
-        -n      NPM (+nodejs, 12.x)
+        -n      NPM (+nodejs)
         -v      Vim (from PPA)
         -N      Neovim (unstable, from PPA)
-        -l      golang (1.14.6)
+        -l      golang (1.17.1)
         -j      Jekyll + Ruby
+        -p      Pipewire (replaces pulseaudio, from PPA)
 ```
 
 ## Symlink structure
 
-Dotfile linking is handled by `setup/linker.sh`.
+Manual installation of dotfiles is possible by copying from
+[./common/](./common/). Alternatively, the `-d` flag runs `setup/linker.sh`,
+which establishes a symlink-based structure with an explicit local/global split.
 
 Linking goes something like this:
 

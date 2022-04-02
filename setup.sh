@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-N] [-l] [-j]"
+    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-N] [-l] [-j] [-p]"
     echo -e "\t-c\tcommon utilities: neovim, ctags, tmux, htop, xclip, ag, ..."
     echo -e "\t-z\tzsh"
     echo -e "\t-d\tdotfiles"
@@ -15,6 +15,7 @@ usage() {
     echo -e "\t-N\tNeovim (unstable, from PPA)"
     echo -e "\t-l\tgolang (1.17.1)"
     echo -e "\t-j\tJekyll + Ruby"
+    echo -e "\t-p\tPipewire (replaces pulseaudio, from PPA)"
 }
 
 valid=0
@@ -31,8 +32,9 @@ install_vim_ppa=0
 install_neovim_unstable=0
 install_golang=0
 install_jekyll=0
+install_pipewire=0
 
-while getopts czdrgbmynvNlj flag; do
+while getopts czdrgbmynvNljp flag; do
   case $flag in
     c)
       valid=1
@@ -85,6 +87,10 @@ while getopts czdrgbmynvNlj flag; do
     j)
       valid=1
       install_jekyll=1
+      ;;
+    p)
+      valid=1
+      install_pipewire=1
       ;;
     ?)
       valid=0
@@ -189,6 +195,13 @@ if [[ $install_jekyll = 1 ]]; then
     echo "Jekyll"
     echo "---------"
     bash setup/install_jekyll.sh
+fi
+
+if [[ $install_pipewire = 1 ]]; then
+    echo -e "\n---------"
+    echo "Pipewire"
+    echo "---------"
+    bash setup/install_pipewire.sh
 fi
 
 echo ""
