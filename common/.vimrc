@@ -675,11 +675,21 @@ Plug 'brentyi/vim-fakeclip'
     let g:fakeclip_provide_clipboard_key_mappings = 1
 " }}
 
+" Automated import sorting. isort is now also supported by vim-codefmt, but
+" our isort plugin has a few more features that we think are useful. (it runs
+" asynchronously, specifies the --project flag, lets us specify flags, etc).
+"
+" See <Leader>cf binding under vim-codefmt for details on how this is called.
+Plug 'brentyi/isort.vim'
+" {{
+    " Match black style
+    let g:isort_vim_options = '--profile black'
+" }}
+
 " Google's code format plugin + dependencies
-" > Our vim-codefmt fork enables --prose-wrap for markdown formatting
 Plug 'google/vim-maktaba'
 Plug 'google/vim-glaive'
-Plug 'brentyi/vim-codefmt'
+Plug 'google/vim-codefmt'
 " {{
     nnoremap <Leader>cf :FormatCode<CR>:redraw!<CR>
     vnoremap <Leader>cf :FormatLines<CR>:redraw!<CR>
@@ -717,6 +727,11 @@ Plug 'brentyi/vim-codefmt'
         " CUDA => C++
         autocmd FileType cuda let b:codefmt_formatter='clang-format'
     augroup END
+
+    function! s:glaive_configure_vim_codefmt()
+        " This is called after Glaive is initialized.
+        Glaive codefmt prettier_options=`['--prose-wrap', 'always']`
+    endfunction
 
     " Automatically find the newest installed version of clang-format
     function! s:find_clang_format()
@@ -759,20 +774,6 @@ Plug 'brentyi/vim-codefmt'
     augroup FindClangFormat
         autocmd!
         autocmd Filetype c,cpp,cuda call s:find_clang_format()
-    augroup END
-" }}
-
-" Automated import sorting
-Plug 'brentyi/isort.vim'
-" {{
-    " Match black style
-    let g:isort_vim_options = '--profile black'
-
-    " (Python) isort bindings
-    augroup IsortMappings
-        autocmd!
-        autocmd FileType python nnoremap <buffer> <Leader>si :Isort<CR>
-        autocmd FileType python vnoremap <buffer> <Leader>si :Isort<CR>
     augroup END
 " }}
 
@@ -915,6 +916,7 @@ if !s:fresh_install
     " Initialize Glaive + codefmt
     call glaive#Install()
     Glaive codefmt plugin[mappings]
+    call s:glaive_configure_vim_codefmt()
 
     " Automatically change working directory to current file's parent
     set autochdir
