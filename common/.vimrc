@@ -777,15 +777,15 @@ Plug 'google/vim-codefmt'
     augroup END
 " }}
 
-" Automated docstring template generation
-Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
+" Automated docstrings
+" > Install currently breaks in Neovim, where we need to run
+"   :call doge#install after installation
+Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 " {{
-    " (Python) Docstring bindings
-    let g:pydocstring_formatter = get(g:, 'pydocstring_formatter', 'google')
+    let g:doge_doc_standard_python = 'google'
 
-    " <Plug>(pydocstring) needs to be mapped, or the plugin will override our
-    " <C-l> binding
-    nmap <Leader>pds <Plug>(pydocstring)
+    " Binding: *P*ut *D*oc *S*tring.
+    let g:doge_mapping = '<Leader>pds'
 " }}
 
 " Gutentags, for generating tag files
