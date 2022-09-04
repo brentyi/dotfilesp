@@ -287,7 +287,18 @@ function! s:treesitter_configure()
 lua << EOF
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "c", "cpp", "cuda", "lua", "vim", "python", "html", "css", "javascript" },
+  ensure_installed = {
+    "c",
+    "cpp",
+    "cuda",
+    "lua",
+    "vim",
+    "python",
+    "html",
+    "css",
+    "javascript",
+    "markdown",
+  },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
