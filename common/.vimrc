@@ -14,6 +14,10 @@ if !has('nvim')
     set encoding=utf-8
 endif
 
+if has('nvim') && has('termguicolors')
+    set termguicolors
+endif
+
 " Backport for trim()
 " https://github.com/Cimbali/vim-better-whitespace/commit/855bbef863418a36bc10e5a51ac8ce78bcbdcef8
 function! s:trim(s)
@@ -272,19 +276,62 @@ Plug 'brentyi/nerdtree-hg-plugin'
         \ }
 " }}
 
+
+" Use treesitter in Neovim
+if has("nvim")
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+endif
+
+" Called after plug#end. Note that we can't indent the lua code.
+function! s:treesitter_configure()
+lua << EOF
+require'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all"
+  ensure_installed = { "c", "cpp", "cuda", "lua", "vim", "python", "html", "css", "javascript" },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  auto_install = true,
+
+  -- List of parsers to ignore installing (for "all")
+  ignore_install = {},
+
+  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+
+  highlight = {
+    -- `false` will disable the whole extension
+    enable = true,
+
+    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+    -- the name of the parser)
+    -- list of language that will be disabled
+    disable = {},
+
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+}
+EOF
+endfunction
+
 " Massive language pack for syntax highlighting, etc
-Plug 'sheerun/vim-polyglot'
+" We use treesitter in Neovim.
+if !has('nvim')
+    Plug 'sheerun/vim-polyglot'
+endif
 " {{
     " Disable csv.vim: this overrides a bunch of default vim bindings with
     " csv-specific ones that looks high-effort to get used to
     "
     " For highlighting etc, we use rainbow_csv (see below)
     let g:polyglot_disabled = ['csv']
-
-    " Use Semshi for Python
-    if has("nvim")
-        Plug 'numirias/semshi'
-    endif
 
     " Markdown configuration
     let g:vim_markdown_conceal = 0
@@ -349,6 +396,21 @@ Plug 'gregsexton/MatchTag'
 Plug 'vim-scripts/xoria256.vim'
 Plug 'tomasr/molokai'
 Plug 'sjl/badwolf'
+if has('nvim')
+    " Color schemes with treesitter support.
+
+    " - nvcode (basically just dark+)
+    " - onedark
+    " - nord
+    " - aurora (more colorful nord)
+    " - gruvbox
+    " - palenight
+    " - snazzy (Based on hyper-snazzy by Sindre Sorhus)
+    " - xoria (Based on xoria-256)
+    Plug 'ChristianChiarulli/nvcode-color-schemes.vim'
+
+    Plug 'tanvirtin/monokai.nvim'
+endif
 
 " Vim + tmux integration
 Plug 'christoomey/vim-tmux-navigator'
@@ -360,7 +422,7 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
         au FocusLost * silent redraw!
     augroup END
 " }}
-
+"
 " Underline all instances of current word
 Plug 'itchyny/vim-cursorword'
 
@@ -484,19 +546,20 @@ Plug 'mattn/vim-lsp-settings'
         autocmd!
 
         function! s:SetLspColors()
-            highlight LspErrorText ctermfg=red ctermbg=NONE
-            highlight LspErrorHighlight ctermbg=236
+            " TODO: revisit these colors for neovim.
+            highlight LspErrorText ctermfg=red ctermbg=NONE guibg=NONE
+            highlight LspErrorHighlight ctermbg=236 guibg=#5a3032
 
-            highlight LspWarningText ctermfg=yellow ctermbg=NONE
-            highlight LspWarningHighlight ctermbg=236
+            highlight LspWarningText ctermfg=yellow ctermbg=NONE guibg=NONE
+            highlight LspWarningHighlight ctermbg=236 guibg=#5a5a30
 
-            highlight LspHintText ctermfg=blue ctermbg=NONE
-            highlight LspHintHighlight ctermbg=236
+            highlight LspHintText ctermfg=blue ctermbg=NONE guibg=NONE
+            highlight LspHintHighlight ctermbg=236 guibg=#305a35
 
-            highlight LspErrorVirtualText ctermfg=238
-            highlight LspWarningVirtualText ctermfg=238
-            highlight LspInformationVirtualText ctermfg=238
-            highlight LspHintVirtualText ctermfg=238
+            highlight LspErrorVirtualText ctermfg=238 guifg=#5a3032
+            highlight LspWarningVirtualText ctermfg=238 guifg=#5a5a30
+            highlight LspInformationVirtualText ctermfg=238 guifg=#303f5a
+            highlight LspHintVirtualText ctermfg=238 guifg=#305a35
         endfunction
 
         autocmd ColorScheme * call s:SetLspColors()
@@ -918,6 +981,10 @@ if !s:fresh_install
     Glaive codefmt plugin[mappings]
     call s:glaive_configure_vim_codefmt()
 
+    if has('nvim')
+        call s:treesitter_configure()
+    endif
+
     " Automatically change working directory to current file's parent
     set autochdir
     augroup AutochdirHack
@@ -992,7 +1059,7 @@ if !s:fresh_install
     set background=dark
     augroup ColorschemeOverrides
         autocmd!
-        function! s:ColorschemeOverrides()
+        function! g:ColorschemeOverrides()
             if g:brent_colorscheme ==# 'legacy'
                 " Fallback colors for some legacy terminals
                 set t_Co=16
@@ -1005,36 +1072,43 @@ if !s:fresh_install
                 highlight Search ctermfg=4 ctermbg=7
                 let l:todo_color = 7
             else
+                " TODO: most of this won't do anything when termguicolors is
+                " set!
+
                 " When we have 256 colors available
                 " (This is usually true)
                 set t_Co=256
                 highlight LineNr ctermfg=241 ctermbg=234
-                highlight CursorLineNr cterm=bold ctermfg=232 ctermbg=250
+                highlight CursorLineNr cterm=bold ctermfg=232 ctermbg=250 guifg=#080808 guibg=#585858
                 highlight Visual cterm=bold ctermbg=238
                 highlight TrailingWhitespace ctermbg=52
                 let g:indentLine_color_term=237
                 highlight SpecialKey ctermfg=238
                 let l:todo_color = 247
 
-                " The rest of this block is doing some colors for popups, eg
-                " autocomplete or floating help windows.
+                " Cursorword: just underline
+                highlight CursorWord0 ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
+                highlight CursorWord1 ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
 
-                " The main purpose here is to make the Pmenu color
-                " darker than the default, as a light Pmenu can cause display
-                " issues for syntax highlighting applied within popups.
+                " " " The rest of this block is doing some colors for popups, eg
+                " " " autocomplete or floating help windows.
+
+                " " " The main purpose here is to make the Pmenu color
+                " " " darker than the default, as a light Pmenu can cause display
+                " " " issues for syntax highlighting applied within popups.
                 highlight Pmenu ctermfg=252 ctermbg=235
                 highlight PmenuSel cterm=bold ctermfg=255 ctermbg=238
 
-                " We also darken the scrollbar to increase contrast:
+                " " " We also darken the scrollbar to increase contrast:
                 highlight PmenuSbar ctermbg=237
 
-                " Some newer builds of Neovim add a distinct highlight group
-                " for borders of floating windows.
+                " " " Some newer builds of Neovim add a distinct highlight group
+                " " " for borders of floating windows.
                 highlight FloatBorder ctermfg=242 ctermbg=235
 
-                " And, to be explicit, we (unnecessarily) link the
-                " Neovim-specific 'normal' floating text highlight group. Like
-                " FloatBorder, this is unused in Vim8.
+                " " " And, to be explicit, we (unnecessarily) link the
+                " " " Neovim-specific 'normal' floating text highlight group. Like
+                " " " FloatBorder, this is unused in Vim8.
                 highlight link NormalFloat Pmenu
             endif
 
@@ -1049,12 +1123,17 @@ if !s:fresh_install
             " > term=bold ctermfg=244 guifg=#808080"
             let l:comment_highlight = s:trim(split(l:comment_highlight, 'xxx')[1])
             highlight clear Todo
-            execute 'highlight Todo ' . l:comment_highlight . ' cterm=bold ctermfg=' . l:todo_color
+            execute 'highlight Todo ' . l:comment_highlight . ' cterm=bold ctermfg=' . l:todo_color . ' guifg=#9e9e9e'
         endfunction
-        autocmd ColorScheme * call s:ColorschemeOverrides()
+        autocmd ColorScheme * call g:ColorschemeOverrides()
     augroup END
 
-    let g:brent_colorscheme = get(g:, 'brent_colorscheme', 'xoria256')
+    if has('nvim')
+        " Treesitter support.
+        let g:brent_colorscheme = get(g:, 'brent_colorscheme', 'monokai_pro')
+    else
+        let g:brent_colorscheme = get(g:, 'brent_colorscheme', 'xoria256')
+    endif
     if g:brent_colorscheme !=# 'legacy'
         execute 'colorscheme ' . g:brent_colorscheme
     else
