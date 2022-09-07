@@ -1010,6 +1010,10 @@ if !s:fresh_install
         autocmd BufEnter * silent! lcd %:p:h
     augroup END
 
+    " Suppress existing swapfile errors; this can be disabled via
+    " `set shortmess-=A` or swapfiles can be recovered manually if we ever do
+    " need them
+    set shortmess+=A
 
     " Ignore patterns for Python
     set wildignore=*.swp,*.o,*.pyc,*.pb
@@ -1070,7 +1074,7 @@ if !s:fresh_install
     set background=dark
     augroup ColorschemeOverrides
         autocmd!
-        function! g:ColorschemeOverrides()
+        function! s:ColorschemeOverrides()
             if g:brent_colorscheme ==# 'legacy'
                 " Fallback colors for some legacy terminals
                 set t_Co=16
@@ -1101,25 +1105,25 @@ if !s:fresh_install
                 highlight CursorWord0 ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
                 highlight CursorWord1 ctermfg=NONE ctermbg=NONE guifg=NONE guibg=NONE
 
-                " " " The rest of this block is doing some colors for popups, eg
-                " " " autocomplete or floating help windows.
+                " The rest of this block is doing some colors for popups, eg
+                " autocomplete or floating help windows.
 
-                " " " The main purpose here is to make the Pmenu color
-                " " " darker than the default, as a light Pmenu can cause display
-                " " " issues for syntax highlighting applied within popups.
+                " The main purpose here is to make the Pmenu color
+                " darker than the default, as a light Pmenu can cause display
+                " issues for syntax highlighting applied within popups.
                 highlight Pmenu ctermfg=252 ctermbg=235
                 highlight PmenuSel cterm=bold ctermfg=255 ctermbg=238
 
-                " " " We also darken the scrollbar to increase contrast:
+                " We also darken the scrollbar to increase contrast:
                 highlight PmenuSbar ctermbg=237
 
-                " " " Some newer builds of Neovim add a distinct highlight group
-                " " " for borders of floating windows.
+                " Some newer builds of Neovim add a distinct highlight group
+                " for borders of floating windows.
                 highlight FloatBorder ctermfg=242 ctermbg=235
 
-                " " " And, to be explicit, we (unnecessarily) link the
-                " " " Neovim-specific 'normal' floating text highlight group. Like
-                " " " FloatBorder, this is unused in Vim8.
+                " And, to be explicit, we (unnecessarily) link the
+                " Neovim-specific 'normal' floating text highlight group. Like
+                " FloatBorder, this is unused in Vim8.
                 highlight link NormalFloat Pmenu
             endif
 
@@ -1136,7 +1140,7 @@ if !s:fresh_install
             highlight clear Todo
             execute 'highlight Todo ' . l:comment_highlight . ' cterm=bold ctermfg=' . l:todo_color . ' guifg=#9e9e9e'
         endfunction
-        autocmd ColorScheme * call g:ColorschemeOverrides()
+        autocmd ColorScheme * call s:ColorschemeOverrides()
     augroup END
 
     if has('nvim')
