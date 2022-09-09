@@ -1,21 +1,27 @@
-#
-# brent yi
-#
-
 export LANG=en_US.UTF-8
 if [ -z "$HOME" ]; then
     export HOME=/home/brent
 fi
 
-source $HOME/dotfilesp/thirdparty/antigen.zsh
-antigen use oh-my-zsh
-antigen bundle git
-antigen bundle vi-mode
-antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle history-substring-search
-antigen theme brentyi/brent-zsh-theme brent
-# antigen bundle brentyi/zsh-ros
-antigen apply
+# Clone antidote if necessary.
+[[ -e ${ZDOTDIR:-~}/.antidote ]] ||
+  git clone https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+
+# Source antidote.
+source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+
+# Initialize antidote's dynamic mode, which changes `antidote bundle`
+# from static mode.
+source <(antidote init)
+
+# Plugins. (dynamically loading them here is slower, but keeps our zshrc self-contained)
+antidote bundle robbyrussell/oh-my-zsh
+antidote bundle ohmyzsh/ohmyzsh path:plugins/git
+antidote bundle ohmyzsh/ohmyzsh path:plugins/vi-mode
+antidote bundle ohmyzsh/ohmyzsh path:plugins/history-substring-search
+antidote bundle ohmyzsh/ohmyzsh path:plugins/history-substring-search
+antidote bundle zsh-users/zsh-autosuggestions
+antidote bundle brentyi/brent-zsh-theme
 
 HYPHEN_INSENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
@@ -23,7 +29,6 @@ DISABLE_UNTRACKED_FILES_DIRTY="false"
 HIST_STAMPS="yyyy-mm-dd"
 MODE_INDICATOR="%F{black}%K{white} <<< %k%f"
 DISABLE_AUTO_TITLE="true"
-
 export EDITOR='vim'
 
 if [ -x "$(command -v nvim)" ]; then
@@ -39,27 +44,6 @@ alias sudo="sudo "
 alias :q="exit"
 alias :e="vim"
 
-u() {
-    cd ~/dotfilesp
-    if [[ -z $(git status -s) ]]; then
-        echo "Updating dotfiles"
-        echo "----------"
-        git pull
-        # git submodule update --init --recursive
-        vim +PlugUpdate +qall
-        rm -rf ~/.antigen
-        # cleanup
-        if [ -d "$HOME/.oh-my-zsh" ]; then
-          rm -rf $HOME/.oh-my-zsh
-        fi
-        cd - > /dev/null
-        source ~/.zshrc
-    else
-        echo "Unstaged changes in dotfiles directory; please commit or stash them"
-        cd - > /dev/null
-    fi
-}
-
 tmux_renumber() {
     sessions=$(tmux ls | cut -f1 -d':')
 
@@ -70,11 +54,6 @@ tmux_renumber() {
         tmux rename -t $old $new/$total
         ((new++))
     done <<< "$sessions"
-}
-
-verbose_source() {
-    echo "+ source $@"
-    source $@
 }
 
 bindkey -M viins '[[' vi-cmd-mode
