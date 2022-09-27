@@ -202,9 +202,6 @@ Plug 'junegunn/fzf.vim'
     " Helpers for using &wildignore with fzf
     let s:fzf_ignore_options = ''
 
-    " We want to use gutentags for tag generation
-    let g:fzf_tags_command = ''
-
     " Bindings: search file names
     nnoremap <C-P> :call <SID>smarter_fuzzy_file_search()<CR>
     nnoremap <Leader>p :Buffers<CR>
@@ -862,47 +859,6 @@ Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
     let g:doge_mapping = '<Leader>pds'
 " }}
 
-" Gutentags, for generating tag files
-" > Our fork suppresses some errors for machines without ctags installed
-" > TODO: do we even use tags anymore? maybe for barebones C code?
-Plug 'brentyi/vim-gutentags'
-" {{
-    " Set cache location
-    let g:gutentags_cache_dir = '~/.vim/.cache/tags'
-
-    " Enable extra ctags features
-    " - a: Access/export of class members
-    " - i: Inheritance information
-    " - l: Programming language
-    " - m: Implementation information
-    " - n: Line number
-    " - S: Signature of routine (e.g. prototype or parameter list)
-    let g:gutentags_ctags_extra_args = [
-          \ '--fields=+ailmnS',
-          \ ]
-
-    " If we have a hardcoded repository root, use for gutentags
-    if exists('g:repo_file_search_root')
-        function! FindRepoRoot(path)
-            return g:repo_file_search_root
-        endfunction
-        let g:gutentags_project_root_finder = 'FindRepoRoot'
-    endif
-
-    " Lightline integration
-    function! GutentagsMissingStatus()
-        if exists('g:gutentags_ctags_executable') && executable(expand(g:gutentags_ctags_executable, 1)) == 0
-            return '[missing ctags]'
-        endif
-        return ''
-    endfunction
-    augroup GutentagsStatusLineRefresher
-        autocmd!
-        autocmd User GutentagsUpdating call lightline#update()
-        autocmd User GutentagsUpdated call lightline#update()
-    augroup END
-" }}
-
 " Status line
 Plug 'itchyny/lightline.vim'
 Plug 'halkn/lightline-lsp'
@@ -925,7 +881,7 @@ Plug 'halkn/lightline-lsp'
         \ 'right': [ [ 'lineinfo' ],
         \            [ 'filetype', 'charvaluehex' ],
         \            [ 'lsp_errors', 'lsp_warnings', 'lsp_ok' ],
-        \            [ 'ag_and_gutentags' ],
+        \            [ 'ag_missing_status' ],
         \            [ 'filepath' ],
         \            [ 'truncate' ]]
         \ }
@@ -940,7 +896,7 @@ Plug 'halkn/lightline-lsp'
     " Components
     let g:lightline.component = {
         \   'charvaluehex': '0x%B',
-        \   'ag_and_gutentags': '%{"' . AgMissingStatus() . '"}%{"' . GutentagsMissingStatus() . '"}%{gutentags#statusline("", "", "[ctags indexing]")}',
+        \   'ag_missing_status': '%{"' . AgMissingStatus() . '"}',
         \   'signify': has('patch-8.0.902') ? '%{sy#repo#get_stats_decorated()}' : '',
         \   'truncate': '%<',
         \ }
