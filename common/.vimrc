@@ -539,6 +539,10 @@ Plug 'mattn/vim-lsp-settings'
         nmap <buffer> <Leader>rn <plug>(lsp-rename)
         nmap <buffer> <Leader>[g <Plug>(lsp-previous-diagnostic)
         nmap <buffer> <Leader>]g <Plug>(lsp-next-diagnostic)
+
+        " LSP code action. We mostly use this for tsserver/TypeScript, which
+        " lets us organize imports, remove unused code, etc.
+        nmap <buffer> <Leader>lca <Plug>(lsp-code-action)
         nmap <buffer> K <plug>(lsp-hover)
     endfunction
 
