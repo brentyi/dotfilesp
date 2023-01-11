@@ -7,7 +7,7 @@ A collection of config files & setup scripts.
 Install scripts rely on `apt`. After cloning to `$HOME/dotfilesp`:
 
 ```
-Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-N] [-l] [-j] [-p]
+Usage: ./setup_ubuntu.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-N] [-l] [-j] [-p]
         -c      common utilities: neovim, ctags, tmux, htop, xclip, ag, ...
         -z      zsh
         -d      dotfiles
@@ -27,7 +27,7 @@ Usage: ./setup.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-N] [-l] [-
 ## Symlink structure
 
 Manual installation of dotfiles is possible by copying from
-[./common/](./common/). Alternatively, the `-d` flag runs `setup/linker.sh`,
+[./common/](./common/). Alternatively, the `-d` flag runs `setup_ubuntu/linker.sh`,
 which establishes a symlink-based structure with an explicit local/global split.
 
 Linking goes something like this:
