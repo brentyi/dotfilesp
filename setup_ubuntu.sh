@@ -110,98 +110,98 @@ if [[ $install_common = 1 ]]; then
     echo -e "\n---------"
     echo "Installing common utilities"
     echo "---------"
-    bash setup/install_common.sh
+    batch ubuntu/setup/install_common.sh
 fi
 
 if [[ $install_zsh = 1 ]]; then
     echo -e "\n---------"
     echo "Installing ZSH"
     echo "---------"
-    bash setup/install_zsh.sh
+    batch ubuntu/setup/install_zsh.sh
 fi
 
 if [[ $install_dotfiles = 1 ]]; then
     echo -e "\n---------"
     echo "Linking dotfiles"
     echo "---------"
-    bash setup/linker.sh
+    batch ubuntu/setup/linker.sh
 fi
 
 if [[ $install_ros = 1 ]]; then
     echo -e "\n---------"
     echo "Installing ROS"
     echo "---------"
-    bash setup/install_ros_desktop.sh
+    batch ubuntu/setup/install_ros_desktop.sh
 fi
 
 if [[ $install_chrome = 1 ]]; then
     echo -e "\n---------"
     echo "Installing Chrome"
     echo "---------"
-    bash setup/install_chrome.sh
+    batch ubuntu/setup/install_chrome.sh
 fi
 
 if [[ $install_beaglebone = 1 ]]; then
     echo -e "\n---------"
     echo "Beaglebone-specific installations"
     echo "---------"
-    bash setup/install_beaglebone.sh
+    batch ubuntu/setup/install_beaglebone.sh
 fi
 
 if [[ $install_miniconda = 1 ]]; then
     echo -e "\n---------"
     echo "Miniconda"
     echo "---------"
-    bash setup/install_miniconda.sh $HOME
+    batch ubuntu/setup/install_miniconda.sh $HOME
 fi
 
 if [[ $install_yarn = 1 ]]; then
     echo -e "\n---------"
     echo "Yarn"
     echo "---------"
-    bash setup/install_yarn.sh
+    batch ubuntu/setup/install_yarn.sh
 fi
 
 if [[ $install_npm = 1 ]]; then
     echo -e "\n---------"
     echo "NPM"
     echo "---------"
-    bash setup/install_npm.sh
+    batch ubuntu/setup/install_npm.sh
 fi
 
 if [[ $install_vim_ppa = 1 ]]; then
     echo -e "\n---------"
     echo "Vim (from PPA)"
     echo "---------"
-    bash setup/install_vim_ppa.sh
+    batch ubuntu/setup/install_vim_ppa.sh
 fi
 
 if [[ $install_neovim_unstable = 1 ]]; then
     echo -e "\n---------"
     echo "Neovim (unstable, from PPA)"
     echo "---------"
-    bash setup/install_neovim_unstable.sh
+    batch ubuntu/setup/install_neovim_unstable.sh
 fi
 
 if [[ $install_golang = 1 ]]; then
     echo -e "\n---------"
     echo "Golang"
     echo "---------"
-    bash setup/install_golang.sh
+    batch ubuntu/setup/install_golang.sh
 fi
 
 if [[ $install_jekyll = 1 ]]; then
     echo -e "\n---------"
     echo "Jekyll"
     echo "---------"
-    bash setup/install_jekyll.sh
+    batch ubuntu/setup/install_jekyll.sh
 fi
 
 if [[ $install_pipewire = 1 ]]; then
     echo -e "\n---------"
     echo "Pipewire"
     echo "---------"
-    bash setup/install_pipewire.sh
+    batch ubuntu/setup/install_pipewire.sh
 fi
 
 echo ""
