@@ -544,6 +544,10 @@ Plug 'mattn/vim-lsp-settings'
         " lets us organize imports, remove unused code, etc.
         nmap <buffer> <Leader>lca <Plug>(lsp-code-action)
         nmap <buffer> K <plug>(lsp-hover)
+
+        " texlab-specific bindings.
+        nmap <buffer> <Leader>lfs <Plug>(lsp-document-forwardsearch)
+        nmap <buffer> <Leader>lb <Plug>(lsp-document-build)
     endfunction
 
     " Call s:on_lsp_buffer_enabled only for languages with registered
@@ -629,6 +633,31 @@ Plug 'mattn/vim-lsp-settings'
         \ }
     let g:lsp_settings['clangd'] = {'allowlist': ['c', 'cpp', 'objc', 'objcpp', 'cuda']}
 
+    let g:lsp_settings['texlab'] = {
+        \     'workspace_config': { 'texlab': {
+        \       'build': {
+        \           'executable': 'latexmk',
+        \           'args': [
+        \               '-pdf',
+        \               '-pdflatex=lualatex',
+        \               '-synctex=1',
+        \           ],
+        \           "onSave": v:true,
+        \       },
+        \       'forwardSearch': {
+        \           'executable': '/Applications/Skim.app/Contents/SharedSupport/displayline',
+        \           'args': ['%l', '%p', '%f']
+        \       },
+        \   }}
+        \ }
+
+    " TODO: we should make the forwardSearch configuration work on non-MacOS
+    " machines. Like with Zathura:
+    "
+    " Synctex + Zathura
+    " \           'executable': 'zathura',
+    " \           'args': ["--synctex-forward", "%l:1:%f", "%p"]
+
     " Show error messages below statusbar
     let g:lsp_diagnostics_echo_cursor = 1
 
@@ -684,6 +713,10 @@ Plug 'thecontinium/asyncomplete-buffer.vim'
     imap <expr><S-TAB>
         \ vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' :
         \ pumvisible() ? "\<C-p>" : "\<C-h>"
+
+    " Lines from Sam
+    smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+    smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
     " Register path completer
     function! s:register_asyncomplete_sources() abort
