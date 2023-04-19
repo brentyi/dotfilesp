@@ -663,7 +663,7 @@ lua << EOF
       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
       ['<Tab>'] = function(fallback)
         if cmp.visible() then
           cmp.select_next_item()
@@ -683,6 +683,7 @@ lua << EOF
       { name = 'nvim_lsp' },
       { name = 'nvim_lsp_signature_help' },
       { name = 'emoji' },
+      { name = 'path' },
       { name = 'vsnip' }, -- For vsnip users.
       -- { name = 'luasnip' }, -- For luasnip users.
       -- { name = 'ultisnips' }, -- For ultisnips users.
@@ -727,6 +728,9 @@ lua << EOF
         capabilities = capabilities
     }
     require("lspconfig").tsserver.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").eslint.setup{
         capabilities = capabilities
     }
     require("lspconfig").arduino_language_server.setup{
@@ -1046,17 +1050,6 @@ if !s:fresh_install
 
     " Automatically change working directory to current file's parent
     set autochdir
-    augroup AutochdirHack
-        " Hack: for whatever reason, autochdir has begun to fail for files
-        " opened with FZF in splits in Neovim >=0.6.1. This is reproducible
-        " across systems and I've tried fudging with various stable/unstable
-        " plugin + Neovim versions without luck, so we instead just
-        " redundantly repeat the behavior of autochdir with an autocmd.
-        "
-        " Note that this is not required (but should be harmless) for Vim 8.2.
-        autocmd!
-        autocmd BufEnter * silent! lcd %:p:h
-    augroup END
 
     " Suppress existing swapfile errors; this can be disabled via
     " `set shortmess-=A` or swapfiles can be recovered manually if we ever do
@@ -1411,12 +1404,15 @@ EOF
         " Close help windows
         execute 'helpclose'
 
+        TroubleClose
+
         " Close fugitive diffs
         let l:diff_buffers = range(1, bufnr('$'))
         let l:diff_buffers = filter(l:diff_buffers, 'bufname(v:val) =~# "^fugitive://"')
         for l:b in l:diff_buffers
             execute 'bd ' . l:b
         endfor
+
         diffoff " Generally not needed, but handles some edge cases when multiple diffs are opened
     endfun
 
