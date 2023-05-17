@@ -165,7 +165,7 @@ Plug 'junegunn/fzf.vim'
         function! s:update_fzf_with_wildignore()
             let s:fzf_ignore_options = ' '.join(map(split(&wildignore, ','), '"--ignore \"" . v:val . "\""'))
             if executable('ag')
-                let $FZF_DEFAULT_COMMAND='ag --hidden ' . s:fzf_ignore_options . ' -g ""'
+                let $FZF_DEFAULT_COMMAND='ag --hidden --skip-vcs-ignores ' . s:fzf_ignore_options . ' -g ""'
             endif
         endfunction
 
@@ -177,7 +177,7 @@ Plug 'junegunn/fzf.vim'
 
         " Call Ag relative to repository root
         command! -bang -nargs=* Ag
-            \ call fzf#vim#ag(<q-args>, '--hidden ' . s:fzf_ignore_options, fzf#vim#with_preview({
+            \ call fzf#vim#ag(<q-args>, '--hidden --skip-vcs-ignores ' . s:fzf_ignore_options, fzf#vim#with_preview({
             \     'dir': b:repo_file_search_root
             \ }), <bang>0)
 
