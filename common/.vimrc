@@ -574,11 +574,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
       }
     )
 
-
-    vim.lsp.buf.code_action({
-        only = {"quickfix"},
-    })
-
     -- Buffer local mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { buffer = ev.buf }
@@ -607,14 +602,17 @@ EOF
 endfunction
 
 " Completion
+" For Copilot setup, we should run `:Copilot auth`
+Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
 Plug 'hrsh7th/cmp-emoji'
+Plug 'zbirenbaum/copilot.lua'
+Plug 'zbirenbaum/copilot-cmp'
 
 " Bindings
 " Use <CR> for completion confirmation, <Tab> and <S-Tab> for selection
@@ -643,6 +641,12 @@ smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-T
 function! s:setup_nvim_cmp()
 
 lua << EOF
+  local has_words_before = function()
+    if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
+  end
+
   local cmp = require('cmp')
   -- Set up nvim-cmp.
   cmp.setup({
@@ -664,13 +668,13 @@ lua << EOF
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-      ['<Tab>'] = function(fallback)
-        if cmp.visible() then
-          cmp.select_next_item()
-        else
-          fallback()
-        end
-      end,
+      ["<Tab>"] = vim.schedule_wrap(function(fallback)
+          if cmp.visible() and has_words_before() then
+            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+          else
+            fallback()
+          end
+        end),
       ['<S-Tab>'] = function(fallback)
         if cmp.visible() then
           cmp.select_prev_item()
@@ -680,6 +684,7 @@ lua << EOF
       end
     }),
     sources = cmp.config.sources({
+      { name = 'copilot' },
       { name = 'nvim_lsp' },
       { name = 'nvim_lsp_signature_help' },
       { name = 'emoji' },
@@ -741,6 +746,13 @@ lua << EOF
         },
         capabilities = capabilities
     }
+
+    -- Copilot.
+    require("copilot").setup({
+      suggestion = { enabled = false },
+      panel = { enabled = false },
+    })
+    require("copilot_cmp").setup()
 EOF
 endfunction
 
