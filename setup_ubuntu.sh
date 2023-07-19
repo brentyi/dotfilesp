@@ -12,7 +12,7 @@ usage() {
     echo -e "\t-y\tYarn (+nodejs)"
     echo -e "\t-n\tNPM (+nodejs)"
     echo -e "\t-v\tVim (from PPA)"
-    echo -e "\t-N\tNeovim (unstable, from PPA)"
+    echo -e "\t-N\tNeovim"
     echo -e "\t-l\tgolang (1.17.1)"
     echo -e "\t-j\tJekyll + Ruby"
     echo -e "\t-p\tPipewire (replaces pulseaudio, from PPA)"
@@ -78,7 +78,7 @@ while getopts czdrgbmynvNljp flag; do
       ;;
     N)
       valid=1
-      install_neovim_unstable=1
+      install_neovim=1
       ;;
     l)
       valid=1
@@ -176,11 +176,11 @@ if [[ $install_vim_ppa = 1 ]]; then
     bash ubuntu/setup/install_vim_ppa.sh
 fi
 
-if [[ $install_neovim_unstable = 1 ]]; then
+if [[ $install_neovim = 1 ]]; then
     echo -e "\n---------"
-    echo "Neovim (unstable, from PPA)"
+    echo "Neovim"
     echo "---------"
-    bash ubuntu/setup/install_neovim_unstable.sh
+    bash ubuntu/setup/install_neovim.sh
 fi
 
 if [[ $install_golang = 1 ]]; then

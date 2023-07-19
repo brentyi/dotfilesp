@@ -18,7 +18,7 @@ Usage: ./setup_ubuntu.sh [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-N] 
         -y      Yarn (+nodejs)
         -n      NPM (+nodejs)
         -v      Vim (from PPA)
-        -N      Neovim (unstable, from PPA)
+        -N      Neovim
         -l      golang (1.17.1)
         -j      Jekyll + Ruby
         -p      Pipewire (replaces pulseaudio, from PPA)

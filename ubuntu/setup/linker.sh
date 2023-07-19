@@ -25,5 +25,5 @@ ln -sf ~/.vimrc ~/.config/nvim/init.vim
 
 # Install plugins
 echo -n "Setting up plugins... "
-vim +PlugUpdate +qall
+nvim +PlugUpdate +qall
 echo "DONE"
