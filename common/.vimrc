@@ -727,7 +727,7 @@ lua << EOF
   })
 
   require("mason-lspconfig").setup {
-    ensure_installed = { "pyright", "tsserver", "eslint" },
+    ensure_installed = { "pyright", "tsserver", "eslint", "html", "cssls" },
   }
 
   -- Set up lspconfig.
@@ -737,6 +737,12 @@ lua << EOF
         capabilities = capabilities
     }
     require("lspconfig").tsserver.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").html.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").cssls.setup{
         capabilities = capabilities
     }
     require("lspconfig").eslint.setup{
@@ -757,6 +763,9 @@ lua << EOF
       panel = { enabled = false },
     })
     require("copilot_cmp").setup()
+    require("lspconfig").texlab.setup{
+        capabilities = capabilities
+    }
 EOF
 endfunction
 
