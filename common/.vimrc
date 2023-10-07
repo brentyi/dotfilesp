@@ -591,7 +591,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
     vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-    vim.keymap.set('n', '<space>f', function()
+    vim.keymap.set('n', '<space>lf', function()
       vim.lsp.buf.format { async = true }
     end, opts)
   end,
@@ -740,6 +740,9 @@ lua << EOF
         capabilities = capabilities
     }
     require("lspconfig").html.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").clangd.setup{
         capabilities = capabilities
     }
     require("lspconfig").cssls.setup{
@@ -1587,8 +1590,8 @@ EOF
 
             let l:extension = expand('%:e')
 
-            let l:source_extensions = ['cpp', 'cc', 'c']
-            let l:header_extensions = ['h', 'hpp']
+            let l:source_extensions = ['cpp', 'cc', 'c', 'cu']
+            let l:header_extensions = ['h', 'hpp', 'cuh']
 
             let l:dir = expand("%:p:h")
 
