@@ -19,7 +19,7 @@ vim.opt.autochdir = true
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- Display tabs as 4 spaces. This will typically be overriden by
+-- Display tabs as 4 spaces. Indentation settings will usually be overridden
 -- guess-indent.nvim.
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
@@ -471,7 +471,6 @@ local lazy_plugins = {
 			-- Set configuration for specific filetype.
 			cmp.setup.filetype("gitcommit", {
 				sources = cmp.config.sources({
-					{ name = "cmp_git" }, -- You can specify the `cmp_git` source if you were installed it.
 					{ name = "emoji" },
 				}, {
 					{ name = "buffer" },
