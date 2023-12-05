@@ -1,21 +1,23 @@
 -- Map leader to space.
 vim.g.mapleader = " "
+
+-- Some visuals.
 vim.wo.relativenumber = true
 vim.wo.number = true
-vim.opt.autochdir = true
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
+vim.opt.showmode = false
 
 -- Suppress swap file errors.
 vim.opt.shortmess:append("A")
 vim.opt.autoread = true
 
+-- Use current file's parent as cwd.
+vim.opt.autochdir = true
+
 -- Disable netrw.
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-
--- Don't (redundantly!) show mode below statusline.
-vim.opt.showmode = false
 
 -- Display tabs as 4 spaces. This will typically be overriden by
 -- guess-indent.nvim.
@@ -493,7 +495,7 @@ local lazy_plugins = {
 	},
 	{
 		"neovim/nvim-lspconfig",
-		dependencies = { "folke/neodev.nvim", opts = {} },
+		dependencies = { {"folke/neodev.nvim", config = true} },
 		config = function()
 			-- Dim LSP errors.
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#8c3032" })
