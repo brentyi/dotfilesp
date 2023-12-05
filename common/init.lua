@@ -22,6 +22,10 @@ vim.opt.showmode = false
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 
+-- Escape bindings.
+vim.keymap.set("v", "[[", "<Esc>")
+vim.keymap.set("i", "[[", "<Esc>")
+
 -- Tmux-style split bindings.
 vim.keymap.set("n", '<C-w>"', ":sp<CR>")
 vim.keymap.set("n", "<C-w>%", ":vsp<CR>")
@@ -65,26 +69,57 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Helper for making sure a package is installed via Mason. Setting
--- blocking=true for language servers makes them work immediately, otherwise
--- the file needs to be reloaded.
-ENSURE_INSTALLED = function(filetype, package_name, blocking)
+-- Helper for making sure a package is installed via Mason.
+ENSURE_INSTALLED = function(filetype, package_name)
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = filetype,
 		callback = function()
-			registry = require("mason-registry")
+			local registry = require("mason-registry")
+			-- Notification wrapper that suppresses some type errors. We call
+			-- notify.notify() instead of notify() to make sure that a
+			-- notification handle is returned; the latter sometimes only
+			-- schedules a notification and returns nil.
+			local notify = function(message, level, opts)
+				return require("notify").notify(message, level, opts)
+			end
+
+			-- Is the package installed yet?
 			if not registry.is_installed(package_name) then
-				local notify = require("notify")
-				notify("Installing " .. package_name .. "...")
-				vim.cmd("redraw")
+				-- We'll make a spinner to show that something is happening.
+				local spinner_frames = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" }
+
+				-- Try to install!
 				registry.refresh()
-				local package = registry.get_package(package_name)
-				local install_handle = package:install()
-				if blocking then
-					while not install_handle:is_closed() do
-						vim.wait(50)
-						vim.cmd("redraw")
-					end
+				local install_handle = registry.get_package(package_name):install()
+				local notif_id = notify("", "info", {}).id
+				while not install_handle:is_closed() do
+					---@diagnostic disable-next-line: missing-parameter
+					local spinner_index = (math.floor(vim.fn.reltimefloat(vim.fn.reltime()) * 10.0)) % #spinner_frames
+						+ 1
+					notif_id = notify("Installing " .. package_name .. "...", 2, {
+						title = "Setup",
+						icon = spinner_frames[spinner_index],
+						replace = notif_id,
+					}).id
+					vim.wait(100)
+					vim.cmd("redraw")
+				end
+
+				-- Did installation succeed?
+				if registry.is_installed(package_name) then
+					---@diagnostic disable-next-line: missing-fields
+					notify("Installed " .. package_name, 2, {
+						title = "Setup",
+						icon = "✓",
+						replace = notif_id,
+					})
+				else
+					---@diagnostic disable-next-line: missing-fields
+					notify("Failed to install " .. package_name, "error", {
+						title = "Setup",
+						icon = "𐄂",
+						replace = notif_id,
+					})
 				end
 			end
 		end,
@@ -93,7 +128,7 @@ end
 
 -- Configure plugins.
 local lazy_plugins = {
-	-- Colorscheme.
+	-- Color scheme.
 	{
 		"navarasu/onedark.nvim",
 		priority = 1000,
@@ -102,6 +137,7 @@ local lazy_plugins = {
 			vim.cmd.colorscheme("onedark")
 		end,
 	},
+	-- Statusline.
 	{
 		"nvim-lualine/lualine.nvim",
 		opts = {
@@ -113,15 +149,16 @@ local lazy_plugins = {
 			},
 		},
 	},
+	-- Notification helper!
 	{
 		"rcarriga/nvim-notify",
 		opts = {
 			icons = {
-				DEBUG = "Debug",
-				ERROR = "Error",
-				INFO = "Info",
-				TRACE = "Trace",
-				WARN = "Warning",
+				DEBUG = "(!)",
+				ERROR = "🅔",
+				INFO = "ⓘ ", -- "ⓘ",
+				TRACE = "(⋱)",
+				WARN = "⚠️ ",
 			},
 		},
 	},
@@ -130,24 +167,11 @@ local lazy_plugins = {
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		config = function()
+			---@diagnostic disable-next-line: missing-fields
 			require("nvim-treesitter.configs").setup({
-				ensure_installed = {
-					"c",
-					"cpp",
-					"cuda",
-					"lua",
-					"python",
-					"html",
-					"css",
-					"javascript",
-					"markdown",
-					"lua",
-				},
 				sync_install = false,
 				auto_install = true,
-				highlight = {
-					enable = true,
-				},
+				highlight = { enable = true },
 			})
 		end,
 	},
@@ -164,18 +188,31 @@ local lazy_plugins = {
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.4",
-		dependencies = { "nvim-lua/plenary.nvim", "desdic/telescope-rooter.nvim" },
+		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
-			require("telescope").setup({
-				extensions = {
-					rooter = { patterns = { ".git" } },
-				},
-			})
-			-- require("telescope").load_extension("rooter")
+			require("telescope").setup({})
 
+			-- Use repository root as cwd for Telescope.
+			vim.api.nvim_create_autocmd("BufWinEnter", {
+				pattern = "*",
+				callback = vim.schedule_wrap(function()
+					local root = vim.fs.dirname(vim.fs.find(".git", { upward = true })[1])
+					if root ~= nil then
+						vim.b["Telescope#repository_root"] = root
+					else
+						vim.b["Telescope#repository_root"] = "."
+					end
+				end),
+			})
+
+			-- Bindings.
 			local builtin = require("telescope.builtin")
-			vim.keymap.set("n", "<C-p>", builtin.find_files)
-			vim.keymap.set("n", "<Leader>fg", builtin.live_grep)
+			vim.keymap.set("n", "<C-p>", function()
+				builtin.find_files({ cwd = vim.b["Telescope#repository_root"] })
+			end)
+			vim.keymap.set("n", "<Leader>fg", function()
+				builtin.live_grep({ cwd = vim.b["Telescope#repository_root"] })
+			end)
 			vim.keymap.set("n", "<Leader>fb", builtin.buffers)
 			vim.keymap.set("n", "<Leader>fh", builtin.help_tags)
 			vim.keymap.set("n", "<Leader>h", builtin.oldfiles)
@@ -216,8 +253,6 @@ local lazy_plugins = {
 			})
 		end,
 	},
-	-- Automatically set indentation settings.
-	{ "NMAC427/guess-indent.nvim", config = true },
 	-- File browser.
 	{
 		"nvim-neo-tree/neo-tree.nvim",
@@ -257,6 +292,9 @@ local lazy_plugins = {
 			},
 		},
 	},
+	-- Automatically set indentation settings.
+	{ "NMAC427/guess-indent.nvim", config = true },
+	-- Misc visuals from mini.nvim.
 	{
 		"echasnovski/mini.nvim",
 		config = function()
@@ -316,11 +354,11 @@ local lazy_plugins = {
 			vim.keymap.set("n", "<Leader>cf", ":Format<CR>", { noremap = true })
 
 			-- Automatically install formatters via Mason.
-			ENSURE_INSTALLED("lua", "stylua", false)
-			ENSURE_INSTALLED("python", "ruff", false) -- Can replace both black and isort!
-			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettier", false)
-			ENSURE_INSTALLED("html,css", "prettier", false)
-			ENSURE_INSTALLED("c,cpp,cuda", "clang-format", false)
+			ENSURE_INSTALLED("lua", "stylua")
+			ENSURE_INSTALLED("python", "ruff") -- Can replace both black and isort!
+			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettier")
+			ENSURE_INSTALLED("html,css", "prettier")
+			ENSURE_INSTALLED("c,cpp,cuda", "clang-format")
 
 			-- Configure formatters.
 			local util = require("formatter.util")
@@ -463,20 +501,17 @@ local lazy_plugins = {
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextInfo", { fg = "#303f5a" })
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextHint", { fg = "#305a35" })
 			vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#333333", bg = "#a7a7a7" })
+			vim.api.nvim_set_hl(0, "CursorLine", { bg = "#333333" })
 
 			-- Automatically install language servers via Mason.
-			ENSURE_INSTALLED("python", "pyright", true)
-			ENSURE_INSTALLED("lua", "lua-language-server", true)
-			ENSURE_INSTALLED(
-				"typescript,javascript,typescriptreact,javascriptreact",
-				"typescript-language-server",
-				true
-			)
-			ENSURE_INSTALLED("html", "html-lsp", true)
-			ENSURE_INSTALLED("css", "css-lsp", true)
-			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "eslint-lsp", true)
-			ENSURE_INSTALLED("plaintex", "texlab", true)
-			ENSURE_INSTALLED("c,cpp,cuda", "clangd", true)
+			ENSURE_INSTALLED("python", "pyright")
+			ENSURE_INSTALLED("lua", "lua-language-server")
+			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "typescript-language-server")
+			ENSURE_INSTALLED("html", "html-lsp")
+			ENSURE_INSTALLED("css", "css-lsp")
+			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "eslint-lsp")
+			ENSURE_INSTALLED("plaintex", "texlab")
+			ENSURE_INSTALLED("c,cpp,cuda", "clangd")
 
 			-- Set up lspconfig.
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
