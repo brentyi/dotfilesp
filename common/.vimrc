@@ -1339,7 +1339,7 @@ if !s:fresh_install
     nnoremap <Leader>bc :%bd\|e#<CR>
     nnoremap <Leader>baa :call <SID>buffer_add_all()<CR>
     function! s:buffer_add_all()
-        " Get a full path to the current file
+		" Get a full path to the current file
         let l:path = expand('%:p')
 
         " Chop off the filename and add wildcard
