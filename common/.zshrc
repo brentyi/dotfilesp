@@ -37,7 +37,7 @@ fi
 alias tmux="tmux -2"
 alias rosmaster="rosmasteruri"
 alias s="source ~/.zshrc"
-alias v="vim ~/.vimrc"
+alias v="vim ~/.config/nvim/init.lua"
 alias t="vim ~/.tmux.conf"
 alias z="vim ~/.zshrc"
 alias sudo="sudo "

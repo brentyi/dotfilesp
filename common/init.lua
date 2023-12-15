@@ -1,5 +1,7 @@
 -- Map leader to space.
 vim.g.mapleader = " "
+vim.opt.timeoutlen = 200
+vim.opt.ttimeoutlen = 10
 
 -- Some visuals.
 vim.wo.relativenumber = true
@@ -149,6 +151,22 @@ local lazy_plugins = {
 				component_separators = { left = "|", right = "|" },
 				section_separators = { left = "", right = "" },
 			},
+			sections = {
+				lualine_a = { "mode" },
+				lualine_b = { "filename" },
+				lualine_c = { "diff" },
+				lualine_x = {
+					{
+						function(name, context) -- Filepath.
+							return vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
+						end,
+						color = { fg = "#777777" },
+					},
+					"diagnostics",
+				},
+				lualine_y = { "filetype", "progress" },
+				lualine_z = { "location" },
+			},
 		},
 	},
 	-- Notification helper!
@@ -192,7 +210,13 @@ local lazy_plugins = {
 		tag = "0.1.4",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
-			require("telescope").setup({})
+			require("telescope").setup({ pickers = {
+
+				find_files = {
+
+					hidden = true,
+				},
+			} })
 
 			-- Use repository root as cwd for Telescope.
 			vim.api.nvim_create_autocmd("BufWinEnter", {
@@ -283,8 +307,13 @@ local lazy_plugins = {
 						conflict = "c",
 					},
 				},
+				name = {
+					use_git_status_colors = true,
+				},
 			},
 			filesystem = {
+				bind_to_cwd = false,
+				-- hijack_netrw_behavior = "open_current",
 				filtered_items = {
 					visible = false,
 					hide_dotfiles = false,
@@ -357,6 +386,7 @@ local lazy_plugins = {
 
 			-- Automatically install formatters via Mason.
 			ENSURE_INSTALLED("lua", "stylua")
+			ENSURE_INSTALLED("python", "isort")
 			ENSURE_INSTALLED("python", "ruff") -- Can replace both black and isort!
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "prettier")
 			ENSURE_INSTALLED("html,css", "prettier")
@@ -371,9 +401,11 @@ local lazy_plugins = {
 					-- What's available:
 					-- https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
 					lua = { require("formatter.filetypes.lua").stylua },
-					python = { require("formatter.filetypes.python").ruff },
+					python = { require("formatter.filetypes.python").isort, require("formatter.filetypes.python").ruff },
 					typescript = { require("formatter.filetypes.typescript").prettier },
+					typescriptreact = { require("formatter.filetypes.typescript").prettier },
 					javascript = { require("formatter.filetypes.javascript").prettier },
+					javascriptreact = { require("formatter.filetypes.javascript").prettier },
 					html = { require("formatter.filetypes.html").prettier },
 					css = { require("formatter.filetypes.css").prettier },
 					markdown = { require("formatter.filetypes.markdown").prettier },
@@ -494,7 +526,7 @@ local lazy_plugins = {
 	},
 	{
 		"neovim/nvim-lspconfig",
-		dependencies = { {"folke/neodev.nvim", config = true} },
+		dependencies = { { "folke/neodev.nvim", config = true } },
 		config = function()
 			-- Dim LSP errors.
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#8c3032" })
@@ -502,7 +534,7 @@ local lazy_plugins = {
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextInfo", { fg = "#303f5a" })
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextHint", { fg = "#305a35" })
 			vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#333333", bg = "#a7a7a7" })
-			vim.api.nvim_set_hl(0, "CursorLine", { bg = "#333333" })
+			vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2b2b2b" })
 
 			-- Automatically install language servers via Mason.
 			ENSURE_INSTALLED("python", "pyright")
