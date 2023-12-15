@@ -208,15 +208,13 @@ local lazy_plugins = {
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.4",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+		},
 		config = function()
-			require("telescope").setup({ pickers = {
-
-				find_files = {
-
-					hidden = true,
-				},
-			} })
+			require("telescope").setup({ pickers = { find_files = { hidden = true } } })
+			require("telescope").load_extension("fzf")
 
 			-- Use repository root as cwd for Telescope.
 			vim.api.nvim_create_autocmd("BufWinEnter", {
