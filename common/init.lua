@@ -35,10 +35,18 @@ vim.keymap.set("n", '<C-w>"', ":sp<CR>")
 vim.keymap.set("n", "<C-w>%", ":vsp<CR>")
 
 -- Use arrow keys to resize splits.
-vim.keymap.set("n", "<Up>", ":resize +8<CR>")
-vim.keymap.set("n", "<Down>", ":resize -8<CR>")
-vim.keymap.set("n", "<Right>", ":vertical resize +8<CR>")
-vim.keymap.set("n", "<Left>", ":vertical resize -8<CR>")
+vim.keymap.set("n", "<Up>", function()
+	vim.api.nvim_win_set_height(0, vim.api.nvim_win_get_height(0) + vim.v.count1 * 8)
+end)
+vim.keymap.set("n", "<Down>", function()
+	vim.api.nvim_win_set_height(0, vim.api.nvim_win_get_height(0) - vim.v.count1 * 8)
+end)
+vim.keymap.set("n", "<Right>", function()
+	vim.api.nvim_win_set_width(0, vim.api.nvim_win_get_width(0) + vim.v.count1 * 8)
+end)
+vim.keymap.set("n", "<Left>", function()
+	vim.api.nvim_win_set_width(0, vim.api.nvim_win_get_width(0) - vim.v.count1 * 8)
+end)
 
 -- Bindings for things we do a lot.
 vim.keymap.set("n", "<Leader>wq", ":wq<CR>")
