@@ -209,7 +209,7 @@ local lazy_plugins = {
 		config = function()
 			vim.api.nvim_set_hl(0, "IblIndent", { fg = "#573757" })
 			vim.api.nvim_set_hl(0, "IblScope", { fg = "#555585" })
-			require("ibl").setup({ indent = { char = "·" } })
+			require("ibl").setup({ indent = { char = "·" }, scope = { show_start = false, show_end = false } })
 		end,
 	},
 	-- Fuzzy find.
