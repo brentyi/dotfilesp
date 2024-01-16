@@ -323,7 +323,7 @@ local lazy_plugins = {
 			},
 			filesystem = {
 				bind_to_cwd = false,
-				-- hijack_netrw_behavior = "open_current",
+				hijack_netrw_behavior = "open_current",
 				filtered_items = {
 					visible = false,
 					hide_dotfiles = false,
