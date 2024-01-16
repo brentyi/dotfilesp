@@ -245,6 +245,10 @@ local lazy_plugins = {
 			vim.keymap.set("n", "<Leader>fg", function()
 				builtin.live_grep({ cwd = vim.b["Telescope#repository_root"] })
 			end)
+			vim.keymap.set("n", "<Leader>gf", function()
+				-- Grep for the current word.
+				builtin.grep_string({ cwd = vim.b["Telescope#repository_root"] })
+			end)
 			vim.keymap.set("n", "<Leader>fb", builtin.buffers)
 			vim.keymap.set("n", "<Leader>fh", builtin.help_tags)
 			vim.keymap.set("n", "<Leader>h", builtin.oldfiles)
