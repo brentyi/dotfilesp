@@ -671,6 +671,60 @@ local lazy_plugins = {
 			})
 		end,
 	},
+	{
+		"yetone/avante.nvim",
+		event = "VeryLazy",
+		opts = {
+			windows = {
+				sidebar_header = {
+					align = "left", -- left, center, right for title
+					rounded = false,
+				},
+			},
+		},
+		dependencies = {
+			"nvim-tree/nvim-web-devicons",
+			"stevearc/dressing.nvim",
+			"nvim-lua/plenary.nvim",
+			"MunifTanjim/nui.nvim",
+			--- The below is optional, make sure to setup it properly if you have lazy=true
+			-- {
+			-- 	"MeanderingProgrammer/render-markdown.nvim",
+			-- 	opts = {
+			-- 		file_types = { "markdown", "Avante" },
+			-- 	},
+			-- 	ft = { "markdown", "Avante" },
+			-- },
+		},
+	},
+	{
+		"CopilotC-Nvim/CopilotChat.nvim",
+		branch = "canary",
+		dependencies = {
+			{ "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+			{ "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+		},
+		build = "make tiktoken", -- Only on MacOS or Linux
+		config = function()
+			require("CopilotChat.integrations.cmp").setup()
+			require("CopilotChat").setup({
+				debug = true, -- Enable debugging
+				-- See Configuration section for rest
+				mappings = {
+					reset = {
+						normal = "<C-r>",
+						insert = "<C-r>",
+					},
+					complete = {
+						insert = "",
+					},
+				},
+				-- rest of your config
+			})
+			vim.keymap.set({ "n", "v" }, "<Leader>cc", "<cmd>lua require('CopilotChat').open()<CR>")
+		end,
+		-- See Commands section for default commands if you want to lazy load on them
+	},
 }
 local lazy_opts = {
 	-- We don't want to install custom fonts, so we'll switch to Unicode icons.
