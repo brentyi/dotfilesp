@@ -265,6 +265,7 @@ local lazy_plugins = {
 	-- Git helpers.
 	{ "tpope/vim-fugitive" },
 	{ "lewis6991/gitsigns.nvim", config = true },
+	{ "akinsho/git-conflict.nvim", version = "*", config = true },
 	-- Comments. By default, bound to `gcc`.
 	{ "numToStr/Comment.nvim", config = true },
 	-- Motions.
@@ -447,13 +448,13 @@ local lazy_plugins = {
 	{ "hrsh7th/cmp-nvim-lsp-signature-help" },
 	{ "hrsh7th/cmp-emoji" },
 	{
-		"zbirenbaum/copilot.lua",
-		opts = {
-			suggestion = { enabled = false },
-			panel = { enabled = false },
-		},
+		"github/copilot.vim",
+		config = function()
+			vim.g.copilot_no_tab_map = true
+			vim.api.nvim_set_keymap("i", "<C-c>", "<Esc><C-c>", { noremap = true })
+			vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+		end,
 	},
-	{ "zbirenbaum/copilot-cmp", config = true },
 	{
 		"hrsh7th/nvim-cmp",
 		config = function()
@@ -500,11 +501,10 @@ local lazy_plugins = {
 					end,
 				}),
 				sources = cmp.config.sources({
-					{ name = "copilot" },
 					{ name = "nvim_lsp" },
 					{ name = "nvim_lsp_signature_help" },
 					{ name = "emoji" },
-					{ name = "path" },
+					-- { name = "path" },
 				}, {
 					{ name = "buffer" },
 				}),
@@ -660,7 +660,7 @@ local lazy_plugins = {
 		"yetone/avante.nvim",
 		event = "VeryLazy",
 		lazy = false,
-		version = false,
+		version = false, -- set this if you want to always pull the latest change
 		opts = {
 			windows = {
 				sidebar_header = {
