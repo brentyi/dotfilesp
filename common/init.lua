@@ -8,6 +8,7 @@ vim.wo.relativenumber = true
 vim.wo.number = true
 vim.opt.cursorline = true
 vim.opt.termguicolors = true
+vim.opt.background = "dark"
 vim.opt.showmode = false
 
 -- Suppress swap file errors.
@@ -705,6 +706,79 @@ local lazy_plugins = {
 		end,
 		-- See Commands section for default commands if you want to lazy load on them
 	},
+	-- Experimental: image.nvim + Molten provide a possible alternative to Jupyter (notebooks).
+	-- Prerequisiste: pynvim and jupyter_client should be installed in the Python environment.
+	{
+		"3rd/image.nvim",
+		event = "VeryLazy",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter",
+			"leafo/magick",
+		},
+		opts = {
+			backend = "kitty",
+			integrations = {
+				markdown = {
+					enabled = true,
+					clear_in_insert_mode = false,
+					download_remote_images = true,
+					only_render_image_at_cursor = false,
+					filetypes = { "markdown", "vimwiki" }, -- markdown extensions (ie. quarto) can go here
+				},
+				neorg = {
+					enabled = true,
+					clear_in_insert_mode = false,
+					download_remote_images = true,
+					only_render_image_at_cursor = false,
+					filetypes = { "norg" },
+				},
+			},
+			max_width = 100,
+			max_height = 12,
+			max_height_window_percentage = math.huge, -- this is necessary for a good experience
+			max_width_window_percentage = math.huge,
+			window_overlap_clear_enabled = true,
+			window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
+			kitty_method = "normal",
+		},
+	},
+	{
+		"benlubas/molten-nvim",
+		version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
+		dependencies = { "3rd/image.nvim" },
+		build = ":UpdateRemotePlugins",
+		init = function()
+			-- this is an example, not a default. Please see the readme for more configuration options
+			vim.g.molten_image_provider = "image.nvim"
+			vim.g.molten_output_win_max_height = 20
+
+			-- mi => MoltenInit
+			vim.keymap.set("n", "<leader>mi", ":MoltenInit<CR>", { silent = true, desc = "Initialize the plugin" })
+			-- meo => MoltenEvaluateOperator
+			vim.keymap.set(
+				"n",
+				"<leader>meo",
+				":MoltenEvaluateOperator<CR>",
+				{ silent = true, desc = "run operator selection" }
+			)
+			-- mel => MoltenEvaluateLine
+			vim.keymap.set("n", "<leader>mel", ":MoltenEvaluateLine<CR>", { silent = true, desc = "evaluate line" })
+			-- mrc => MoltenReevaluateCell
+			vim.keymap.set(
+				"n",
+				"<leader>mrc",
+				":MoltenReevaluateCell<CR>",
+				{ silent = true, desc = "re-evaluate cell" }
+			)
+			-- mev => MoltenEvaluateVisual
+			vim.keymap.set(
+				"v",
+				"<leader>mev",
+				":<C-u>MoltenEvaluateVisual<CR>gv",
+				{ silent = true, desc = "evaluate visual selection" }
+			)
+		end,
+	},
 }
 local lazy_opts = {
 	-- We don't want to install custom fonts, so we'll switch to Unicode icons.
@@ -724,6 +798,9 @@ local lazy_opts = {
 			task = "📌",
 			lazy = "💤 ",
 		},
+	},
+	rocks = {
+		hererocks = true,
 	},
 }
 require("lazy").setup(lazy_plugins, lazy_opts)
