@@ -54,7 +54,6 @@ vim.keymap.set("n", "<Leader>wq", ":wq<CR>")
 vim.keymap.set("n", "<Leader>w", ":w<CR>")
 vim.keymap.set("n", "<Leader>q", ":q<CR>")
 vim.keymap.set("n", "<Leader>q!", ":q!<CR>")
-vim.keymap.set("n", "<Leader>e", ":e<CR>")
 vim.keymap.set("n", "<Leader>e!", ":e!<CR>")
 vim.keymap.set("n", "<Leader>e.", ":e .<CR>")
 vim.keymap.set("n", "<Leader>ip", ":set invpaste<CR>")
@@ -505,7 +504,7 @@ local lazy_plugins = {
 					{ name = "nvim_lsp" },
 					{ name = "nvim_lsp_signature_help" },
 					{ name = "emoji" },
-					-- { name = "path" },
+					{ name = "path" },
 				}, {
 					{ name = "buffer" },
 				}),
@@ -710,32 +709,49 @@ local lazy_plugins = {
 		"benlubas/molten-nvim",
 		version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
 		build = ":UpdateRemotePlugins",
+		config = function()
+			-- Add a border around the virtual text.
+			vim.api.nvim_set_hl(0, "MoltenVirtualText", { fg = "#ff7800", bg = "#332200" })
+		end,
 		init = function()
 			vim.g.molten_image_provider = "none"
-			vim.g.molten_output_win_max_height = 20
+			vim.g.molten_output_win_max_height = 32
+			vim.g.molten_auto_open_output = false
+			vim.g.molten_virt_text_output = true
+			vim.g.molten_virt_text_max_lines = 16
+			vim.g.molten_wrap_output = true
 
 			-- mi => MoltenInit
 			vim.keymap.set("n", "<leader>mi", ":MoltenInit<CR>", { silent = true, desc = "Initialize the plugin" })
-			-- meo => MoltenEvaluateOperator
+			-- mi => MoltenOutput
 			vim.keymap.set(
 				"n",
-				"<leader>meo",
+				"<leader>mo",
+				":noautocmd MoltenEnterOutput<CR>",
+				{ silent = true, desc = "show/enter output" }
+			)
+			-- me in normal mode => MoltenEvaluateOperator
+			vim.keymap.set(
+				"n",
+				"<leader>me",
 				":MoltenEvaluateOperator<CR>",
 				{ silent = true, desc = "run operator selection" }
 			)
-			-- mel => MoltenEvaluateLine
-			vim.keymap.set("n", "<leader>mel", ":MoltenEvaluateLine<CR>", { silent = true, desc = "evaluate line" })
-			-- mrc => MoltenReevaluateCell
+			-- ml => MoltenEvaluateLine
+			vim.keymap.set("n", "<leader>ml", ":MoltenEvaluateLine<CR>", { silent = true, desc = "evaluate line" })
+			-- mr => MoltenReevaluateCell
+			vim.keymap.set("n", "<leader>mr", ":MoltenReevaluateCell<CR>", { silent = true, desc = "re-evaluate cell" })
+			-- mr => MoltenReevaluateAll
 			vim.keymap.set(
 				"n",
-				"<leader>mrc",
-				":MoltenReevaluateCell<CR>",
-				{ silent = true, desc = "re-evaluate cell" }
+				"<leader>ma",
+				":MoltenReevaluateAll<CR>",
+				{ silent = true, desc = "re-evaluate all cells" }
 			)
-			-- mev => MoltenEvaluateVisual
+			-- me in visual mode => MoltenEvaluateVisual
 			vim.keymap.set(
 				"v",
-				"<leader>mev",
+				"<leader>me",
 				":<C-u>MoltenEvaluateVisual<CR>gv",
 				{ silent = true, desc = "evaluate visual selection" }
 			)
