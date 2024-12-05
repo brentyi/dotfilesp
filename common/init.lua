@@ -687,9 +687,9 @@ local lazy_plugins = {
 		},
 		build = "make tiktoken", -- Only on MacOS or Linux
 		config = function()
-			require("CopilotChat.integrations.cmp").setup()
 			require("CopilotChat").setup({
 				debug = true, -- Enable debugging
+				chat_autocomplete = true,
 				-- See Configuration section for rest
 				mappings = {
 					reset = {
