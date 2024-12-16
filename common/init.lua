@@ -420,6 +420,7 @@ local lazy_plugins = {
 					javascriptreact = { require("formatter.filetypes.javascript").prettier },
 					html = { require("formatter.filetypes.html").prettier },
 					css = { require("formatter.filetypes.css").prettier },
+					svg = { require("formatter.filetypes.xml").tidy },
 					markdown = { require("formatter.filetypes.markdown").prettier },
 					cpp = { require("formatter.filetypes.cpp").clangformat },
 					["*"] = { require("formatter.filetypes.any").remove_trailing_whitespace },
@@ -680,7 +681,6 @@ local lazy_plugins = {
 	},
 	{
 		"CopilotC-Nvim/CopilotChat.nvim",
-		branch = "canary",
 		dependencies = {
 			{ "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
 			{ "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
