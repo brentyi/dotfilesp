@@ -1,7 +1,4 @@
 export LANG=en_US.UTF-8
-if [ -z "$HOME" ]; then
-    export HOME=/home/brent
-fi
 
 # Clone antidote if necessary.
 [[ -e ${ZDOTDIR:-~}/.antidote ]] ||
@@ -29,6 +26,11 @@ DISABLE_UNTRACKED_FILES_DIRTY="false"
 HIST_STAMPS="yyyy-mm-dd"
 MODE_INDICATOR="%F{black}%K{white} <<< %k%f"
 DISABLE_AUTO_TITLE="true"
+
+# 1 million lines of history.
+HISTSIZE=1000000       # Number of commands to keep in memory
+SAVEHIST=1000000      # Number of commands to save to history file
+
 export EDITOR='vim'
 
 if [ -x "$(command -v nvim)" ]; then
@@ -72,4 +74,3 @@ else
     echo "Exiting... (ENTER to cancel)"
     read -t 0.2 || exit
 fi
-
