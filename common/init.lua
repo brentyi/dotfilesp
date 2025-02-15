@@ -3,6 +3,9 @@ vim.g.mapleader = " "
 vim.opt.timeoutlen = 200
 vim.opt.ttimeoutlen = 10
 
+-- No mouse.
+vim.opt.mouse = ""
+
 -- Some visuals.
 vim.wo.relativenumber = true
 vim.wo.number = true
