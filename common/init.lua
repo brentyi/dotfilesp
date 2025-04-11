@@ -681,6 +681,17 @@ local lazy_plugins = {
 			"nvim-lua/plenary.nvim",
 			"MunifTanjim/nui.nvim",
 		},
+		init = function()
+			-- Hack for https://github.com/yetone/avante.nvim/issues/1759
+			local chdir = vim.api.nvim_create_augroup("chdir", {})
+			vim.api.nvim_create_autocmd("BufEnter", {
+				group = chdir,
+				nested = true,
+				callback = function()
+					vim.go.autochdir = not vim.bo.filetype:match("^Avante")
+				end,
+			})
+		end,
 	},
 	{
 		"CopilotC-Nvim/CopilotChat.nvim",
