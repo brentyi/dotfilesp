@@ -62,6 +62,20 @@ vim.keymap.set("n", "<Leader>e.", ":e .<CR>")
 vim.keymap.set("n", "<Leader>ip", ":set invpaste<CR>")
 vim.keymap.set("n", "<Leader>rtw", ":%s/\\<<C-r><C-w>\\>/") -- "replace this word"
 
+-- Show virtual text for diagnostics. (LSP errors, etc.)
+vim.o.updatetime = 400
+vim.diagnostic.config({
+	virtual_text = {
+		current_line = false,
+	},
+	signs = false,
+	float = {
+		focusable = true,
+		border = "rounded",
+		source = "always",
+	},
+})
+
 -- Turn on spellcheck for commit messages.
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "gitcommit,hgcommit",
@@ -219,7 +233,6 @@ local lazy_plugins = {
 	-- Fuzzy find.
 	{
 		"nvim-telescope/telescope.nvim",
-		tag = "0.1.8",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
@@ -544,8 +557,8 @@ local lazy_plugins = {
 		dependencies = { { "folke/neodev.nvim", config = true } },
 		config = function()
 			-- Dim LSP errors.
-			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#8c3032" })
-			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextWarn", { fg = "#5a5a30" })
+			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextError", { fg = "#6c1010" })
+			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextWarn", { fg = "#434300" })
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextInfo", { fg = "#303f5a" })
 			vim.api.nvim_set_hl(0, "DiagnosticVirtualTextHint", { fg = "#305a35" })
 			vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#333333", bg = "#a7a7a7" })
@@ -562,15 +575,14 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("c,cpp,cuda", "clangd")
 
 			-- Set up lspconfig.
-			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-			require("lspconfig").pyright.setup({ capabilities = capabilities })
-			require("lspconfig").lua_ls.setup({ capabilities = capabilities })
-			require("lspconfig").ts_ls.setup({ capabilities = capabilities })
-			require("lspconfig").html.setup({ capabilities = capabilities })
-			require("lspconfig").cssls.setup({ capabilities = capabilities })
-			require("lspconfig").eslint.setup({ capabilities = capabilities })
-			require("lspconfig").texlab.setup({ capabilities = capabilities })
-			require("lspconfig").clangd.setup({ capabilities = capabilities })
+			vim.lsp.enable("pyright")
+			vim.lsp.enable("lua_ls")
+			vim.lsp.enable("ts_ls")
+			vim.lsp.enable("html")
+			vim.lsp.enable("cssls")
+			vim.lsp.enable("eslint")
+			vim.lsp.enable("texlab")
+			vim.lsp.enable("clangd")
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
@@ -664,10 +676,11 @@ local lazy_plugins = {
 	{
 		"yetone/avante.nvim",
 		event = "VeryLazy",
+		mode = "legacy",
 		lazy = false,
 		version = false, -- set this if you want to always pull the latest change
 		opts = {
-			provider = "claude",
+			-- provider = "claude",
 			windows = {
 				sidebar_header = {
 					align = "left", -- left, center, right for title
@@ -675,11 +688,6 @@ local lazy_plugins = {
 				},
 			},
 			claude = {
-				endpoint = "https://api.anthropic.com",
-				model = "claude-3-7-sonnet-20250219",
-				timeout = 30000, -- Timeout in milliseconds
-				temperature = 0,
-				max_tokens = 20480,
 				disable_tools = true,
 			},
 		},
@@ -692,14 +700,14 @@ local lazy_plugins = {
 		},
 		init = function()
 			-- Hack for https://github.com/yetone/avante.nvim/issues/1759
-			-- local chdir = vim.api.nvim_create_augroup("chdir", {})
-			-- vim.api.nvim_create_autocmd("BufEnter", {
-			-- 	group = chdir,
-			-- 	nested = true,
-			-- 	callback = function()
-			-- 		vim.go.autochdir = not vim.bo.filetype:match("^Avante")
-			-- 	end,
-			-- })
+			local chdir = vim.api.nvim_create_augroup("chdir", {})
+			vim.api.nvim_create_autocmd("BufEnter", {
+				group = chdir,
+				nested = true,
+				callback = function()
+					vim.go.autochdir = not vim.bo.filetype:match("^Avante")
+				end,
+			})
 		end,
 	},
 	{
