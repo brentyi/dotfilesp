@@ -63,17 +63,11 @@ vim.keymap.set("n", "<Leader>ip", ":set invpaste<CR>")
 vim.keymap.set("n", "<Leader>rtw", ":%s/\\<<C-r><C-w>\\>/") -- "replace this word"
 
 -- Show virtual text for diagnostics. (LSP errors, etc.)
-vim.o.updatetime = 400
 vim.diagnostic.config({
 	virtual_text = {
 		current_line = false,
 	},
 	signs = false,
-	float = {
-		focusable = true,
-		border = "rounded",
-		source = "always",
-	},
 })
 
 -- Turn on spellcheck for commit messages.
