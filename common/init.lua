@@ -667,11 +667,20 @@ local lazy_plugins = {
 		lazy = false,
 		version = false, -- set this if you want to always pull the latest change
 		opts = {
+			provider = "claude",
 			windows = {
 				sidebar_header = {
 					align = "left", -- left, center, right for title
 					rounded = false,
 				},
+			},
+			claude = {
+				endpoint = "https://api.anthropic.com",
+				model = "claude-3-7-sonnet-20250219",
+				timeout = 30000, -- Timeout in milliseconds
+				temperature = 0,
+				max_tokens = 20480,
+				disable_tools = true,
 			},
 		},
 		build = "make",
@@ -683,42 +692,15 @@ local lazy_plugins = {
 		},
 		init = function()
 			-- Hack for https://github.com/yetone/avante.nvim/issues/1759
-			local chdir = vim.api.nvim_create_augroup("chdir", {})
-			vim.api.nvim_create_autocmd("BufEnter", {
-				group = chdir,
-				nested = true,
-				callback = function()
-					vim.go.autochdir = not vim.bo.filetype:match("^Avante")
-				end,
-			})
+			-- local chdir = vim.api.nvim_create_augroup("chdir", {})
+			-- vim.api.nvim_create_autocmd("BufEnter", {
+			-- 	group = chdir,
+			-- 	nested = true,
+			-- 	callback = function()
+			-- 		vim.go.autochdir = not vim.bo.filetype:match("^Avante")
+			-- 	end,
+			-- })
 		end,
-	},
-	{
-		"CopilotC-Nvim/CopilotChat.nvim",
-		dependencies = {
-			{ "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
-			{ "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
-		},
-		build = "make tiktoken", -- Only on MacOS or Linux
-		config = function()
-			require("CopilotChat").setup({
-				debug = true, -- Enable debugging
-				chat_autocomplete = true,
-				-- See Configuration section for rest
-				mappings = {
-					reset = {
-						normal = "<C-r>",
-						insert = "<C-r>",
-					},
-					complete = {
-						insert = "",
-					},
-				},
-				-- rest of your config
-			})
-			vim.keymap.set({ "n", "v" }, "<Leader>cc", "<cmd>lua require('CopilotChat').open()<CR>")
-		end,
-		-- See Commands section for default commands if you want to lazy load on them
 	},
 	{
 		"benlubas/molten-nvim",
