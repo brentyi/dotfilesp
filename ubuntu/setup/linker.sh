@@ -20,7 +20,7 @@ echo "DONE"
 # Link neovim config to standard vimrc location
 echo -n "Linking nvim config... "
 mkdir -p ~/.config/nvim
-ln -sf ~/.vimrc ~/.config/nvim/init.vim
+ln -sf ~/dotfilesp/common/init.lua ~/.config/nvim/init.lua
 # echo "DONE"
 
 # Install plugins

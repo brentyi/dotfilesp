@@ -1,6 +1,13 @@
 "
 " brentyi@berkeley.edu
 "
+" Currently in an experimental neovim-only state.
+" TODOs:
+" - Fallbacks for Vim
+" - Consider vim-codefmt => null-ls.nvim
+" - A lot of cleanup
+" - Some automatic help messages for using Mason?
+"
 
 " #############################################
 " > Initial setup <
@@ -158,7 +165,7 @@ Plug 'junegunn/fzf.vim'
         function! s:update_fzf_with_wildignore()
             let s:fzf_ignore_options = ' '.join(map(split(&wildignore, ','), '"--ignore \"" . v:val . "\""'))
             if executable('ag')
-                let $FZF_DEFAULT_COMMAND='ag --hidden ' . s:fzf_ignore_options . ' -g ""'
+                let $FZF_DEFAULT_COMMAND='ag --hidden --skip-vcs-ignores ' . s:fzf_ignore_options . ' -g ""'
             endif
         endfunction
 
@@ -170,7 +177,7 @@ Plug 'junegunn/fzf.vim'
 
         " Call Ag relative to repository root
         command! -bang -nargs=* Ag
-            \ call fzf#vim#ag(<q-args>, '--hidden ' . s:fzf_ignore_options, fzf#vim#with_preview({
+            \ call fzf#vim#ag(<q-args>, '--hidden --skip-vcs-ignores ' . s:fzf_ignore_options, fzf#vim#with_preview({
             \     'dir': b:repo_file_search_root
             \ }), <bang>0)
 
@@ -378,17 +385,6 @@ Plug 'wilriker/gcode.vim'
 " Fancy colors for CSS
 Plug 'ap/vim-css-color'
 
-" Dev Docs for web development
-Plug 'romainl/vim-devdocs'
-" {{
-    augroup DevDocsBindings
-        " Use `K` to lookup keyword
-        autocmd!
-        autocmd FileType css setl isk+=-
-        autocmd FileType html,css,javascript setlocal keywordprg=:DD
-    augroup END
-" }}
-
 " Rainbow highlighting + SQL-esque queries in CSV files
 Plug 'mechatroner/rainbow_csv'
 
@@ -516,245 +512,323 @@ Plug 'henrik/vim-indexed-search'
 Plug 'bronson/vim-visual-star-search'
 
 " LSP plugins for autocompletion, jump to def, etc
-"
-" Note that we also need to actually install some LSPs, eg:
-" > https://github.com/mattn/vim-lsp-settings
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
-
-" {{
-    " Move servers into .vim directory
-    let g:lsp_settings_servers_dir = expand(s:vim_plug_folder . "/../vim-lsp-settings/servers")
-
-    " Global LSP config
-    function! s:on_lsp_buffer_enabled() abort
-        setlocal omnifunc=lsp#complete
-        if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-        nmap <buffer> <Leader>gd <plug>(lsp-definition)
-        nmap <buffer> <Leader>gr <plug>(lsp-references)
-        nmap <buffer> <Leader>gi <plug>(lsp-implementation)
-        " This conflicts with an fzf binding
-        "" nmap <buffer> <Leader>gt <plug>(lsp-type-definition)
-        nmap <buffer> <Leader>rn <plug>(lsp-rename)
-        nmap <buffer> <Leader>[g <Plug>(lsp-previous-diagnostic)
-        nmap <buffer> <Leader>]g <Plug>(lsp-next-diagnostic)
-
-        " LSP code action. We mostly use this for tsserver/TypeScript, which
-        " lets us organize imports, remove unused code, etc.
-        nmap <buffer> <Leader>lca <Plug>(lsp-code-action)
-        nmap <buffer> K <plug>(lsp-hover)
-
-        " texlab-specific bindings.
-        nmap <buffer> <Leader>lfs <Plug>(lsp-document-forwardsearch)
-        nmap <buffer> <Leader>lb <Plug>(lsp-document-build)
-    endfunction
-
-    " Call s:on_lsp_buffer_enabled only for languages with registered
-    " servers
-    augroup lsp_install
-        autocmd!
-        autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-    augroup END
+Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
+Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'neovim/nvim-lspconfig'
 
     " Make colors a bit less distracting
     augroup LspColors
         autocmd!
 
         function! s:SetLspColors()
-            " TODO: revisit these colors for neovim.
-            highlight LspErrorText ctermfg=red ctermbg=NONE guibg=NONE
-            highlight LspErrorHighlight ctermbg=236 guibg=#5a3032
-
-            highlight LspWarningText ctermfg=yellow ctermbg=NONE guibg=NONE
-            highlight LspWarningHighlight ctermbg=236 guibg=#5a5a30
-
-            highlight LspHintText ctermfg=blue ctermbg=NONE guibg=NONE
-            highlight LspHintHighlight ctermbg=236 guibg=#305a35
-
-            highlight LspErrorVirtualText ctermfg=238 guifg=#5a3032
-            highlight LspWarningVirtualText ctermfg=238 guifg=#5a5a30
-            highlight LspInformationVirtualText ctermfg=238 guifg=#303f5a
-            highlight LspHintVirtualText ctermfg=238 guifg=#305a35
+            highlight DiagnosticVirtualTextError ctermfg=238 guifg=#8c3032
+            highlight DiagnosticVirtualTextWarn ctermfg=238 guifg=#5a5a30
+            highlight DiagnosticVirtualTextInfo ctermfg=238 guifg=#303f5a
+            highlight DiagnosticVirtualTextHint ctermfg=238 guifg=#305a35
         endfunction
 
         autocmd ColorScheme * call s:SetLspColors()
     augroup END
 
-    " Set sign column symbols
-    let g:lsp_diagnostics_signs_error = {'text': '▴'}
-    let g:lsp_diagnostics_signs_warning = {'text': '▴'}
-    let g:lsp_diagnostics_signs_information = {'text': '▴'}
-    let g:lsp_diagnostics_signs_hint = {'text': '▴'}
-    let g:lsp_diagnostics_signs_priority = 10
+function! s:configure_mason()
 
-    " Jump through some hoops to auto-install pylsp-mypy whenever we call :LspInstallServer
-    function! s:check_for_pylsp_mypy()
-        if filereadable(expand(g:lsp_settings_servers_dir . "/pylsp-all/venv/bin/pylsp"))
-            \ && !filereadable(expand(g:lsp_settings_servers_dir . "/pylsp-all/venv/bin/mypy"))
+lua << EOF
+require("mason").setup()
+require("mason-lspconfig").setup()
 
-            " Install from source because pypi version of pylsp-mypy is broken
-            " for Python 3. Our fork includes support for various settings and
-            " flags that aren't available upstream.
-            let l:cmd =  g:lsp_settings_servers_dir .
-                \ '/pylsp-all/venv/bin/pip3 install ' .
-                \ 'git+https://github.com/brentyi/pylsp-mypy.git'
+-- Use LspAttach autocommand to only map the following keys
+-- after the language server attaches to the current buffer
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-            if has('nvim')
-                split new
-                call termopen(l:cmd, {'cwd': g:lsp_settings_servers_dir})
-            else
-                let l:bufnr = term_start(l:cmd)
-            endif
-        endif
-    endfunction
+    vim.api.nvim_create_autocmd("CursorHold", {
+      buffer = bufnr,
+      callback = function()
+        local opts = {
+          focusable = false,
+          close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+          border = "rounded",
+          source = "always",
+          prefix = " ",
+          scope = "cursor",
+        }
+        vim.diagnostic.open_float(nil, opts)
+      end
+    })
+    vim.lsp.handlers["textDocument/hover"] =
+      vim.lsp.with(
+      vim.lsp.handlers.hover,
+      {
+        border = "rounded"
+      }
+    )
 
-    augroup CheckForPylspMypy
-        autocmd!
-        autocmd User lsp_setup call s:check_for_pylsp_mypy()
-    augroup END
+    vim.lsp.handlers["textDocument/signatureHelp"] =
+      vim.lsp.with(
+      vim.lsp.handlers.signature_help,
+      {
+        border = "rounded"
+      }
+    )
 
-    let g:lsp_settings = {}
-    let g:lsp_settings['efm-langserver'] = {'disabled': v:false}
-    let g:lsp_settings['pylsp-all'] = {
-        \     'workspace_config': { 'pylsp': {
-        \         'configurationSources': ['flake8'],
-        \         'plugins': {
-        \             'pylsp_mypy': {
-        \                 'enabled': v:true,
-        \                 'live_mode': v:false,
-        \                 'dmypy': v:false,
-        \                 'strict': v:false,
-        \                 'prepend': ['--python-executable', s:trim(system('which python'))],
-        \                 'colocate_cache_with_config': v:true
-        \             }
-        \         }
-        \     }}
-        \ }
-    let g:lsp_settings['clangd'] = {'allowlist': ['c', 'cpp', 'objc', 'objcpp', 'cuda', 'arduino']}
+    -- Buffer local mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local opts = { buffer = ev.buf }
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, opts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    vim.keymap.set('n', '<space>lf', function()
+      vim.lsp.buf.format { async = true }
+    end, opts)
+  end,
+})
 
-    let g:lsp_settings['texlab'] = {
-        \     'workspace_config': { 'texlab': {
-        \       'build': {
-        \           'executable': 'latexmk',
-        \           'args': [
-        \               '-pdf',
-        \               '-pdflatex=lualatex',
-        \               '-synctex=1',
-        \           ],
-        \           "onSave": v:true,
-        \       },
-        \       'forwardSearch': {
-        \           'executable': '/Applications/Skim.app/Contents/SharedSupport/displayline',
-        \           'args': ['%l', '%p', '%f']
-        \       },
-        \   }}
-        \ }
+EOF
 
-    " TODO: we should make the forwardSearch configuration work on non-MacOS
-    " machines. Like with Zathura:
-    "
-    " Synctex + Zathura
-    " \           'executable': 'zathura',
-    " \           'args': ["--synctex-forward", "%l:1:%f", "%p"]
+endfunction
 
-    " Show error messages below statusbar
-    let g:lsp_diagnostics_echo_cursor = 1
+" Completion
+" For Copilot setup, we should run `:Copilot auth`
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/cmp-nvim-lsp-signature-help'
+Plug 'hrsh7th/cmp-emoji'
+Plug 'zbirenbaum/copilot.lua'
+Plug 'zbirenbaum/copilot-cmp'
 
-    " Binding for showing loclist with all errors
-    nnoremap <Leader><Tab> :LspDocumentDiagnostics<CR>
+" Bindings
+" Use <CR> for completion confirmation, <Tab> and <S-Tab> for selection
+function! s:smart_carriage_return()
+    if !pumvisible()
+        " No completion window open -> insert line break
+        return "\<CR>"
+    endif
+    if exists('*complete_info') && complete_info()['selected'] == -1
+        " No element selected: close the completion window with Ctrl+E, then
+        " carriage return
+        "
+        " Requires Vim >8.1ish
+        return "\<C-e>\<CR>"
+    endif
 
-    " Disable tex.vim errors; texlab is far more useful
-    let g:tex_no_error=1
-" }}
+    " Select completion
+    return "\<C-y>"
+endfunction
+inoremap <expr> <CR> <SID>smart_carriage_return()
 
-" Async 'appears as you type' autocompletion
-" > Use Tab, S-Tab to select, <CR> to confirm (see above for binding)
-Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'prabirshrestha/asyncomplete-file.vim'
-Plug 'prabirshrestha/asyncomplete-tags.vim'
-Plug 'prabirshrestha/asyncomplete-emoji.vim'
-Plug 'thecontinium/asyncomplete-buffer.vim'
+" Lines from Sam
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
 
-" {{
-    " Bindings
-    " Use <CR> for completion confirmation, <Tab> and <S-Tab> for selection
-    function! s:smart_carriage_return()
-        if !pumvisible()
-            " No completion window open -> insert line break
-            return "\<CR>"
-        endif
-        if exists('*complete_info') && complete_info()['selected'] == -1
-            " No element selected: close the completion window with Ctrl+E, then
-            " carriage return
-            "
-            " Requires Vim >8.1ish
-            return "\<C-e>\<CR>"
-        endif
+function! s:setup_nvim_cmp()
 
-        " Select completion
-        return "\<C-y>"
-    endfunction
-    inoremap <expr> <CR> <SID>smart_carriage_return()
+lua << EOF
+  local has_words_before = function()
+    if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
+  end
 
-    function! s:check_back_space() abort
-        let col = col('.') - 1
-        return !col || getline('.')[col - 1]  =~ '\s'
-    endfunction
+  local cmp = require('cmp')
+  -- Set up nvim-cmp.
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      end,
+    },
+    window = {
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      ["<Tab>"] = vim.schedule_wrap(function(fallback)
+          if cmp.visible() and has_words_before() then
+            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+          else
+            fallback()
+          end
+        end),
+      ['<S-Tab>'] = function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        else
+          fallback()
+        end
+      end
+    }),
+    sources = cmp.config.sources({
+      { name = 'copilot' },
+      { name = 'nvim_lsp' },
+      { name = 'nvim_lsp_signature_help' },
+      { name = 'emoji' },
+      { name = 'path' },
+      { name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
 
-    " Jump forward or backward
-    " Note: inoremap will not work here, since we need to call vsnip-jump-*
-    imap <expr> <TAB>
-        \ vsnip#jumpable(1) ? '<Plug>(vsnip-jump-next)' :
-        \ pumvisible() ? "\<C-n>" :
-        \ <SID>check_back_space() ? "\<TAB>" :
-        \ asyncomplete#force_refresh()
-    imap <expr><S-TAB>
-        \ vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' :
-        \ pumvisible() ? "\<C-p>" : "\<C-h>"
+  -- Set configuration for specific filetype.
+  cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+      { name = 'emoji' }
+    }, {
+      { name = 'buffer' },
+    })
+  })
 
-    " Lines from Sam
-    smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-    smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+  -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline({ '/', '?' }, {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
 
-    " Register path completer
-    function! s:register_asyncomplete_sources() abort
-        call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-            \ 'name': 'file',
-            \ 'allowlist': ['*'],
-            \ 'priority': 10,
-            \ 'completor': function('asyncomplete#sources#file#completor')
-            \ }))
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
 
-        call asyncomplete#register_source(asyncomplete#sources#tags#get_source_options({
-            \ 'name': 'tags',
-            \ 'allowlist': ['c'],
-            \ 'completor': function('asyncomplete#sources#tags#completor'),
-            \ 'config': {
-            \    'max_file_size': 50000000,
-            \  },
-            \ }))
+  require("mason-lspconfig").setup {
+    ensure_installed = { "pyright", "tsserver", "eslint", "html", "cssls" },
+  }
 
-        call asyncomplete#register_source(asyncomplete#sources#emoji#get_source_options({
-            \ 'name': 'emoji',
-            \ 'allowlist': ['gitcommit', 'markdown'],
-            \ 'completor': function('asyncomplete#sources#emoji#completor'),
-            \ }))
+  -- Set up lspconfig.
+  local capabilities = require('cmp_nvim_lsp').default_capabilities()
+  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+    require("lspconfig").pyright.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").tsserver.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").html.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").clangd.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").cssls.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").eslint.setup{
+        capabilities = capabilities
+    }
+    require("lspconfig").arduino_language_server.setup{
+        cmd = {
+            "arduino-language-server",
+            -- TODO this should not be hardcoded
+            "-cli-config", "/Users/brentyi/Library/Arduino15/arduino-cli.yaml",
+        },
+        capabilities = capabilities
+    }
 
-        call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-            \ 'name': 'buffer',
-            \ 'allowlist': ['*'],
-            \ 'blocklist': ['go'],
-            \ 'completor': function('asyncomplete#sources#buffer#completor'),
-            \ 'config': {
-            \    'max_buffer_size': 1000000,
-            \  },
-            \ }))
-    endfunction
+    -- Copilot.
+    require("copilot").setup({
+      suggestion = { enabled = false },
+      panel = { enabled = false },
+    })
+    require("copilot_cmp").setup()
+    require("lspconfig").texlab.setup{
+        capabilities = capabilities
+    }
+EOF
+endfunction
 
-    autocmd User asyncomplete_setup call s:register_asyncomplete_sources()
-" }}
+
+" Trouble for quickfix.
+Plug 'folke/trouble.nvim'
+
+nmap <Leader><Tab> :TroubleToggle<CR>
+
+function! s:configure_trouble()
+lua << EOF
+  require("trouble").setup {
+    position = "bottom", -- position of the list can be: bottom, top, left, right
+    height = 10, -- height of the trouble list when position is top or bottom
+    width = 50, -- width of the list when position is left or right
+    icons = false, -- use devicons for filenames
+    mode = "workspace_diagnostics", -- "workspace_diagnostics", "document_diagnostics", "quickfix", "lsp_references", "loclist"
+    fold_open = "v", -- icon used for open folds
+    fold_closed = ">", -- icon used for closed folds
+    group = true, -- group results by file
+    padding = true, -- add an extra new line on top of the list
+    action_keys = { -- key mappings for actions in the trouble list
+        -- map to {} to remove a mapping, for example:
+        -- close = {},
+        close = "q", -- close the list
+        cancel = "<esc>", -- cancel the preview and get back to your last window / buffer / cursor
+        refresh = "r", -- manually refresh
+        jump = {"<cr>", "<tab>"}, -- jump to the diagnostic or open / close folds
+        open_split = { "<c-x>" }, -- open buffer in new split
+        open_vsplit = { "<c-v>" }, -- open buffer in new vsplit
+        open_tab = { "<c-t>" }, -- open buffer in new tab
+        jump_close = {"o"}, -- jump to the diagnostic and close the list
+        toggle_mode = "m", -- toggle between "workspace" and "document" diagnostics mode
+        toggle_preview = "P", -- toggle auto_preview
+        hover = "K", -- opens a small popup with the full multiline message
+        preview = "p", -- preview the diagnostic location
+        close_folds = {"zM", "zm"}, -- close all folds
+        open_folds = {"zR", "zr"}, -- open all folds
+        toggle_fold = {"zA", "za"}, -- toggle fold of current file
+        previous = "k", -- previous item
+        next = "j" -- next item
+    },
+    indent_lines = true, -- add an indent guide below the fold icons
+    auto_open = false, -- automatically open the list when you have diagnostics
+    auto_close = false, -- automatically close the list when you have no diagnostics
+    auto_preview = true, -- automatically preview the location of the diagnostic. <esc> to close preview and go back to last window
+    auto_fold = false, -- automatically fold a file trouble list at creation
+    auto_jump = {"lsp_definitions"}, -- for the given modes, automatically jump if there is only a single result
+    signs = {
+        -- icons / text used for a diagnostic
+        error = "error",
+        warning = "warn ",
+        hint = "hint ",
+        information = "info "
+    },
+    use_diagnostic_signs = false -- enabling this will use the signs defined in your lsp client
+  }
+EOF
+endfunction
+
 
 " Snippets & LSP integration
 Plug 'hrsh7th/vim-vsnip'
@@ -898,7 +972,7 @@ Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 
 " Status line
 Plug 'itchyny/lightline.vim'
-Plug 'halkn/lightline-lsp'
+Plug 'josa42/nvim-lightline-lsp'
 " {{
     " Display human-readable path to file
     " This is generated in vim-repo-file-search
@@ -917,7 +991,7 @@ Plug 'halkn/lightline-lsp'
         \           [ 'signify' ] ],
         \ 'right': [ [ 'lineinfo' ],
         \            [ 'filetype', 'charvaluehex' ],
-        \            [ 'lsp_errors', 'lsp_warnings', 'lsp_ok' ],
+        \            [ 'lsp_info', 'lsp_hints', 'lsp_errors', 'lsp_warnings', 'lsp_ok' ],
         \            [ 'ag_missing_status' ],
         \            [ 'filepath' ],
         \            [ 'truncate' ]]
@@ -945,10 +1019,20 @@ Plug 'halkn/lightline-lsp'
         \   'lsp_errors': 'lightline_lsp#errors',
         \   'lsp_ok': 'lightline_lsp#ok',
         \ }
+    let g:lightline.component_expand = {
+        \   'lsp_warnings': 'lightline#lsp#warnings',
+        \   'lsp_errors': 'lightline#lsp#errors',
+        \   'lsp_info': 'lightline#lsp#info',
+        \   'lsp_hints': 'lightline#lsp#hints',
+        \   'lsp_ok': 'lightline#lsp#ok',
+        \   'status': 'lightline#lsp#status',
+        \ }
     let g:lightline.component_type = {
         \   'lsp_warnings': 'warning',
         \   'lsp_errors': 'error',
-        \   'lsp_ok': 'middle',
+        \   'lsp_info': 'info',
+        \   'lsp_hints': 'hints',
+        \   'lsp_ok': 'left',
         \ }
 
 " }}
@@ -984,6 +1068,9 @@ if !s:fresh_install
     call glaive#Install()
     Glaive codefmt plugin[mappings]
     call s:glaive_configure_vim_codefmt()
+    call s:configure_mason()
+    call s:setup_nvim_cmp()
+    call s:configure_trouble()
 
     if has('nvim')
         call s:treesitter_configure()
@@ -991,17 +1078,6 @@ if !s:fresh_install
 
     " Automatically change working directory to current file's parent
     set autochdir
-    augroup AutochdirHack
-        " Hack: for whatever reason, autochdir has begun to fail for files
-        " opened with FZF in splits in Neovim >=0.6.1. This is reproducible
-        " across systems and I've tried fudging with various stable/unstable
-        " plugin + Neovim versions without luck, so we instead just
-        " redundantly repeat the behavior of autochdir with an autocmd.
-        "
-        " Note that this is not required (but should be harmless) for Vim 8.2.
-        autocmd!
-        autocmd BufEnter * silent! lcd %:p:h
-    augroup END
 
     " Suppress existing swapfile errors; this can be disabled via
     " `set shortmess-=A` or swapfiles can be recovered manually if we ever do
@@ -1263,7 +1339,7 @@ if !s:fresh_install
     nnoremap <Leader>bc :%bd\|e#<CR>
     nnoremap <Leader>baa :call <SID>buffer_add_all()<CR>
     function! s:buffer_add_all()
-        " Get a full path to the current file
+		" Get a full path to the current file
         let l:path = expand('%:p')
 
         " Chop off the filename and add wildcard
@@ -1324,21 +1400,18 @@ if !s:fresh_install
             return
         endif
 
-        " Step through LSP diagnostics without loclist
-        let l:diagnostic_count_total = 0
-        for l:count in values(lsp#get_buffer_diagnostics_counts())
-            let l:diagnostic_count_total += l:count
-        endfor
-        if l:diagnostic_count_total > 0
-            if a:next_flag
-                LspNextDiagnostic
-            else
-                LspPreviousDiagnostic
-            endif
-            return
+        if a:next_flag
+            Trouble
+lua << EOF
+require("trouble").next({skip_groups = true, jump = true});
+EOF
+        else
+            Trouble
+lua << EOF
+require("trouble").previous({skip_groups = true, jump = true});
+EOF
         endif
-
-        echom 'Adaptive motion: no target found'
+        " echom 'Adaptive motion: no target found'
     endfunction
     " We used to use <Tab> and <S-Tab> here, but <Tab> interferes with <C-i>
     nnoremap <Leader>j :call <SID>adaptive_motion(1)<CR>
@@ -1359,12 +1432,15 @@ if !s:fresh_install
         " Close help windows
         execute 'helpclose'
 
+        TroubleClose
+
         " Close fugitive diffs
         let l:diff_buffers = range(1, bufnr('$'))
         let l:diff_buffers = filter(l:diff_buffers, 'bufname(v:val) =~# "^fugitive://"')
         for l:b in l:diff_buffers
             execute 'bd ' . l:b
         endfor
+
         diffoff " Generally not needed, but handles some edge cases when multiple diffs are opened
     endfun
 
@@ -1514,8 +1590,8 @@ if !s:fresh_install
 
             let l:extension = expand('%:e')
 
-            let l:source_extensions = ['cpp', 'cc', 'c']
-            let l:header_extensions = ['h', 'hpp']
+            let l:source_extensions = ['cpp', 'cc', 'c', 'cu']
+            let l:header_extensions = ['h', 'hpp', 'cuh']
 
             let l:dir = expand("%:p:h")
 
@@ -1567,7 +1643,7 @@ if !s:fresh_install
           " TODO: fix strange behavior when we break-pane in tmux
             autocmd!
             autocmd BufReadPost,FileReadPost,BufNewFile,BufEnter,FocusGained * call system('tmux rename-window "vim ' . expand('%:t') . '"')
-            autocmd VimLeave,FocusLost * call system('tmux set-window-option automatic-rename')
+            autocmd BufLeave,FocusLost * call system('tmux set-window-option automatic-rename')
         augroup END
     endif
 
