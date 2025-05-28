@@ -201,6 +201,8 @@ local lazy_plugins = {
 			},
 		},
 	},
+	-- LSP progress indicator.
+	{ "j-hui/fidget.nvim", opts = {} },
 	-- Syntax highlighting.
 	{
 		"nvim-treesitter/nvim-treesitter",
@@ -247,6 +249,7 @@ local lazy_plugins = {
 					end
 				end),
 			})
+			vim.cmd("autocmd User TelescopePreviewerLoaded setlocal number")
 
 			-- Bindings.
 			local builtin = require("telescope.builtin")
@@ -609,63 +612,30 @@ local lazy_plugins = {
 					-- Buffer local mappings.
 					-- See `:help vim.lsp.*` for documentation on any of the below functions
 					local opts = { buffer = ev.buf }
+					local telescope = require("telescope.builtin")
 					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-					vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+					vim.keymap.set("n", "gd", telescope.lsp_definitions, opts)
 					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-					vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+					vim.keymap.set("n", "gi", telescope.lsp_implementations, opts)
 					-- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
 					vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
 					vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
 					vim.keymap.set("n", "<space>wl", function()
 						print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 					end, opts)
-					vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, opts)
+					vim.keymap.set("n", "<space>D", telescope.lsp_type_definitions, opts)
 					vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
 					vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, opts)
-					vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+					vim.keymap.set("n", "gr", telescope.lsp_references, opts)
+					vim.keymap.set("n", "<space>ds", telescope.lsp_document_symbols, opts)
+					vim.keymap.set("n", "<space>ws", telescope.lsp_workspace_symbols, opts)
+					vim.keymap.set("n", "<space>dd", telescope.diagnostics, opts)
 					vim.keymap.set("n", "<space>lf", function()
 						vim.lsp.buf.format({ async = true })
 					end, opts)
 				end,
 			})
 		end,
-	},
-	{
-		"folke/trouble.nvim",
-		cmd = "Trouble",
-		opts = {},
-		keys = {
-			{
-				"<leader>xx",
-				"<cmd>Trouble diagnostics toggle<cr>",
-				desc = "Diagnostics (Trouble)",
-			},
-			{
-				"<leader>xX",
-				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-				desc = "Buffer Diagnostics (Trouble)",
-			},
-			{
-				"<leader>cs",
-				"<cmd>Trouble symbols toggle focus=false<cr>",
-				desc = "Symbols (Trouble)",
-			},
-			{
-				"<leader>cl",
-				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-				desc = "LSP Definitions / references / ... (Trouble)",
-			},
-			{
-				"<leader>xL",
-				"<cmd>Trouble loclist toggle<cr>",
-				desc = "Location List (Trouble)",
-			},
-			{
-				"<leader>xQ",
-				"<cmd>Trouble qflist toggle<cr>",
-				desc = "Quickfix List (Trouble)",
-			},
-		},
 	},
 	{
 		"yetone/avante.nvim",
