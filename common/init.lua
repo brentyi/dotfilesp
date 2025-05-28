@@ -1,3 +1,14 @@
+-- Neovim version check.
+local MIN_NEOVIM_VERSION = "0.11"
+if vim.fn.has("nvim-" .. MIN_NEOVIM_VERSION) ~= 1 then
+	vim.api.nvim_echo({
+		{ "Warning: ", "WarningMsg" },
+		{ "This configuration expects Neovim >= " .. MIN_NEOVIM_VERSION .. "\n", "Normal" },
+		{ "Some features may not work correctly with your version: ", "Normal" },
+		{ vim.fn.execute("version"):match("NVIM v%S+"), "Title" },
+	}, true, {})
+end
+
 -- Map leader to space.
 vim.g.mapleader = " "
 vim.opt.timeoutlen = 200
@@ -25,42 +36,42 @@ vim.opt.autochdir = true
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- Display tabs as 4 spaces. Indentation settings will usually be overridden
+-- Display tabs as 4 spaces. Indentation settings will usually be overridden.
 -- guess-indent.nvim.
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 
 -- Escape bindings.
-vim.keymap.set("v", "[[", "<Esc>")
-vim.keymap.set("i", "[[", "<Esc>")
+vim.keymap.set("v", "[[", "<Esc>", { desc = "[Edit] Escape from visual mode" })
+vim.keymap.set("i", "[[", "<Esc>", { desc = "[Edit] Escape from insert mode" })
 
 -- Tmux-style split bindings.
-vim.keymap.set("n", '<C-w>"', ":sp<CR>")
-vim.keymap.set("n", "<C-w>%", ":vsp<CR>")
+vim.keymap.set("n", '<C-w>"', ":sp<CR>", { desc = "[Window] Split horizontally" })
+vim.keymap.set("n", "<C-w>%", ":vsp<CR>", { desc = "[Window] Split vertically" })
 
 -- Use arrow keys to resize splits.
 vim.keymap.set("n", "<Up>", function()
 	vim.api.nvim_win_set_height(0, vim.api.nvim_win_get_height(0) + vim.v.count1 * 8)
-end)
+end, { desc = "[Window] Increase height" })
 vim.keymap.set("n", "<Down>", function()
 	vim.api.nvim_win_set_height(0, vim.api.nvim_win_get_height(0) - vim.v.count1 * 8)
-end)
+end, { desc = "[Window] Decrease height" })
 vim.keymap.set("n", "<Right>", function()
 	vim.api.nvim_win_set_width(0, vim.api.nvim_win_get_width(0) + vim.v.count1 * 8)
-end)
+end, { desc = "[Window] Increase width" })
 vim.keymap.set("n", "<Left>", function()
 	vim.api.nvim_win_set_width(0, vim.api.nvim_win_get_width(0) - vim.v.count1 * 8)
-end)
+end, { desc = "[Window] Decrease width" })
 
 -- Bindings for things we do a lot.
-vim.keymap.set("n", "<Leader>wq", ":wq<CR>")
-vim.keymap.set("n", "<Leader>w", ":w<CR>")
-vim.keymap.set("n", "<Leader>q", ":q<CR>")
-vim.keymap.set("n", "<Leader>q!", ":q!<CR>")
-vim.keymap.set("n", "<Leader>e!", ":e!<CR>")
-vim.keymap.set("n", "<Leader>e.", ":e .<CR>")
-vim.keymap.set("n", "<Leader>ip", ":set invpaste<CR>")
-vim.keymap.set("n", "<Leader>rtw", ":%s/\\<<C-r><C-w>\\>/") -- "replace this word"
+vim.keymap.set("n", "<Leader>wq", ":wq<CR>", { desc = "[File] Save and quit" })
+vim.keymap.set("n", "<Leader>w", ":w<CR>", { desc = "[File] Save" })
+vim.keymap.set("n", "<Leader>q", ":q<CR>", { desc = "[File] Quit" })
+vim.keymap.set("n", "<Leader>q!", ":q!<CR>", { desc = "[File] Force quit" })
+vim.keymap.set("n", "<Leader>e!", ":e!<CR>", { desc = "[File] Reload (discard changes)" })
+vim.keymap.set("n", "<Leader>e.", ":e .<CR>", { desc = "[File] Open explorer" })
+vim.keymap.set("n", "<Leader>ip", ":set invpaste<CR>", { desc = "[Edit] Toggle paste mode" })
+vim.keymap.set("n", "<Leader>rtw", ":%s/\\<<C-r><C-w>\\>/", { desc = "[Edit] Replace word under cursor" }) -- "replace this word".
 
 -- Show virtual text for diagnostics. (LSP errors, etc.)
 vim.diagnostic.config({
@@ -255,17 +266,17 @@ local lazy_plugins = {
 			local builtin = require("telescope.builtin")
 			vim.keymap.set("n", "<C-p>", function()
 				builtin.find_files({ cwd = vim.b["Telescope#repository_root"] })
-			end)
+			end, { desc = "[Search] Find files" })
 			vim.keymap.set("n", "<Leader>fg", function()
 				builtin.live_grep({ cwd = vim.b["Telescope#repository_root"] })
-			end)
+			end, { desc = "[Search] Live grep" })
 			vim.keymap.set("n", "<Leader>gf", function()
 				-- Grep for the current word.
 				builtin.grep_string({ cwd = vim.b["Telescope#repository_root"] })
-			end)
-			vim.keymap.set("n", "<Leader>fb", builtin.buffers)
-			vim.keymap.set("n", "<Leader>fh", builtin.help_tags)
-			vim.keymap.set("n", "<Leader>h", builtin.oldfiles)
+			end, { desc = "[Search] Grep word under cursor" })
+			vim.keymap.set("n", "<Leader>fb", builtin.buffers, { desc = "[Search] Find buffers" })
+			vim.keymap.set("n", "<Leader>fh", builtin.help_tags, { desc = "[Search] Find help" })
+			vim.keymap.set("n", "<Leader>h", builtin.oldfiles, { desc = "[Search] Recent files" })
 		end,
 	},
 	-- Tagbar-style code overview.
@@ -273,7 +284,7 @@ local lazy_plugins = {
 		"stevearc/aerial.nvim",
 		config = function()
 			require("aerial").setup()
-			vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
+			vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "[Code] Toggle outline" })
 		end,
 	},
 	-- Git helpers.
@@ -299,7 +310,12 @@ local lazy_plugins = {
 			vim.api.nvim_create_autocmd("FileType", {
 				pattern = "markdown",
 				callback = function()
-					vim.keymap.set("n", "<Leader>mdtp", "<Plug>MarkdownPreviewToggle")
+					vim.keymap.set(
+						"n",
+						"<Leader>mdtp",
+						"<Plug>MarkdownPreviewToggle",
+						{ desc = "[Markdown] Toggle preview" }
+					)
 				end,
 			})
 		end,
@@ -381,12 +397,12 @@ local lazy_plugins = {
 			nvim_tmux_nav.setup({
 				disable_when_zoomed = true, -- defaults to false
 			})
-			vim.keymap.set("n", "<C-h>", nvim_tmux_nav.NvimTmuxNavigateLeft)
-			vim.keymap.set("n", "<C-j>", nvim_tmux_nav.NvimTmuxNavigateDown)
-			vim.keymap.set("n", "<C-k>", nvim_tmux_nav.NvimTmuxNavigateUp)
-			vim.keymap.set("n", "<C-l>", nvim_tmux_nav.NvimTmuxNavigateRight)
-			vim.keymap.set("n", "<C-\\>", nvim_tmux_nav.NvimTmuxNavigateLastActive)
-			vim.keymap.set("n", "<C-Space>", nvim_tmux_nav.NvimTmuxNavigateNext)
+			vim.keymap.set("n", "<C-h>", nvim_tmux_nav.NvimTmuxNavigateLeft, { desc = "[Nav] Move left" })
+			vim.keymap.set("n", "<C-j>", nvim_tmux_nav.NvimTmuxNavigateDown, { desc = "[Nav] Move down" })
+			vim.keymap.set("n", "<C-k>", nvim_tmux_nav.NvimTmuxNavigateUp, { desc = "[Nav] Move up" })
+			vim.keymap.set("n", "<C-l>", nvim_tmux_nav.NvimTmuxNavigateRight, { desc = "[Nav] Move right" })
+			vim.keymap.set("n", "<C-\\>", nvim_tmux_nav.NvimTmuxNavigateLastActive, { desc = "[Nav] Last active" })
+			vim.keymap.set("n", "<C-Space>", nvim_tmux_nav.NvimTmuxNavigateNext, { desc = "[Nav] Next pane" })
 		end,
 	},
 	-- Package management.
@@ -407,7 +423,7 @@ local lazy_plugins = {
 		"mhartington/formatter.nvim",
 		config = function()
 			-- Format keybinding.
-			vim.keymap.set("n", "<Leader>cf", ":Format<CR>", { noremap = true })
+			vim.keymap.set("n", "<Leader>cf", ":Format<CR>", { noremap = true, desc = "[Code] Format" })
 
 			-- Automatically install formatters via Mason.
 			ENSURE_INSTALLED("lua", "stylua")
@@ -446,15 +462,6 @@ local lazy_plugins = {
 		"williamboman/mason-lspconfig.nvim",
 		config = { true },
 	},
-	-- Snippets.
-	{
-		"L3MON4D3/LuaSnip",
-		-- follow latest release.
-		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-		-- install jsregexp (optional!).
-		build = "make install_jsregexp",
-		dependencies = { "rafamadriz/friendly-snippets" },
-	},
 	-- Completion sources.
 	{ "hrsh7th/cmp-nvim-lsp" },
 	{ "hrsh7th/cmp-buffer" },
@@ -466,12 +473,18 @@ local lazy_plugins = {
 		"github/copilot.vim",
 		config = function()
 			vim.g.copilot_no_tab_map = true
-			vim.api.nvim_set_keymap("i", "<C-c>", "<Esc><C-c>", { noremap = true })
-			vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+			vim.api.nvim_set_keymap("i", "<C-c>", "<Esc><C-c>", { noremap = true, desc = "[Edit] Exit insert mode" })
+			vim.api.nvim_set_keymap(
+				"i",
+				"<C-J>",
+				'copilot#Accept("<CR>")',
+				{ silent = true, expr = true, desc = "[Copilot] Accept suggestion" }
+			)
 		end,
 	},
 	{
 		"hrsh7th/nvim-cmp",
+		dependencies = { "rafamadriz/friendly-snippets" },
 		config = function()
 			local has_words_before = function()
 				if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
@@ -485,12 +498,7 @@ local lazy_plugins = {
 			-- Set up nvim-cmp.
 			local cmp = require("cmp")
 			cmp.setup({
-				-- Need to set a snippet engine up, even if we don't care about snippets.
-				snippet = {
-					expand = function(args)
-						require("luasnip").lsp_expand(args.body)
-					end,
-				},
+				-- `vim.snippet` is introduced in Neovim 0.10 and will be used by default.
 				window = {
 					completion = cmp.config.window.bordered(),
 					documentation = cmp.config.window.bordered(),
@@ -584,7 +592,7 @@ local lazy_plugins = {
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
 				callback = function(ev)
-					-- Enable completion triggered by <c-x><c-o>
+					-- Enable completion triggered by <c-x><c-o>.
 					vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
 					vim.api.nvim_create_autocmd("CursorHold", {
@@ -604,33 +612,65 @@ local lazy_plugins = {
 
 					-- Buffer local mappings.
 					-- See `:help vim.lsp.*` for documentation on any of the below functions
-					local opts = { buffer = ev.buf }
-					local telescope = require("telescope.builtin")
-					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-					vim.keymap.set("n", "gd", telescope.lsp_definitions, opts)
+					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "[LSP] Go to declaration" })
+					vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "[LSP] Go to definition" })
 					vim.keymap.set("n", "K", function()
 						vim.lsp.buf.hover({ border = "single", max_height = 25, max_width = 120 })
-					end, opts)
-					vim.keymap.set("n", "gi", telescope.lsp_implementations, opts)
+					end, { desc = "[LSP] Show hover documentation" })
+					vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "[LSP] Go to implementation" })
 					-- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-					vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
-					vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, opts)
-					vim.keymap.set("n", "<space>wl", function()
+					vim.keymap.set(
+						"n",
+						"<Leader>wa",
+						vim.lsp.buf.add_workspace_folder,
+						{ desc = "[LSP] Add workspace folder" }
+					)
+					vim.keymap.set(
+						"n",
+						"<Leader>wr",
+						vim.lsp.buf.remove_workspace_folder,
+						{ desc = "[LSP] Remove workspace folder" }
+					)
+					vim.keymap.set("n", "<Leader>wl", function()
 						print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-					end, opts)
-					vim.keymap.set("n", "<space>D", telescope.lsp_type_definitions, opts)
-					vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, opts)
-					vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, opts)
-					vim.keymap.set("n", "gr", telescope.lsp_references, opts)
-					vim.keymap.set("n", "<space>ds", telescope.lsp_document_symbols, opts)
-					vim.keymap.set("n", "<space>ws", telescope.lsp_workspace_symbols, opts)
-					vim.keymap.set("n", "<space>dd", telescope.diagnostics, opts)
-					vim.keymap.set("n", "<space>lf", function()
+					end, { desc = "[LSP] List workspace folders" })
+					vim.keymap.set(
+						"n",
+						"<Leader>D",
+						vim.lsp.buf.type_definition,
+						{ desc = "[LSP] Go to type definition" }
+					)
+					vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename, { desc = "[LSP] Rename symbol" })
+					vim.keymap.set("n", "<Leader>ca", vim.lsp.buf.code_action, opts, { desc = "[LSP] Code actions" })
+					vim.keymap.set("n", "<Leader>gr", vim.lsp.buf.references, { desc = "[LSP] Find references" })
+					vim.keymap.set("n", "<Leader>ds", vim.lsp.buf.document_symbol, { desc = "[LSP] Document symbols" })
+					vim.keymap.set(
+						"n",
+						"<Leader>ws",
+						vim.lsp.buf.workspace_symbol,
+						{ desc = "[LSP] Workspace symbols" }
+					)
+					vim.keymap.set("n", "<Leader>dd", vim.diagnostic.setqflist, { desc = "[LSP] Show diagnostics" })
+					vim.keymap.set("n", "<Leader>lf", function()
 						vim.lsp.buf.format({ async = true })
-					end, opts)
+					end, { desc = "[LSP] Format document" })
 				end,
 			})
 		end,
+	},
+	{
+		"folke/which-key.nvim",
+		event = "VeryLazy",
+		opts = {},
+		keys = {
+			{
+				"<leader>?",
+				function()
+					require("which-key").show({ global = false })
+				end,
+				desc = "[Help] Show buffer keymaps",
+			},
+		},
 	},
 	{
 		"yetone/avante.nvim",
@@ -667,58 +707,6 @@ local lazy_plugins = {
 					vim.go.autochdir = not vim.bo.filetype:match("^Avante")
 				end,
 			})
-		end,
-	},
-	{
-		"benlubas/molten-nvim",
-		version = "^1.0.0", -- use version <2.0.0 to avoid breaking changes
-		build = ":UpdateRemotePlugins",
-		config = function()
-			-- Add a border around the virtual text.
-			vim.api.nvim_set_hl(0, "MoltenVirtualText", { fg = "#ff7800", bg = "#332200" })
-		end,
-		init = function()
-			vim.g.molten_image_provider = "none"
-			vim.g.molten_output_win_max_height = 32
-			vim.g.molten_auto_open_output = false
-			vim.g.molten_virt_text_output = true
-			vim.g.molten_virt_text_max_lines = 16
-			vim.g.molten_wrap_output = true
-
-			-- mi => MoltenInit
-			vim.keymap.set("n", "<leader>mi", ":MoltenInit<CR>", { silent = true, desc = "Initialize the plugin" })
-			-- mi => MoltenOutput
-			vim.keymap.set(
-				"n",
-				"<leader>mo",
-				":noautocmd MoltenEnterOutput<CR>",
-				{ silent = true, desc = "show/enter output" }
-			)
-			-- me in normal mode => MoltenEvaluateOperator
-			vim.keymap.set(
-				"n",
-				"<leader>me",
-				":MoltenEvaluateOperator<CR>",
-				{ silent = true, desc = "run operator selection" }
-			)
-			-- ml => MoltenEvaluateLine
-			vim.keymap.set("n", "<leader>ml", ":MoltenEvaluateLine<CR>", { silent = true, desc = "evaluate line" })
-			-- mr => MoltenReevaluateCell
-			vim.keymap.set("n", "<leader>mr", ":MoltenReevaluateCell<CR>", { silent = true, desc = "re-evaluate cell" })
-			-- mr => MoltenReevaluateAll
-			vim.keymap.set(
-				"n",
-				"<leader>ma",
-				":MoltenReevaluateAll<CR>",
-				{ silent = true, desc = "re-evaluate all cells" }
-			)
-			-- me in visual mode => MoltenEvaluateVisual
-			vim.keymap.set(
-				"v",
-				"<leader>me",
-				":<C-u>MoltenEvaluateVisual<CR>gv",
-				{ silent = true, desc = "evaluate visual selection" }
-			)
 		end,
 	},
 }
