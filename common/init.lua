@@ -601,13 +601,6 @@ local lazy_plugins = {
 							vim.diagnostic.open_float(nil, opts)
 						end,
 					})
-					vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-						border = "rounded",
-					})
-
-					vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-						border = "rounded",
-					})
 
 					-- Buffer local mappings.
 					-- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -615,7 +608,9 @@ local lazy_plugins = {
 					local telescope = require("telescope.builtin")
 					vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 					vim.keymap.set("n", "gd", telescope.lsp_definitions, opts)
-					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+					vim.keymap.set("n", "K", function()
+						vim.lsp.buf.hover({ border = "single", max_height = 25, max_width = 120 })
+					end, opts)
 					vim.keymap.set("n", "gi", telescope.lsp_implementations, opts)
 					-- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
 					vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, opts)
