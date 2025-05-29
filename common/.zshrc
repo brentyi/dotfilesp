@@ -27,9 +27,9 @@ HIST_STAMPS="yyyy-mm-dd"
 MODE_INDICATOR="%F{black}%K{white} <<< %k%f"
 DISABLE_AUTO_TITLE="true"
 
-# 1 million lines of history.
-HISTSIZE=1000000       # Number of commands to keep in memory
-SAVEHIST=1000000      # Number of commands to save to history file
+# 10 million lines of history.
+HISTSIZE=10000000       # Number of commands to keep in memory
+SAVEHIST=10000000      # Number of commands to save to history file
 
 export EDITOR='vim'
 
