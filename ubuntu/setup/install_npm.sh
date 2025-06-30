@@ -1,6 +1,5 @@
 #!/bin/bash
 
-sudo apt install curl
-curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt update
-sudo apt install nodejs -y
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+source ~/.zshrc
+nvm install 22

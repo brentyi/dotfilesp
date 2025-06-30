@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-N] [-l] [-j] [-p]"
+    echo "Usage: $0 [-c] [-z] [-d] [-r] [-g] [-b] [-m] [-y] [-n] [-v] [-N] [-l] [-j] [-p] [-u] [-f] [-D]"
     echo -e "\t-c\tcommon utilities: neovim, ctags, tmux, htop, xclip, ag, ..."
     echo -e "\t-z\tzsh"
     echo -e "\t-d\tdotfiles"
@@ -16,6 +16,9 @@ usage() {
     echo -e "\t-l\tgolang (1.17.1)"
     echo -e "\t-j\tJekyll + Ruby"
     echo -e "\t-p\tPipewire (replaces pulseaudio, from PPA)"
+    echo -e "\t-u\tuv (Python package manager)"
+    echo -e "\t-f\tfzf (fuzzy finder)"
+    echo -e "\t-D\tdotfiles 2025 (lightweight setup)"
 }
 
 valid=0
@@ -33,8 +36,11 @@ install_neovim_unstable=0
 install_golang=0
 install_jekyll=0
 install_pipewire=0
+install_uv=0
+install_fzf=0
+install_dotfiles_2025=0
 
-while getopts czdrgbmynvNljp flag; do
+while getopts czdrgbmynvNljpufD flag; do
   case $flag in
     c)
       valid=1
@@ -91,6 +97,18 @@ while getopts czdrgbmynvNljp flag; do
     p)
       valid=1
       install_pipewire=1
+      ;;
+    u)
+      valid=1
+      install_uv=1
+      ;;
+    f)
+      valid=1
+      install_fzf=1
+      ;;
+    D)
+      valid=1
+      install_dotfiles_2025=1
       ;;
     ?)
       valid=0
@@ -202,6 +220,27 @@ if [[ $install_pipewire = 1 ]]; then
     echo "Pipewire"
     echo "---------"
     bash ubuntu/setup/install_pipewire.sh
+fi
+
+if [[ $install_uv = 1 ]]; then
+    echo -e "\n---------"
+    echo "uv (Python package manager)"
+    echo "---------"
+    bash ubuntu/setup/install_uv.sh
+fi
+
+if [[ $install_fzf = 1 ]]; then
+    echo -e "\n---------"
+    echo "fzf (fuzzy finder)"
+    echo "---------"
+    bash ubuntu/setup/setup_fzf.sh
+fi
+
+if [[ $install_dotfiles_2025 = 1 ]]; then
+    echo -e "\n---------"
+    echo "Dotfiles 2025 (lightweight setup)"
+    echo "---------"
+    bash ubuntu/setup/setup_dotfiles_2025.sh
 fi
 
 echo ""
