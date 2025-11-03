@@ -672,43 +672,6 @@ local lazy_plugins = {
 			},
 		},
 	},
-	{
-		"yetone/avante.nvim",
-		event = "VeryLazy",
-		mode = "legacy",
-		lazy = false,
-		version = false, -- set this if you want to always pull the latest change
-		opts = {
-			-- provider = "claude",
-			windows = {
-				sidebar_header = {
-					align = "left", -- left, center, right for title
-					rounded = false,
-				},
-			},
-			claude = {
-				disable_tools = true,
-			},
-		},
-		build = "make",
-		dependencies = {
-			-- "nvim-tree/nvim-web-devicons",
-			"stevearc/dressing.nvim",
-			"nvim-lua/plenary.nvim",
-			"MunifTanjim/nui.nvim",
-		},
-		init = function()
-			-- Hack for https://github.com/yetone/avante.nvim/issues/1759
-			local chdir = vim.api.nvim_create_augroup("chdir", {})
-			vim.api.nvim_create_autocmd("BufEnter", {
-				group = chdir,
-				nested = true,
-				callback = function()
-					vim.go.autochdir = not vim.bo.filetype:match("^Avante")
-				end,
-			})
-		end,
-	},
 }
 local lazy_opts = {
 	-- We don't want to install custom fonts, so we'll switch to Unicode icons.
