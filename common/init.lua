@@ -578,6 +578,7 @@ local lazy_plugins = {
 			ENSURE_INSTALLED("typescript,javascript,typescriptreact,javascriptreact", "eslint-lsp")
 			ENSURE_INSTALLED("plaintex", "texlab")
 			ENSURE_INSTALLED("c,cpp,cuda", "clangd")
+			ENSURE_INSTALLED("astro", "astro-language-server")
 
 			-- Set up lspconfig.
 			vim.lsp.enable("pyright")
@@ -588,6 +589,7 @@ local lazy_plugins = {
 			vim.lsp.enable("eslint")
 			vim.lsp.enable("texlab")
 			vim.lsp.enable("clangd")
+			vim.lsp.enable("astro")
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				group = vim.api.nvim_create_augroup("UserLspConfig", {}),
