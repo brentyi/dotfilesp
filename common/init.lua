@@ -443,6 +443,7 @@ local lazy_plugins = {
 					-- https://github.com/mhartington/formatter.nvim/tree/master/lua/formatter/filetypes
 					lua = { require("formatter.filetypes.lua").stylua },
 					python = { require("formatter.filetypes.python").isort, require("formatter.filetypes.python").ruff },
+					-- astro = { require("formatter.filetypes.typescript").prettier },
 					typescript = { require("formatter.filetypes.typescript").prettier },
 					typescriptreact = { require("formatter.filetypes.typescript").prettier },
 					javascript = { require("formatter.filetypes.javascript").prettier },
@@ -480,6 +481,17 @@ local lazy_plugins = {
 				'copilot#Accept("<CR>")',
 				{ silent = true, expr = true, desc = "[Copilot] Accept suggestion" }
 			)
+			vim.keymap.set("n", "<Leader>cp", function()
+				if vim.g.copilot_enabled == false then
+					vim.cmd("Copilot enable")
+					vim.g.copilot_enabled = true
+					print("Copilot enabled")
+				else
+					vim.cmd("Copilot disable")
+					vim.g.copilot_enabled = false
+					print("Copilot disabled")
+				end
+			end, { desc = "[Copilot] Toggle Copilot" })
 		end,
 	},
 	{
